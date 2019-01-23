@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+
+
+
+
+
+<struts-config>
+
+
+
+<!-- ======================================== Form Bean Definitions -->
+
+
+
+    <form-beans>
+
+<form-bean name="TayalLoginForm" type="com.tayal.login.actionforms.LoginForm"/>
+<form-bean name="RunningRoomForm" type="com.tayal.runningroom.actionforms.RunningRoomForm"/>
+<form-bean name="RunningRoomReportForm" type="com.tayal.runningroom.actionforms.RunningRoomReportForm"/>
+<form-bean name="MessReportForm" type="com.tayal.runningroom.actionforms.MessReportForm"/>
+<form-bean name="MasterForm" type="com.tayal.master.actionforms.MasterForm"/>
+<form-bean name="FoodMenu" type="com.tayal.master.actionforms.FoodMenu"/>
+<form-bean name="CrewBiodataForm" type="com.tayal.master.actionforms.CrewBiodataForm"/>
+<form-bean name="RoomForm" type="com.tayal.master.actionforms.RoomForm"/>
+<form-bean name="BaBioForm" type="com.tayal.babio.actionforms.BaBioForm"/>
+
+
+
+
+    </form-beans>
+
+
+
+
+
+<!-- ================================= Global Exception Definitions -->
+
+
+
+    <global-exceptions>
+
+        <!-- sample exception handler
+
+        <exception
+
+            key="expired.password"
+
+            type="app.ExpiredPasswordException"
+
+            path="/changePassword.jsp"/>
+
+        end sample -->
+
+    </global-exceptions>
+
+
+
+
+
+<!-- =================================== Global Forward Definitions -->
+
+
+
+    <global-forwards>
+
+        <!-- Default forward to "Welcome" action -->
+
+        <!-- Demonstrates using index.jsp to forward -->
+
+        <forward name="LOGIN" path="/Login.do?method=Execute"/>
+        <forward name="LOGOUTADMIN" path="/Login.do?method=LogoutAdmin"/>
+        <forward name="LOGOUTKIOSK" path="/Login.do?method=LogoutKiosk"/>
+
+    </global-forwards>
+
+
+
+
+
+<!-- =================================== Action Mapping Definitions -->
+
+
+
+    <action-mappings>
+
+
+
+            <!-- Default "Welcome" action -->
+
+            <!-- Forwards to Welcome.jsp -->
+
+       <!-- <action
+
+            path="/Welcome"
+
+            type="org.apache.struts.actions.ForwardAction"
+
+            parameter="/pages/CrewDetails.jsp"/> --> 
+
+		
+		
+		<action  
+			path="/Login" name="TayalLoginForm" type="com.tayal.login.action.LoginAction" 	parameter="method">
+			<forward name="LOGIN" path="/Login.do?method=Execute"/>
+			<forward name="Home" path="/pages/HomePage.jsp" />
+			<forward name="SuperAdmin" path="/pages/Admin/SuperAdminLogin.jsp" />
+			<forward name="Admin" path="/pages/Admin/AdminLogin.jsp" />
+			<forward name="Kiosk" path="/pages/Admin/Kiosk.jsp" />
+			<forward name="ReKiosk" path="/Login.do?method=initiateKiosk" />
+			<forward name="Master" path="/pages/Admin/MasterPage.jsp" />
+			<forward name="DivisionMaster" path="/pages/Admin/DivisionMaster.jsp" />
+			<forward name="SuperMaster" path="/pages/Admin/SuperMasterPage.jsp" />
+			<forward name="KioskWelcome" path="/pages/Admin/KioskWelcome.jsp" />
+			<forward name="ChangePass" path="/pages/Admin/changepassword.jsp" />
+			<forward name="ChangePin" path="/pages/Admin/ChangePin.jsp" />
+			<forward name="RequestAccess" path="/pages/Admin/RequestAccess.jsp" />
+			<forward name="CreateCrew" path="/pages/Admin/CreateCrew.jsp" />
+		</action>
+		
+		<action  
+			path="/Master" name="MasterForm" type="com.tayal.master.action.MasterAction" 	parameter="method">
+			<forward name="AddDivision" path="/pages/Master/AddDivision.jsp" />
+			<forward name="AddLobby" path="/pages/Master/AddLobby.jsp" />
+			<forward name="MasterHome" path="/pages/Admin/MasterPage.jsp" />
+			<forward name="DivisionMaster" path="/pages/Admin/DivisionMaster.jsp" />
+			<forward name="AddLocation" path="/pages/Master/AddLocation.jsp" />
+			
+			
+			
+		</action>
+		
+		
+		<action  
+			path="/MiscMaster" name="FoodMenu" type="com.tayal.master.action.MasterAction" 	parameter="method">
+			<forward name="ModifyMenu" path="/pages/Master/ModifyMenu.jsp" />
+			<forward name="SaveMenu" path="/pages/Master/ModifyMenu.jsp" />
+			
+		</action>
+		
+		
+		
+		<action  
+			path="/CrewBiodata" name="CrewBiodataForm" type="com.tayal.master.action.CrewBiodataAction" 	parameter="method">
+			<forward name="CrewBiodata" path="/pages/Master/CrewBiodata.jsp" />
+			<forward name="CrewBiodataInfo" path="/pages/Master/CrewBiodataInfo.jsp" />
+			<forward name="SaveBiodata" path="/CrewBiodata.do?method=initiateCrewBiodata" />
+			
+		</action>
+		
+		
+		<action  
+			path="/Rooms" name="RoomForm" type="com.tayal.master.action.MasterAction" 	parameter="method">
+			<forward name="AddLocation" path="/pages/Master/AddLocation.jsp" />
+			<forward name="AddRooms" path="/pages/Master/AddRooms.jsp" />
+			<forward name="AssignRoom" path="/pages/Master/AssignRoom.jsp" />
+			
+			
+		</action>
+		
+		<action  
+			path="/biometric" name="BaBioForm" type="com.tayal.babio.action.BaBioAction" 	parameter="method">
+			<forward name="bio" path="/pages/Bio/BioMetric.jsp" />
+			<forward name="bioreg" path="/pages/Bio/BioReg.jsp" />
+			<forward name="biover" path="/pages/Bio/BioVer.jsp" />
+			<forward name="reregcrew" path="/pages/Bio/Register.jsp" />
+			<forward name="rereg" path="/biometric.do?method=initiateBio" />
+			
+		</action>
+
+		<action  
+			path="/breathanalysis" name="BaBioForm" type="com.tayal.babio.action.BaBioAction" 	parameter="method">
+			<forward name="ba" path="/pages/BA/BreathAnalyser.jsp" />
+		</action>
+		
+		<action  
+			path="/welcome" name="LoginForm" type="com.cris.cms.image.action.LoginAction" 	parameter="method">
+			<forward name="welcome" path="/pages/CrewDetails.jsp" />
+			<forward name="ba" path="/pages/Welcome.jsp" />
+			<forward name="success" path="/pages/Welcome.jsp" />
+			<forward name="bio" path="/pages/BioMetric.jsp" />
+			<forward name="bioreg" path="/pages/BioReg.jsp" />
+			<forward name="biover" path="/pages/BioVer.jsp" />
+			<forward name="reregcrew" path="/pages/Register.jsp" />
+			<forward name="rereg" path="/welcome.do?method=initiateBio" />
+			
+		</action>
+		
+		<action path="/runningroom" name="RunningRoomForm" type="com.tayal.runningroom.action.RunningRoomAction" 	parameter="method">			
+			<forward name="RunningRoomAdmin" path="/pages/RunningRoom/RunningRoomAdmin.jsp" />
+			<forward name="runningroom" path="/pages/RunningRoom/RunningRoom.jsp" />
+			<forward name="CrewOptions" path="/pages/RunningRoom/CrewOptions.jsp" />
+			<forward name="CategoryOptions" path="/pages/RunningRoom/CategoryOptions.jsp" />
+			<forward name="RunningRoomReport" path="/pages/RunningRoom/CrewOptions.jsp" />
+			<forward name="crewbookingpage" path="/pages/RunningRoom/CrewBooking.jsp" />
+			<forward name="SubsidyOptions" path="/pages/RunningRoom/SubsidyOptions.jsp" />
+			<forward name="mess" path="/pages/RunningRoom/Mess.jsp" />
+			<forward name="WakeMe" path="/pages/RunningRoom/WakeMe.jsp" />
+		</action>
+		
+		<action path="/runningroomreport" name="RunningRoomReportForm" type="com.tayal.runningroom.action.RunningRoomAction" 	parameter="method">
+			<forward name="ReportDates" path="/pages/RunningRoom/ReportDates.jsp" />	
+			<forward name="CountReportDates" path="/pages/RunningRoom/CountReportDates.jsp" />	
+			<forward name="MessReportDates" path="/pages/RunningRoom/MessReportDates.jsp" />			
+			<forward name="RunningRoomReport" path="/pages/RunningRoom/RunningRoomReport.jsp" />
+			<forward name="OccupancyCountReport" path="/pages/RunningRoom/OccupancyCountReport.jsp" />
+			<forward name="WakeUpReport" path="/pages/RunningRoom/WakeUpCallReport.jsp" />
+			<forward name="MessReport" path="/pages/RunningRoom/MessReport.jsp" />
+			<forward name="CurrentOccupancyReport" path="/pages/RunningRoom/CurrentOccupancyReport.jsp" />
+		</action>
+		
+		<action path="/messreport" name="MessReportForm" type="com.tayal.runningroom.action.RunningRoomAction" 	parameter="method">
+			
+			<forward name="MessReportDates" path="/pages/RunningRoom/MessReportDates.jsp" />			
+	
+			<forward name="MessReport" path="/pages/RunningRoom/MessReport.jsp" />
+	
+		</action>
+
+
+    <!-- sample input and input submit actions
+
+
+
+        <action
+
+            path="/Input"
+
+            type="org.apache.struts.actions.ForwardAction"
+
+            parameter="/pages/Input.jsp"/>
+
+
+
+        <action
+
+            path="/InputSubmit"
+
+            type="app.InputAction"
+
+            name="inputForm"
+
+            scope="request"
+
+            validate="true"
+
+            input="/pages/Input.jsp"/>
+
+
+
+    end samples -->
+
+
+
+
+
+    </action-mappings>
+
+
+
+
+
+<!-- ===================================== Controller Configuration -->
+
+
+
+    <controller
+
+       processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>
+
+
+
+
+
+<!-- ================================ Message Resources Definitions -->
+
+
+
+    <message-resources parameter="resources.application"/>
+
+
+
+
+
+<!-- ======================================= Plug Ins Configuration -->
+
+
+  <!-- ========== Tiles plugin ===================  -->
+  <!--												-->
+  <!--
+     This plugin initialize Tiles definition factory. This later can takes some
+	 parameters explained here after. The plugin first read parameters from web.xml, then
+	 overload them with parameters defined here. All parameters are optional.
+	 The plugin should be declared in each struts-config file.
+       - definitions-config: (optional) 
+            Specify configuration file names. There can be several comma 
+		    separated file names (default: ?? )
+       - moduleAware: (optional - struts1.1) 
+            Specify if the Tiles definition factory is module aware. If true (default), 
+			there will be one factory for each Struts module. 
+			If false, there will be one common factory for all module. In this later case, 
+			it is still needed to declare one plugin per module. The factory will be 
+			initialized with parameters found in the first initialized plugin (generally the
+			one associated with the default module).
+			  true : One factory per module. (default)
+			  false : one single shared factory for all modules
+	   - definitions-parser-validate: (optional)
+	        Specify if xml parser should validate the Tiles configuration file.
+			  true : validate. DTD should be specified in file header. (default)
+			  false : no validation
+			  
+	  Paths found in Tiles definitions are relative to the main context.
+  -->
+  <!-- comment following if struts1.0.x -->
+  <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+    <set-property property="definitions-config" 
+	                 value="/WEB-INF/tiles-defs.xml" />
+    <set-property property="moduleAware" value="true" />
+    <set-property property="definitions-parser-validate" value="true" />
+  </plug-in>
+
+  <!-- end comment if struts1.0.x -->
+
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property
+        property="pathnames"
+        value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+  </plug-in>
+
+</struts-config>
+

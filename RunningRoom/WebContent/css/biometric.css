@@ -1,0 +1,97 @@
+body
+{
+	height:100%; 
+	width:100%;
+}
+
+form
+{
+	height:100%; 
+	width:100%;
+}
+
+html
+{
+	height:100%; 
+	width:100%;
+}
+
+
+textarea {
+font-family: Georgia, Serif; 
+color: black;
+font-size: 25px;
+align: center;
+border: 0;
+}
+
+
+   
+   
+   
+.circleBase {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    background: white;
+    border: 1px solid blue;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+    
+}
+
+.type1 {
+    
+    position:absolute; TOP:265px; LEFT:163px; 
+}
+
+.type2 {
+   
+    position:absolute; TOP:230px; LEFT:210px; 
+}
+
+
+.type3 {
+   
+    position:absolute; TOP:215px; LEFT:270px; 
+}
+
+.type4 {
+   
+    position:absolute; TOP:235px; LEFT:330px; 
+}
+
+.type5 {
+   
+    position:absolute; TOP:325px; LEFT:370px; 
+}
+
+.type6 {
+   
+    position:absolute; TOP:325px; LEFT:415px; 
+}
+
+.type7{
+   
+    position:absolute; TOP:233px; LEFT:452px; 
+}
+
+.type8 {
+   
+    position:absolute; TOP:215px; LEFT:520px; 
+}
+
+.type9 {
+   
+    position:absolute; TOP:230px; LEFT:580px; 
+}
+
+.type10 {
+    
+    position:absolute; TOP:265px; LEFT:625px; 
+}
+
+.imgclass {
+    
+    position:absolute; TOP:218px; LEFT:160px; 
+    opacity: 0.4;
+}
