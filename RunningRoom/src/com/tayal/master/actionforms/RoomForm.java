@@ -44,7 +44,9 @@ public class RoomForm extends ActionForm{
 	private String[] no_of_beds;
 	private String[] room_type;
 	private String[] category_list;
+	private String[] lobby_category_list;
 	private String[] assigned_list;
+	private String[] lobby_assigned_list;
 	
 	
 
@@ -161,6 +163,28 @@ public class RoomForm extends ActionForm{
 
 	public void setAssigned_list(String[] assigned_list) {
 		this.assigned_list = assigned_list;
+	}
+
+
+
+
+	public String[] getLobby_category_list() {
+		return lobby_category_list;
+	}
+
+	public void setLobby_category_list(String[] lobby_category_list) {
+		this.lobby_category_list = lobby_category_list;
+	}
+
+
+
+
+	public String[] getLobby_assigned_list() {
+		return lobby_assigned_list;
+	}
+
+	public void setLobby_assigned_list(String[] lobby_assigned_list) {
+		this.lobby_assigned_list = lobby_assigned_list;
 	}
 
 

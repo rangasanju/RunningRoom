@@ -88,9 +88,6 @@ max-height: 50px;
 <body  onload="onLoad()">
 
 <html:form action="breathanalysis" >
-<html:hidden name="RunningRoomForm" property="crew_id" />
-
-
 
     <div class="site-wrapper">
 
@@ -104,7 +101,7 @@ max-height: 50px;
               <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>
               <nav>
                 <ul class="nav masthead-nav">
-                  <li class="active"><html:link action="/runningroom.do?method=initiateCrewOptions" >Home</html:link></li>
+                  <li class="active"><html:link action="Master.do?method=operatorHome" >Home</html:link></li>
                   <li><html:link forward="LOGOUTKIOSK" >Logout</html:link></li>
                   <li><a href="#">Contact</a></li>
                 </ul>
@@ -130,9 +127,82 @@ max-height: 50px;
 	     	  &nbsp;	   			
      	  </div>
    
+   
+   		  <div class="col-sm-9">
+   		  
+   		  
+   		  <div class="col-sm-4">            
+           		&nbsp;
+          </div>
+          <div class="col-sm-2">  
+          Crew ID
+           		
+          </div>
+          
+          <div class="col-sm-2">            
+           		<html:select name="RunningRoomForm" property="crew_id" styleClass="form-control">
+					<html:options name="crewlist" /> 
+				</html:select>
+          </div>
+          <div class="col-sm-4">            
+           		&nbsp;
+          </div>
           
           
-	      <div class="col-sm-12">     	       	  			
+          
+   		  </div>
+   		  <div class="col-sm-3">    		               
+           		&nbsp;
+   		  </div>
+   		      
+   
+          <div class="col-sm-12">     	       	  			
+	     	  &nbsp;	   			
+     	  </div>
+   
+   
+   		  <div class="col-sm-9">
+   		  
+          <div class="col-sm-4">            
+           		&nbsp;
+          </div>
+          <div class="col-sm-2">  
+          Outward Train No
+           		
+          </div>
+          
+          <div class="col-sm-2">            
+           		<html:text name="RunningRoomForm" property="outward_train" styleClass="form-control"></html:text>
+					
+          </div>
+          <div class="col-sm-4">            
+           		&nbsp;
+          </div>
+          
+          
+          
+          
+          
+   		  </div>
+   		  <div class="col-sm-3">    		               
+           		&nbsp;
+   		  </div>
+   		      
+    	  
+    	  
+    	  
+    	   	  
+         
+										  							
+		  <div class="col-sm-12">     	       	  			
+	     	  &nbsp;	   			
+     	  </div>
+          <div class="col-sm-12">     	       	  			
+	     	  &nbsp;	   			
+     	  </div>
+     	  							  							
+										  							
+	      <div class="col-sm-9">     	       	  			
 	           		 	<table class='table table-bordered table-condensed table-responsive'>
 	           		 		<thead>
 	           		 			<tr>	      		 				
@@ -154,7 +224,12 @@ max-height: 50px;
 		          	 	</table>  			
      	  </div>  
      	  
-     	  
+     	  <div class="col-sm-3">	     
+	    	  		<div  class="col-sm-12"><h3 class="cover-heading">Wake Up Calls</h3>     </div>  
+	    	     
+			         <div  class="col-sm-12" id="wakeups">  </div>  	
+			        			 
+	          </div>
      	            
           <div class="col-sm-12">     	       	  			
 	     	  &nbsp;	   			
@@ -250,6 +325,8 @@ function trim(str)
 
 function onLoad()
 {
+	
+	getWakeUpInfo()
 }
 
 
@@ -260,11 +337,81 @@ function saveWakeUpTime()
 	var wakedate = document.getElementById("wakedate").value;
 	var waketime = document.getElementById("waketime").value;
 	
+	//alert(wakedate);
+	//alert(wakedate + " " + waketime);
 	
-		document.forms[0].action ="runningroom.do?method=saveWakeUpTime&wakeup_time=" + wakedate + " " + waketime;
+	var trn_no = document.forms[0].outward_train.value;
+	
+	if(trn_no.length > 10)
+		alert("Train no size is too big");
+	else
+	{
+		document.forms[0].action ="runningroom.do?method=saveWakeCrewTime&wakeup_time=" + wakedate + " " + waketime;
 		document.forms[0].submit();
+	}
+	
+	
 			
 }
+
+
+
+
+function getWakeUpInfo()
+{
+
+	
+		
+		var url="runningroom.do?method=getWakeupInfo";
+		if (window.XMLHttpRequest){ // Non-IE browsers
+			reqFeature = new XMLHttpRequest();
+		try{
+			reqFeature.open("GET", url, true);
+			}catch (e){
+			alert(e);
+			}
+			reqFeature.onreadystatechange = receiveGuestInfo;
+			reqFeature.send(null);
+			}
+			else if (window.ActiveXObject){ // IE
+			reqFeature = new ActiveXObject("Microsoft.XMLHTTP");
+			if (reqFeature){
+			//alert('IE');
+			reqFeature.open("GET", url, true);
+			reqFeature.onreadystatechange = receiveGuestInfo;
+			reqFeature.send(null);
+			}
+		}
+		
+	
+}
+
+
+
+function receiveGuestInfo(){
+
+			
+			try{
+				
+				
+				if (reqFeature.readyState == 4 && reqFeature.status == 200)
+					{
+						
+						xmlhtps = reqFeature.responseText;	
+						document.getElementById("wakeups").innerHTML = xmlhtps;
+					}
+				
+				}
+				catch(e)
+				{
+					status="Not found";
+				}
+		}
+
+
+
+
+
 
 
 

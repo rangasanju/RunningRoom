@@ -146,11 +146,13 @@
 				        </div>				        
 			        </div>
 			        
+			    
 			        <div class="form-group">				        
 				        <div id="name" class="col-sm-12 hidden-xs">
 					       &nbsp;
 				        </div>				        
 			        </div>
+			        
 			        
 			        <div class="form-group">
 				        <label for="inputCrewId" class="control-label col-sm-5" id="passlabel">Password</label>
@@ -284,6 +286,7 @@
 <script>
 
 var idcount=0;
+var password_enable_status="Y";
 
 window.addEventListener("message", function(ev) {
 	 var msg;
@@ -358,27 +361,29 @@ function validate()
 {
 	var crewid = trim(document.forms[0].crewid.value);
 	var pin = trim(document.forms[0].password.value);
-		var url="Login.do?method=validateUser&user_id="+ crewid + "&password=" + pin;
-						if (window.XMLHttpRequest){ // Non-IE browsers
-							reqFeature = new XMLHttpRequest();
-						try{
-							reqFeature.open("GET", url, true);
-							}catch (e){
-							alert(e);
-							}
-							reqFeature.onreadystatechange = receiveValidateOutput;
-							reqFeature.send(null);
-							}
-							else if (window.ActiveXObject){ // IE
-							reqFeature = new ActiveXObject("Microsoft.XMLHTTP");
-							if (reqFeature){
-							//alert('IE');
-							reqFeature.open("GET", url, true);
-							reqFeature.onreadystatechange = receiveValidateOutput;
-							reqFeature.send(null);
-						}
-					}	
 	
+	
+		var url="Login.do?method=validateUser&user_id="+ crewid + "&password=" + pin + "&password_enable_status=" + password_enable_status;
+		if (window.XMLHttpRequest){ // Non-IE browsers
+			reqFeature = new XMLHttpRequest();
+		try{
+				reqFeature.open("GET", url, true);
+			}catch (e){
+			alert(e);
+			}
+			reqFeature.onreadystatechange = receiveValidateOutput;
+			reqFeature.send(null);
+			}
+			else if (window.ActiveXObject){ // IE
+			reqFeature = new ActiveXObject("Microsoft.XMLHTTP");
+			if (reqFeature){
+			//alert('IE');
+			reqFeature.open("GET", url, true);
+			reqFeature.onreadystatechange = receiveValidateOutput;
+			reqFeature.send(null);
+			}
+			}	
+	 
 	
 }
 
@@ -397,7 +402,8 @@ function receiveValidateOutput(){
 							if(trim(xmlhtp) == "VALID")
 							{
 								 var crewid = trim(document.forms[0].crewid.value);
-								 document.forms[0].action ="runningroom.do?method=initiateCrewOptions&crew_id="+ crewid ;
+								 //document.forms[0].action ="runningroom.do?method=initiateCrewOptions&crew_id="+ crewid ;
+								 document.forms[0].action ="runningroom.do?method=initiateInwardTrainEntry" ;
 								 document.forms[0].submit();	
 							}
 							else
@@ -457,6 +463,7 @@ function receiveOutput(){
 							xmlhtp = reqFeature.responseText;
 							
 							var biosts = xmlhtp.substring(0,xmlhtp.indexOf("@"));
+							password_enable_status = xmlhtp.substring(xmlhtp.indexOf("#") + 1,xmlhtp.indexOf("@"));
 							var name = xmlhtp.substring(xmlhtp.indexOf("@") + 1);
 							
 							//alert(xmlhtp);
@@ -474,11 +481,15 @@ function receiveOutput(){
 								window.open("http://localhost:8080/RRService/initiateBio/" + crewid + "/BiometricRegistration","_blank");
 								
 							}
-							else
-							{
-								
+							else if(trim(password_enable_status) == "Y")
+							{								
 								document.getElementById("name").innerHTML="<h2>" + name + "</h2>";
 								showElements("visible");		
+							}
+							else
+							{								
+								document.getElementById("name").innerHTML="<h2>" + name + "</h2>";
+								showElements("hidden");		
 							}
 						}
 					}
@@ -504,6 +515,7 @@ function fillText(val)
 		idcount=0;
 		document.forms[0].crewid.value = document.forms[0].lobby_code.value;
 		document.forms[0].password.value="";
+		document.getElementById("name").innerHTML="";
 	}
 	else if(val == "back")
 	{
@@ -526,8 +538,8 @@ function fillText(val)
 		
 		if(idcount==4)
 		{
-			getBioStatus();
-			
+			getBioStatus();			
+			document.getElementById("loginbtn").style.visibility="visible";
 		}
 	}
 	
@@ -542,9 +554,9 @@ function fillText(val)
 
 function showElements(status)
 {
-	//document.getElementById("passlabel").style.visibility=status;
-	//document.getElementById("pass").style.visibility=status;
-	document.getElementById("loginbtn").style.visibility=status;	
+	document.getElementById("passlabel").style.visibility=status;
+	document.getElementById("pass").style.visibility=status;
+	//document.getElementById("loginbtn").style.visibility=status;	
 
 }
 

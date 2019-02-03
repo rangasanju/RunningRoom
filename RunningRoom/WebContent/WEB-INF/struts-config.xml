@@ -113,6 +113,7 @@
 			<forward name="Kiosk" path="/pages/Admin/Kiosk.jsp" />
 			<forward name="ReKiosk" path="/Login.do?method=initiateKiosk" />
 			<forward name="Master" path="/pages/Admin/MasterPage.jsp" />
+			<forward name="Operator" path="/pages/Operator/OperatorHomePage.jsp" />
 			<forward name="DivisionMaster" path="/pages/Admin/DivisionMaster.jsp" />
 			<forward name="SuperMaster" path="/pages/Admin/SuperMasterPage.jsp" />
 			<forward name="KioskWelcome" path="/pages/Admin/KioskWelcome.jsp" />
@@ -127,6 +128,7 @@
 			<forward name="AddDivision" path="/pages/Master/AddDivision.jsp" />
 			<forward name="AddLobby" path="/pages/Master/AddLobby.jsp" />
 			<forward name="MasterHome" path="/pages/Admin/MasterPage.jsp" />
+			<forward name="OperatorHome" path="/pages/Operator/OperatorHomePage.jsp" />
 			<forward name="DivisionMaster" path="/pages/Admin/DivisionMaster.jsp" />
 			<forward name="AddLocation" path="/pages/Master/AddLocation.jsp" />
 			
@@ -192,7 +194,10 @@
 		
 		<action path="/runningroom" name="RunningRoomForm" type="com.tayal.runningroom.action.RunningRoomAction" 	parameter="method">			
 			<forward name="RunningRoomAdmin" path="/pages/RunningRoom/RunningRoomAdmin.jsp" />
+			<forward name="RunningRoomOperator" path="/pages/Operator/RunningRoomOperator.jsp" />
 			<forward name="runningroom" path="/pages/RunningRoom/RunningRoom.jsp" />
+			<forward name="InwardTrainEntry" path="/pages/RunningRoom/InwardTrainEntry.jsp" />
+			<forward name="OutwardTrainEntry" path="/pages/RunningRoom/OutwardTrainEntry.jsp" />
 			<forward name="CrewOptions" path="/pages/RunningRoom/CrewOptions.jsp" />
 			<forward name="CategoryOptions" path="/pages/RunningRoom/CategoryOptions.jsp" />
 			<forward name="RunningRoomReport" path="/pages/RunningRoom/CrewOptions.jsp" />
@@ -200,6 +205,10 @@
 			<forward name="SubsidyOptions" path="/pages/RunningRoom/SubsidyOptions.jsp" />
 			<forward name="mess" path="/pages/RunningRoom/Mess.jsp" />
 			<forward name="WakeMe" path="/pages/RunningRoom/WakeMe.jsp" />
+			<forward name="WakeCrewTime" path="/pages/Operator/WakeCrewTime.jsp" />
+			<forward name="InitiateCrewWakeUp" path="/runningroom.do?method=initiateWakeCrewTime" />
+			
+			
 		</action>
 		
 		<action path="/runningroomreport" name="RunningRoomReportForm" type="com.tayal.runningroom.action.RunningRoomAction" 	parameter="method">

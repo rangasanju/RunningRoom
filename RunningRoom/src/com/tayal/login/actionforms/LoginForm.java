@@ -26,7 +26,6 @@ public class LoginForm extends ActionForm{
 	/**
 	 * @return Returns the railwayList.
 	 */
-	Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	
 	
@@ -53,7 +52,7 @@ public class LoginForm extends ActionForm{
 	private String mobile;
 	private String oldpassword = null;
 	private String re_password = null;
-	
+	private String password_enable_status;
 
 	public String getDivision_code() {
 		return division_code;
@@ -233,6 +232,16 @@ public class LoginForm extends ActionForm{
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
+	public String getPassword_enable_status() {
+		return password_enable_status;
+	}
+
+	public void setPassword_enable_status(String password_enable_status) {
+		this.password_enable_status = password_enable_status;
+	}
+
+	
 
 	
 	

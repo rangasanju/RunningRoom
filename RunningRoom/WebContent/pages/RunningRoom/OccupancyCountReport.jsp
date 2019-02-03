@@ -89,7 +89,7 @@
 
        
 
-          <div class="masthead clearfix">
+          <div >
             <div class="inner no-print">
               <img class="masthead-brand masthead-brand-img" src="images/tayallogo.jpg" > 
               <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>
@@ -106,10 +106,19 @@
           <div class="inner cover">
             <h1 class="cover-heading"><i18n:message key="label.PAGETITLE.occupancycountreport"/></h1>            
           </div>
-          <div class="inner cover">
+          <div >
             &nbsp;            
           </div>
-          
+           <div class="inner cover">          
+																
+		   <logic:equal name="RunningRoomReportForm" property="frequency" value="hour" >
+				<h3 class="cover-heading"><bean:write name="RunningRoomReportForm" property="hourly_date" /></h3>   
+		   </logic:equal>
+                     
+          </div>
+          <div >
+            &nbsp;            
+          </div>
           
            
           <div class="row">

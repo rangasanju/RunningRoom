@@ -111,10 +111,15 @@
           </div>
   	                  
           
-           
+          <div class="inner cover">
+            <h4 class="cover-heading">Assign Designation</h4>            
+          </div>
           <div class="row">
           
-                <div class="col-sm-5">	           
+          	<div class="col-sm-12">
+          	
+          	
+          	   <div class="col-sm-5">	           
 	           
 	           		 	<table class='table table-bordered table-condensed table-responsive'>
 	           		 		
@@ -138,21 +143,21 @@
 	           		 		
 		          	 		<tbody>
 		          	 		   <tr >
-		          	 				<td colspan="2">
+		          	 				<td >
 		          	 					<html:button property="method" value=">>" styleClass="smallbutton" onclick="insertCat()" />	
 		          	 				</td>
 		          	 				
 		          	 			</tr>
 		          	 			
 		          	 		   <tr >
-		          	 				<td colspan="2">
+		          	 				<td >
 		          	 					&nbsp;
 		          	 				</td>
 		          	 				
 		          	 			</tr>
 		          	 			 <tr >
 		          	 				
-		          	 				<td colspan="2">
+		          	 				<td >
 		          	 					<html:button property="method" value="<<" styleClass="smallbutton" onclick="removeCat()" />	
 		          	 				</td>
 		          	 			</tr>
@@ -181,6 +186,92 @@
 		          	 	</table>    
 	          </div>
 	          
+          	
+          	
+          	</div>
+          	
+          	
+          <div >
+            &nbsp;            
+          </div>
+  		
+          <div class="inner cover">
+            <h4 class="cover-heading">Assign Lobby</h4>            
+          </div>
+          
+          
+            <div class="col-sm-12">
+            
+                          <div class="col-sm-5">	           
+	           
+	           		 	<table class='table table-bordered table-condensed table-responsive'>
+	           		 		
+		          	 		<tbody>
+		          	 		   <tr >
+		          	 				<td colspan="2">
+		          	 					<html:select  name="RoomForm" property="lobby_category_list" styleClass="form-control" multiple="true" size="6" >
+						   								<html:options name="lobbycategorylist" /> 
+						  				</html:select>
+		          	 				</td>
+		          	 			</tr>
+		          	 			
+		          	 		</tbody>
+		          	 	</table>    
+	          </div>
+
+
+              <div class="col-sm-2">	 
+              
+              			<table class='table table-condensed table-responsive'>
+	           		 		
+		          	 		<tbody>
+		          	 		   <tr >
+		          	 				<td colspan="2">
+		          	 					<html:button property="method" value=">>" styleClass="smallbutton" onclick="insertLobbyCat()" />	
+		          	 				</td>
+		          	 				
+		          	 			</tr>
+		          	 			
+		          	 		   <tr >
+		          	 				<td colspan="2">
+		          	 					&nbsp;
+		          	 				</td>
+		          	 				
+		          	 			</tr>
+		          	 			 <tr >
+		          	 				
+		          	 				<td colspan="2">
+		          	 					<html:button property="method" value="<<" styleClass="smallbutton" onclick="removeLobbyCat()" />	
+		          	 				</td>
+		          	 			</tr>
+		          	 		</tbody>
+		          	 	</table>              
+	           
+	           		 
+	          </div>
+
+
+
+              <div class="col-sm-5">	           
+	           
+	           		 	<table class='table table-condensed table-responsive'>
+	           		 		
+		          	 		<tbody>
+		          	 		   <tr >
+		          	 				<td colspan="2">
+		          	 					<html:select  name="RoomForm" property="lobby_assigned_list" styleClass="form-control" multiple="true" size="8">
+						   								<html:options name="lobbyassignedlist" /> 
+						  				</html:select>
+		          	 				</td>
+		          	 			</tr>
+		          	 			
+		          	 		</tbody>
+		          	 	</table>    
+	          </div>
+	          
+            
+          	</div>
+
 	          
 	    	  
 	    	  <div>	    	  
@@ -227,11 +318,7 @@
           	
           </div>
           
-          <div class="mastfoot">
-            <div class="inner">
-               <p><i18n:message key="label.PAGEFOOTER.trademark"/><a href="https://twitter.com/mdo"><i18n:message key="label.PAGEFOOTER.company"/></a>.</p>
-            </div>
-          </div>
+         
 
         </div>
 
@@ -314,6 +401,69 @@ function removeCat()
 	}
 	
 }
+
+
+
+
+
+function insertLobbyCat()
+{		
+	//alert(document.forms[0].category_list.length);
+	var length = document.forms[0].lobby_category_list.length;
+	var selected=0;
+	
+	for(i=0;i<length;i++)
+	{
+		if(document.forms[0].lobby_category_list.options[i].selected)
+		{
+			selected++;
+		}			
+	}
+	
+	
+	if(selected > 0 )
+	{
+		assignLobbyToRoom(document.forms[0].roomno.value);
+	}
+	else
+	{
+		alert("Please select a lobby to add.");
+	}
+	
+}
+
+
+
+function removeLobbyCat()
+{		
+	//alert(document.forms[0].category_list.length);
+	var length = document.forms[0].lobby_assigned_list.length;
+	var selected=0;
+	
+	for(i=0;i<length;i++)
+	{
+		if(document.forms[0].lobby_assigned_list.options[i].selected)
+		{
+			selected++;
+			break;
+		}			
+	}
+	
+	
+	if(selected > 0 )
+	{
+		deAssignLobbyToRoom(document.forms[0].roomno.value);
+	}
+	else
+	{
+		alert("Please select a lobby to remove.");
+	}
+	
+}
+
+
+
+
 function assignRoom(room)
 {		
 	
@@ -324,6 +474,20 @@ function assignRoom(room)
 function deAssignRoom(room)
 {		
 		 document.forms[0].action ="Rooms.do?method=deAssignRoom&roomno=" + room;
+		 document.forms[0].submit();		
+}
+
+
+function assignLobbyToRoom(room)
+{		
+	
+		 document.forms[0].action ="Rooms.do?method=assignLobbyToRoom&roomno=" + room;
+		 document.forms[0].submit();		
+}
+
+function deAssignLobbyToRoom(room)
+{		
+		 document.forms[0].action ="Rooms.do?method=deAssignLobbyToRoom&roomno=" + room;
 		 document.forms[0].submit();		
 }
 

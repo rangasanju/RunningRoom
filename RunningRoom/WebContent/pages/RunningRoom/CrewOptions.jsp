@@ -106,8 +106,8 @@
 			        <div id="bio" ><html:button property="method" value="Change Pin" styleClass="buttonActivity" onclick="changePin()" /></div>
 	          </div>   
 	          <div class="col-sm-4">		        
-			        &nbsp;
-	          </div>       	
+			        <div id="bio" ><html:button property="method" value="Outward Train" styleClass="buttonActivity" onclick="enterOutwardTrain()" /></div>
+	          </div>      	
           </div>
          
           
@@ -190,6 +190,13 @@ function mess()
 function changePin()
 {		
 			 document.forms[0].action ="Login.do?method=initiateChangePass";
+			 document.forms[0].submit();		
+}
+
+
+function enterOutwardTrain()
+{		
+			 document.forms[0].action ="runningroom.do?method=initiateOutwardTrainEntry";
 			 document.forms[0].submit();		
 }
 

@@ -63,6 +63,8 @@ public class RunningRoomForm extends ActionForm{
 	private String parcel;
 	
 	private String wakeup_time;
+	private String inward_train;
+	private String outward_train;
 	
 	
 
@@ -247,6 +249,23 @@ public class RunningRoomForm extends ActionForm{
 	}
 	public void setParcel(String parcel) {
 		this.parcel = parcel;
+	}
+
+
+
+
+
+	public String getInward_train() {
+		return inward_train;
+	}
+	public void setInward_train(String inward_train) {
+		this.inward_train = inward_train;
+	}
+	public String getOutward_train() {
+		return outward_train;
+	}
+	public void setOutward_train(String outward_train) {
+		this.outward_train = outward_train;
 	}
 
 

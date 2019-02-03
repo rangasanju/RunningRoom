@@ -111,6 +111,7 @@ max-height: 50px;
 <html:hidden name="RunningRoomForm" property="dinner" />
 <html:hidden name="RunningRoomForm" property="dinner_cat" />
 
+<html:hidden name="RunningRoomForm" property="parcel" />
 
 <html:hidden name="RunningRoomForm" property="breakfast_qty" />
 <html:hidden name="RunningRoomForm" property="lunch_qty" />
@@ -178,35 +179,107 @@ max-height: 50px;
     	  
      	  <div class="col-sm-3">     	  
      	  			
-	     	  	<div class="col-sm-10">
+	     	  	<div class="col-sm-12">
 	   			  	<button id="btn_breakfast" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('breakfast')">BREAKFAST</button>	   			  
 	   			</div>	   			  			
-	   			<div id="b_qty" class="col-sm-2">     
-	   			  		<h3><bean:write name="RunningRoomForm" property="breakfast_qty"/></h3>
-	   			</div>    	  
+	   			  
 	   			<div class="col-sm-12">	    	  
 		    	  &nbsp;
 		    	</div>
 		    	
 		    	
 		    	
-		    	<div class="col-sm-10">
+		    	<div class="col-sm-12">
 	   			  	<button id="btn_breakfast_cat" type="button" class="btn btn-default opt_buttons_food" onclick="selectCategory('breakfast')">NON-VEG</button>
 	   			</div>	   			
-	   			<div class="col-sm-1">     
-	   			  		<span class="glyphicon glyphicon-plus" onclick="addMeal('breakfast')"></span>
-	   			</div> 
-	   			<div class="col-sm-1">     
-	   			  		<span class="glyphicon glyphicon-minus" onclick="substractMeal('breakfast')"></span>
-	   			</div>   		
-     	  
+	   			
 	   			
 	   			
 		    	<div class="col-sm-12">	    	  
 		    	  &nbsp;
 		    	</div>
-	     	  	<div class="col-sm-10">
+	     	  	<div class="col-sm-12">
 	   			  	<div id="breakfast"  ></div>
+	   			</div>
+		    	
+   			  		          	 				
+     	  </div>
+     	  
+     	 
+     	  
+      	  <div class="col-sm-3">
+     	  			
+	     	  	<div class="col-sm-12">
+	   			  	<button id="btn_lunch" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('lunch')">LUNCH</button>
+	   			</div>	   				  			
+	   			 		
+	   			
+	   			<div class="col-sm-12">	    	  
+		    	  &nbsp;
+		    	</div>
+		    	
+		    	
+		    	<div class="col-sm-12">
+	   			  	<button id="btn_lunch_cat" type="button" class="btn btn-default opt_buttons_food" onclick="selectCategory('lunch')">NON-VEG</button>
+	   			</div> 			
+	   				
+     	  
+     	  
+     	  
+		    	<div class="col-sm-12">	    	  
+		    	  &nbsp;
+		    	</div>
+	     	  	<div class="col-sm-12">
+	   			  	<div id="lunch"></div>
+	   			</div>
+	   			
+   	
+     	  </div>
+     	  
+     	  
+     	  <div class="col-sm-3">
+     	       	  			
+	     	  	<div class="col-sm-12">
+	   			  	<button id="btn_dinner" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('dinner')">DINNER</button>
+	   			</div>	   				  			
+	   			
+	   			<div class="col-sm-12">	    	  
+		    	  &nbsp;
+		    	</div>
+		    	
+		    	
+		    	
+		    	<div class="col-sm-20">
+	   			  	<button id="btn_dinner_cat" type="button" class="btn btn-default opt_buttons_food" onclick="selectCategory('dinner')">NON-VEG</button>
+	   			</div>
+	   			 			
+	   				
+     	  
+		    	<div class="col-sm-12">	    	  
+		    	  &nbsp;
+		    	</div>
+	     	  	<div class="col-sm-12">
+	   			  	<div  id="dinner"></div>
+	   			</div>	   			
+		    	
+   	
+     	  </div>
+     
+          <div class="col-sm-3">     	  
+     	  			
+	     	  	<div class="col-sm-12">
+	   			  	<button id="btn_parcel" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('parcel')">PARCEL</button>	   			  
+	   			</div>	   			  			
+	   			  
+	   			<div class="col-sm-12">	    	  
+		    	  &nbsp;
+		    	</div>
+	   			
+		    	<div class="col-sm-12">	    	  
+		    	  &nbsp;
+		    	</div>
+	     	  	<div class="col-sm-10">
+	   			  	<div id="parcel"  ></div>
 	   			</div>
 		    	<div class="col-sm-2">	    	  
 		    	  &nbsp;
@@ -215,84 +288,6 @@ max-height: 50px;
      	  </div>
      	  
      	 
-     	  
-      	  <div class="col-sm-4">
-     	  			
-	     	  	<div class="col-sm-10">
-	   			  	<button id="btn_lunch" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('lunch')">LUNCH</button>
-	   			</div>	   				  			
-	   			<div id="l_qty" class="col-sm-2">     
-	   			  		<h3><bean:write name="RunningRoomForm" property="lunch_qty"/></h3>
-	   			</div>   		
-	   			
-	   			<div class="col-sm-12">	    	  
-		    	  &nbsp;
-		    	</div>
-		    	
-		    	
-		    	<div class="col-sm-10">
-	   			  	<button id="btn_lunch_cat" type="button" class="btn btn-default opt_buttons_food" onclick="selectCategory('lunch')">NON-VEG</button>
-	   			</div> 			
-	   			<div class="col-sm-1">     
-	   			  		<span class="glyphicon glyphicon-plus" onclick="addMeal('lunch')"></span>
-	   			</div> 
-	   			<div class="col-sm-1">     
-	   			  		<span class="glyphicon glyphicon-minus" onclick="substractMeal('lunch')"></span>
-	   			</div>   		
-     	  
-     	  
-     	  
-		    	<div class="col-sm-12">	    	  
-		    	  &nbsp;
-		    	</div>
-	     	  	<div class="col-sm-10">
-	   			  	<div id="lunch"></div>
-	   			</div>
-	   			<div class="col-sm-2">	    	  
-		    	  &nbsp;
-		    	</div>
-   	
-     	  </div>
-     	  
-     	  
-     	  <div class="col-sm-4">
-     	       	  			
-	     	  	<div class="col-sm-10">
-	   			  	<button id="btn_dinner" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('dinner')">DINNER</button>
-	   			</div>	   				  			
-	   			<div id="d_qty" class="col-sm-2">     
-	   			  		<h3><bean:write name="RunningRoomForm" property="dinner_qty"/></h3>
-	   			</div>
-	   			<div class="col-sm-12">	    	  
-		    	  &nbsp;
-		    	</div>
-		    	
-		    	
-		    	
-		    	<div class="col-sm-10">
-	   			  	<button id="btn_dinner_cat" type="button" class="btn btn-default opt_buttons_food" onclick="selectCategory('dinner')">NON-VEG</button>
-	   			</div>
-	   			 			
-	   			<div class="col-sm-1">     
-	   			  		<span class="glyphicon glyphicon-plus" onclick="addMeal('dinner')"></span>
-	   			</div> 
-	   			<div class="col-sm-1">     
-	   			  		<span class="glyphicon glyphicon-minus" onclick="substractMeal('dinner')"></span>
-	   			</div>   		
-     	  
-		    	<div class="col-sm-12">	    	  
-		    	  &nbsp;
-		    	</div>
-	     	  	<div class="col-sm-10">
-	   			  	<div  id="dinner"></div>
-	   			</div>	   			
-		    	<div class="col-sm-2">	    	  
-		    	  &nbsp;
-		    	</div>
-   	
-     	  </div>
-     
-     
        	  <div class="col-sm-12">
      	       	  			
 	     	  	<div class="col-sm-12">
@@ -348,60 +343,29 @@ function trim(str)
 function onLoad()
 {
 	
-	document.forms[0].subsidy.value="Y";			
-	document.getElementById("btn_subsidy").style.background = "lightgreen";  		
-	document.getElementById("btn_nonsubsidy").style.background = "white";
+	document.forms[0].subsidy.value="N";			
+	document.getElementById("btn_subsidy").style.background = "white";  		
+	document.getElementById("btn_nonsubsidy").style.background = "lightgreen";
 	
 	
-	if(document.forms[0].breakfast.value == "N")
-	{
-		document.getElementById("btn_breakfast").style.background = "white";  		
-		document.getElementById("btn_breakfast_cat").style.background = "white";
-	}
-	else
-	{		
-		document.getElementById("btn_breakfast").style.background = "lightgreen";  
-		if(document.forms[0].breakfast_cat.value == "VEG")
-			document.getElementById("btn_breakfast_cat").style.background = "lightgreen";  
-		else
-			document.getElementById("btn_breakfast_cat").style.background = "pink"; 
-		
-	}
-	
-	if(document.forms[0].lunch.value == "N")
-	{
-		document.getElementById("btn_lunch").style.background = "white";  		
-		document.getElementById("btn_lunch_cat").style.background = "white";
-	}
-	else
-	{		
-		document.getElementById("btn_lunch").style.background = "lightgreen";  
-		if(document.forms[0].lunch_cat.value == "VEG")
-			document.getElementById("btn_lunch_cat").style.background = "lightgreen";  
-		else
-			document.getElementById("btn_lunch_cat").style.background = "pink"; 
-			
-	}
+	document.forms[0].breakfast.value = "N";
+	document.getElementById("btn_breakfast").style.background = "white";  		
+	document.getElementById("btn_breakfast_cat").style.background = "white";
 	
 	
-	if(document.forms[0].dinner.value == "N")
-	{
-		document.getElementById("btn_dinner").style.background = "white";  		
-		document.getElementById("btn_dinner_cat").style.background = "white";
-	}
-	else
-	{		
-		document.getElementById("btn_dinner").style.background = "lightgreen";  
-		if(document.forms[0].dinner_cat.value == "VEG")
-			document.getElementById("btn_dinner_cat").style.background = "lightgreen";  
-		else
-			document.getElementById("btn_dinner_cat").style.background = "pink"; 
-		
-		
-	}
-	document.getElementById("btn_breakfast_cat").innerHTML=document.forms[0].breakfast_cat.value;
-	document.getElementById("btn_lunch_cat").innerHTML=document.forms[0].lunch_cat.value;
-	document.getElementById("btn_dinner_cat").innerHTML=document.forms[0].dinner_cat.value;
+	document.forms[0].lunch.value = "N";
+	document.getElementById("btn_lunch").style.background = "white";  		
+	document.getElementById("btn_lunch_cat").style.background = "white";
+	
+	
+	document.forms[0].dinner.value = "N";
+	document.getElementById("btn_dinner").style.background = "white";  		
+	document.getElementById("btn_dinner_cat").style.background = "white";
+	
+	
+	document.forms[0].parcel.value = "N";
+	document.getElementById("btn_parcel").style.background = "white";  
+	
 	getMenu();
 }
 
@@ -529,10 +493,10 @@ function selectMeal(meal)
 		
 		if(document.forms[0].breakfast.value == "N")
 		{
+			
 			if(parseInt(document.forms[0].breakfast_qty.value) == 0)
 			{
 				document.forms[0].breakfast_qty.value = "1";
-				document.getElementById("b_qty").innerHTML="<h3>1</h3>";
 			}
 			document.forms[0].breakfast.value="Y";
 			document.getElementById("btn_breakfast").style.background = "lightgreen";  			
@@ -542,8 +506,8 @@ function selectMeal(meal)
 		}
 		else
 		{
+			
 			document.forms[0].breakfast_qty.value = "0";
-			document.getElementById("b_qty").innerHTML="<h3>0</h3>";
 			document.forms[0].breakfast.value="N";
 			document.forms[0].breakfast_cat.value="NA";
 			document.getElementById("btn_breakfast_cat").innerHTML="NA";
@@ -561,7 +525,6 @@ function selectMeal(meal)
 			if(parseInt(document.forms[0].lunch_qty.value) == 0)
 			{
 				document.forms[0].lunch_qty.value = "1";
-				document.getElementById("l_qty").innerHTML="<h3>1</h3>";
 			}
 			document.forms[0].lunch.value="Y";
 			document.getElementById("btn_lunch").style.background = "lightgreen";  			
@@ -572,7 +535,6 @@ function selectMeal(meal)
 		else
 		{
 			document.forms[0].lunch_qty.value = "0";
-			document.getElementById("l_qty").innerHTML="<h3>0</h3>";
 			document.forms[0].lunch.value="N";
 			document.getElementById("btn_lunch").style.background = "white";  			
 			document.forms[0].lunch_cat.value="NA";
@@ -590,7 +552,6 @@ function selectMeal(meal)
 			if(parseInt(document.forms[0].dinner_qty.value) == 0)
 			{
 				document.forms[0].dinner_qty.value = "1";
-				document.getElementById("d_qty").innerHTML="<h3>1</h3>";
 			}
 			document.forms[0].dinner.value="Y";
 			document.getElementById("btn_dinner").style.background = "lightgreen";  
@@ -601,7 +562,6 @@ function selectMeal(meal)
 		else
 		{
 			document.forms[0].dinner_qty.value = "0";
-			document.getElementById("d_qty").innerHTML="<h3>0</h3>";
 			document.forms[0].dinner.value="N";
 			document.getElementById("btn_dinner").style.background = "white";  
 			document.getElementById("btn_dinner_cat").innerHTML="NA";
@@ -611,7 +571,22 @@ function selectMeal(meal)
 		
 	}
 	
-	
+	if(meal == "parcel")
+	{
+		
+		if(document.forms[0].parcel.value == "N")
+		{
+			
+			document.forms[0].parcel.value="Y";
+			document.getElementById("btn_parcel").style.background = "lightgreen";  
+		}
+		else
+		{			
+			document.forms[0].parcel.value="N";
+			document.getElementById("btn_parcel").style.background = "white";  
+		}
+		
+	}
 	
 }
 
@@ -738,6 +713,8 @@ function selectCategory(meal)
 
 function saveMessOptions()
 {
+	
+	
 			 document.forms[0].action ="runningroom.do?method=saveMessOptions";
 			 document.forms[0].submit();
 			

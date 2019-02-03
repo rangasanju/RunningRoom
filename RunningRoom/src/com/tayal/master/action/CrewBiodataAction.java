@@ -194,6 +194,7 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	 				res = res + ":N";
 	 			 
 	 			 
+	 			res = res + "#" + rs.getString("PASSWORD_ENABLE_V");	 			 
 	 			res = res + "@" + rs.getString("FIRST_NAME_V") + " " + rs.getString("LAST_NAME_V");
 	 		 }
 	 		 

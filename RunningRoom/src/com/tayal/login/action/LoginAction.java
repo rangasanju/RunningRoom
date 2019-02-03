@@ -668,7 +668,10 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateLogin >>>>
 					if(location.trim().equals(rs.getString("LOCATION_ID_V").trim()))
 					{
 						session.setAttribute("location", location);							// LOCATION_ID_V GIVES THE LOBBY IN THIS CASE
-						forward = mapping.findForward("Master");
+						if(role.equals("OPERATOR"))	
+							forward = mapping.findForward("Operator");
+						else
+							forward = mapping.findForward("Master");
 					}
 					else
 					{
@@ -795,6 +798,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - validateUser >>>>>
  LoginForm lf = (LoginForm) form;
  String userid = lf.getUser_id();
  String pwd = lf.getPassword();
+ String password_enable_status = lf.getPassword_enable_status();
  
   DBConnection db = new DBConnection();
   String location="";
@@ -813,30 +817,53 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - validateUser >>>>>
 			//location = rs.getString("LOCATION_ID_V");
 			String decryppass = AESencrp.decrypt(rs.getString("PASSWORD_V"));
 			
-			//if(decryppass.equals(pwd))
-			//{
-								
-				HttpSession session = request.getSession(true);
+			
+			if(password_enable_status.equals("Y"))
+			{
+				if(decryppass.equals(pwd))
+				{
+									
+					HttpSession session = request.getSession(true);
+					
 				
-				session.setAttribute("username", userid);
-				//session.setAttribute("location", location);
-				session.setAttribute("role", role);
-				System.out.println("location : " + session.getAttribute("location"));
-				 
-				out.println("VALID");
-				out.flush();
+					session.setAttribute("userid", userid);
+					session.setAttribute("username", userid);
+					session.setAttribute("role", role);
+					System.out.println("location : " + session.getAttribute("location"));
+					 
+					out.println("VALID");
+					out.flush();
+					
+					
+				}
+				else
+				{
+					out.println("Invalid user ID / Pin");
+					out.flush();
+					return null;
+				}
+			}
+			else
+			{
 				
-				
-			//}
-			//else
-			//{
-			//	out.println("Invalid user ID / Pin");
-			//	out.flush();
-			//}
+									
+					HttpSession session = request.getSession(true);
+					
+					session.setAttribute("userid", userid);
+					session.setAttribute("username", userid);
+					session.setAttribute("role", role);
+					System.out.println("location : " + session.getAttribute("location"));
+					 
+					out.println("VALID");
+					out.flush();
+			}
+			
+			
 		}else
 		{			
 			out.println("Invalid user ID / Pin");
 			out.flush();
+			return null;
 		}
 		
 	

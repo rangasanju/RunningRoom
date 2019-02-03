@@ -303,7 +303,7 @@ function validate()
 	{
 		alert("Please confirm password");
 		return false;
-	}else ( trim(password) != trim(re_password))
+	}else if(trim(password) != trim(re_password))
 	{
 		alert("Password missmatch");
 		return false;

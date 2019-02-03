@@ -95,7 +95,7 @@
           </div>
 
           <div class="inner cover">
-            <h1 class="cover-heading"><i18n:message key="label.PAGETITLE.occupancyreport"/></h1>            
+            <h1 class="cover-heading"><i18n:message key="label.PAGETITLE.MessReport"/></h1>            
           </div>
           <div class="inner cover">
             &nbsp;            
@@ -125,26 +125,7 @@
 	           		 			</tr>
 	           		 			
 	           		 				
-	           		 			<tr>	           		 				
-	           		 				<th >
-	           		 					&nbsp;
-	           		 				</th>	           		 			
-	           		 				<th>
-	           		 					&nbsp;
-	           		 				</th>
-	           		 			</tr>
-	           		 			
-	           		 			<tr>	           		 				
-	           		 				<th align="left">
-	           		 					Crew Id 
-	           		 				</th>	           		 			
-	           		 				<th align="left">
-	           		 					 <html:select name="RunningRoomReportForm" property="crew_id_filter">
-												   	<html:options name="crewlist" /> 
-										 </html:select>
-	           		 				</th>
-	           		 			</tr>
-	           		 			
+	           		 		
 	           		 		</thead>
 		          	 		
 		          	 	</table>
@@ -170,28 +151,7 @@
 						                    </span>
 						                </div>
 	           		 				</th>
-	           		 			</tr>
 	           		 			
-	           		 				<tr>	           		 				
-	           		 				<th >
-	           		 					&nbsp;
-	           		 				</th>	           		 			
-	           		 				<th>
-	           		 					&nbsp;
-	           		 				</th>
-	           		 			</tr>
-	           		 			
-	           		 			<tr>	           		 				
-	           		 				<th align="left">
-	           		 					Room No 
-	           		 				</th>	           		 			
-	           		 				<th align="left">
-	           		 					 <html:select name="RunningRoomReportForm" property="room_no_filter">
-												   	<html:options name="roomlist" /> 
-										 </html:select>
-	           		 				</th>
-	           		 			</tr>
-	           		 		
 	           		 		</thead>
 		          	 		
 		          	 	</table>

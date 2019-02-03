@@ -95,32 +95,9 @@ svg > g > g:last-child { pointer-events: none }
 	   	      
           	 <div class="col-sm-3">
           	 
-          	   <%-- 
-			        	<div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	        		        
-				        <div class="col-sm-12 ">
-					       <html:button property="method" value="Add Division" styleClass="smallbutton" onclick="addDivision()" />		
-				        </div>	
-				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	        
-			         	<div class="col-sm-12 ">
-					       <html:button property="method" value="Add Lobby" styleClass="smallbutton" onclick="addLobby()" />		
-				        </div>			
-				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			     --%>   
-			     
+          	   
 			     		<div class="col-sm-12 ">
-					       <html:button property="method" value="Add Lobby" styleClass="smallbutton" onclick="addLobby()" />	
+					       <html:button property="method" value="Enter Wakeup Time" styleClass="smallbutton" onclick="enterWakeup()" />	
 				        </div>				      
  				        <div class="form-group">				        
 				        	<div class="col-sm-12 hidden-xs">
@@ -128,15 +105,6 @@ svg > g > g:last-child { pointer-events: none }
 				        	</div>				        
 			        	</div>	 	      
 			     		<div class="col-sm-12 ">
-					       <html:button property="method" value="Add Rooms" styleClass="smallbutton" onclick="addRooms()" />	
-				        </div>			
-				        	      
- 				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			          	<div class="col-sm-12 ">
 					       <html:button property="method" value="Running Room" styleClass="smallbutton" onclick="runningRoom()" />		
 				        </div>				 
 				        
@@ -146,85 +114,7 @@ svg > g > g:last-child { pointer-events: none }
 				        	</div>				        
 			        	</div>	 	      
 			     
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="Crew Biodata" styleClass="smallbutton" onclick="crewBiodata()" />		
-				        </div>		
-				        				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-					      
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="Occupancy Report" styleClass="smallbutton" onclick="runningRoomReport()" />	
-				        </div>		
-				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-					    
-					            
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="Occupancy Count" styleClass="smallbutton" onclick="occupancyCountReport()" />	
-				        </div>		
-				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-					    
-					    
-					    <div class="col-sm-12 ">
-					       <html:button property="method" value="Mess Report" styleClass="smallbutton" onclick="messReport()" />	
-				        </div>		
-				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			        	
-			        	
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="Change Password" styleClass="smallbutton" onclick="changePass()" />		
-				        </div>				    
-				        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			  
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="Food Menu" styleClass="smallbutton" onclick="foodMenu()" />		
-				        </div>				      
-            
-            	        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			  
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="Wake Up Calls" styleClass="smallbutton" onclick="wakeUpCalls()" />		
-				        </div>				      
-                      
-            	        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			  
-           			    <div class="col-sm-12 ">
-					       <html:button property="method" value="CreateCrew" styleClass="smallbutton" onclick="createCrew()" />		
-				        </div>			
-				        
-				             
-            	        <div class="form-group">				        
-				        	<div class="col-sm-12 hidden-xs">
-					       		&nbsp;
-				        	</div>				        
-			        	</div>	 	      
-			  <%-- 
+           			 			  <%-- 
            			    <div class="col-sm-12 ">
 					       <html:button property="method" value="Upload Image" styleClass="smallbutton" onclick="uploadImage()" />		
 				        </div>				      
@@ -297,13 +187,6 @@ window.addEventListener("message", function(ev) {
 });
 
 
-function uploadImage()
-{
-	mode="load";
-	window.open("http://localhost:8080/RRService/uploadImage","_blank");
-	//bypass();
-}
-
 
 function trim(str)
 {
@@ -327,34 +210,9 @@ function onLoad()
 }
 
 
-function addDivision()
+function enterWakeup()
 {		
-			 document.forms[0].action ="Master.do?method=initiateAddDivision";
-			 document.forms[0].submit();	
-	
-}
-
-
-
-function addLobby()
-{		
-			 document.forms[0].action ="Master.do?method=initiateAddLobby";
-			 document.forms[0].submit();	
-	
-}
-
-function addLocation()
-{		
-			 document.forms[0].action ="Master.do?method=initiateAddLocation";
-			 document.forms[0].submit();	
-	
-}
-
-
-
-function addRooms()
-{		
-			 document.forms[0].action ="Rooms.do?method=initiateAddRooms";
+			 document.forms[0].action ="runningroom.do?method=initiateWakeCrewTime";
 			 document.forms[0].submit();	
 	
 }
@@ -364,78 +222,6 @@ function runningRoom()
 			 document.forms[0].action ="runningroom.do?method=initiateRunningRoom";
 			 document.forms[0].submit();	
 	
-}
-
-
-function crewBiodata()
-{		
-			 document.forms[0].action ="CrewBiodata.do?method=initiateCrewBiodata";
-			 document.forms[0].submit();	
-	
-}
-
-
-function runningRoomReport()
-{		
-			 document.forms[0].action ="runningroomreport.do?method=initiateRunningRoomReport";
-			 document.forms[0].submit();	
-	
-}
-
-
-
-function occupancyCountReport()
-{		
-			 document.forms[0].action ="runningroomreport.do?method=initiateOccupancyCountReport";
-			 document.forms[0].submit();	
-	
-}
-
-
-
-function messReport()
-{		
-			 document.forms[0].action ="messreport.do?method=initiateMessReport";
-			 document.forms[0].submit();	
-	
-}
-
-
-
-
-function changePass()
-{		
-			 document.forms[0].action ="Login.do?method=initiateChangePass";
-			 document.forms[0].submit();	
-	
-}
-
-
-
-function foodMenu()
-{		
-			 document.forms[0].action ="MiscMaster.do?method=initiateFoodMenuEntry";
-			 document.forms[0].submit();	
-	
-}
-
-
-function wakeUpCalls()
-{		
-			
-			document.forms[0].action ="runningroomreport.do?method=getWakeUpCalls";
-			document.forms[0].submit();	
-			
-}
-
-
-
-function getOccupants()
-{		
-			
-			document.forms[0].action ="runningroomreport.do?method=getCurrentOccupantReport";
-			document.forms[0].submit();	
-			
 }
 
 
@@ -543,12 +329,6 @@ function receiveDashboard(){
 
 
 
-function createCrew()
-{		
-			 document.forms[0].action ="Login.do?method=initiateCreateCrew";
-			 document.forms[0].submit();	
-	
-}
 
 
 

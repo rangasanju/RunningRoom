@@ -353,12 +353,9 @@ function selectFrequency()
 	}
 	else
 	{
-
 		document.getElementById("daywise").style.display="none";
 		document.getElementById("hourly").style.display="block"
 	}
-	
-	
 	
 }
 
@@ -373,6 +370,12 @@ function showReport()
 		var fromdate = document.getElementById("fromdate").value;
 		var todate = document.getElementById("todate").value;
 		
+		var coverted_fromdate = fromdate.substring(6,10) + "-" +  fromdate.substring(3,5) + "-" + fromdate.substring(0,2);
+		var coverted_todate = todate.substring(6,10) + "-" +  todate.substring(3,5) + "-" + todate.substring(0,2);
+		
+		var fdate = new Date(coverted_fromdate);
+		var tdate = new Date(coverted_todate);
+		
 
 		if(trim(fromdate) == "")
 		{
@@ -381,6 +384,11 @@ function showReport()
 		else if(trim(todate) == "")
 		{
 			alert("Please specify To Date");
+		}
+		else if(fdate > tdate)
+		{
+			
+			alert("FROM DATE cannot be greater than TO DATE");
 		}
 		else
 		{
