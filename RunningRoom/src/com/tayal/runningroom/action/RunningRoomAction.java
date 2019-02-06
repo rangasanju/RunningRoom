@@ -662,14 +662,14 @@ try{
 	
 try{	
 		
-	
-	String query = "INSERT INTO BED_ALLOCATION_HIS (SELECT *,CURRENT_TIMESTAMP FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "' AND USER_ID_V='" + crewid + "')";
- 	queries.add(query);
-	query = "UPDATE BED_ALLOCATION_MST SET BREAKFAST_V='" + breakfast + "', BREAKFAST_CAT_V='" + breakfast_cat + "', BREAKFAST_QTY_I=1, LUNCH_V='" + lunch + "', "
-				+ "LUNCH_CAT_V='" + lunch_cat + "', LUNCH_QTY_I=1, DINNER_V='" + dinner + "', DINNER_CAT_V='" + dinner_cat + "', DINNER_QTY_I=1, SUBSIDY_V='" + subsidy + "' WHERE LOCATION_ID_V='" + location + "' "
-				+ "AND USER_ID_V='" + crewid + "'";		
-		
-	queries.add(query);
+	String query ="";
+//	String query = "INSERT INTO BED_ALLOCATION_HIS (SELECT *,CURRENT_TIMESTAMP FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "' AND USER_ID_V='" + crewid + "')";
+// 	queries.add(query);
+//	query = "UPDATE BED_ALLOCATION_MST SET BREAKFAST_V='" + breakfast + "', BREAKFAST_CAT_V='" + breakfast_cat + "', BREAKFAST_QTY_I=1, LUNCH_V='" + lunch + "', "
+//				+ "LUNCH_CAT_V='" + lunch_cat + "', LUNCH_QTY_I=1, DINNER_V='" + dinner + "', DINNER_CAT_V='" + dinner_cat + "', DINNER_QTY_I=1, SUBSIDY_V='" + subsidy + "' WHERE LOCATION_ID_V='" + location + "' "
+//				+ "AND USER_ID_V='" + crewid + "'";		
+//		
+//	queries.add(query);
 	
 	
 	if(breakfast.equals("Y"))
@@ -702,7 +702,7 @@ try{
 
 	if(parcel.equals("Y"))
 	{
-		query="INSERT INTO MESS_AVAILED_MST VALUES('" + crewid + "',STR_TO_DATE('" + check_in_date + "','%Y-%m-%d %H:%i:%s'),'" + location + "','PARCEL','PARCEL',1,NULL,CURRENT_TIMESTAMP)";
+		query="INSERT INTO MESS_AVAILED_MST VALUES('" + crewid + "',STR_TO_DATE('" + check_in_date + "','%Y-%m-%d %H:%i:%s'),'" + location + "','PARCEL','PARCEL',1,'" + subsidy + "',CURRENT_TIMESTAMP)";
 		queries.add(query);
 		
 	}
@@ -1014,11 +1014,26 @@ public ActionForward initiateCrewOptions(ActionMapping mapping, ActionForm form,
 	
 	
  try{
+	 
+	 
 				HttpSession session = request.getSession(true);				
 				session.setAttribute("inwardtrainno", rf.getInward_train());
 				String crewid = request.getSession().getAttribute("username").toString();
+				String location = request.getSession().getAttribute("location").toString();
 				rf.setCrew_id(crewid);
 				System.out.println("CFREW ID : " + crewid);
+				
+				String query1 = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "' AND USER_ID_V='" + crewid + "'";
+				ResultSet rs2 = db.executeQuery(query1);
+				
+				if(rs2.next())
+				{
+					rf.setBooked("Y");	
+					rf.setBookedroom(rs2.getString("ROOM_NO_I"));
+					rf.setBookedbed(rs2.getString("BED_NO_I"));
+				}					
+				else
+					rf.setBooked("N");
 				
 				
 	 }catch(Exception e)
@@ -1029,6 +1044,10 @@ public ActionForward initiateCrewOptions(ActionMapping mapping, ActionForm form,
 	 {		
 		 //db.closeCon();
 	 }
+	
+	
+	
+	
 	forward = mapping.findForward("CrewOptions");
 	
 	
@@ -1049,9 +1068,96 @@ public ActionForward initiateCrewOptions(ActionMapping mapping, ActionForm form,
 
 
 
-public ActionForward bookBed(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)throws Exception
+public ActionForward getAvailableBed(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)throws Exception
 {
 	
+	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getAvailableBed >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+	
+	
+	RunningRoomForm rf = (RunningRoomForm) form;
+	DBConnection db = new DBConnection(); 
+	PrintWriter out = response.getWriter();
+	String location = request.getSession().getAttribute("location").toString();
+	String designation = request.getSession().getAttribute("designation").toString();
+	String crewid = rf.getCrew_id();
+	String crew_lobby = crewid.substring(0, crewid.length()-4);
+	String roomselected = "";
+	String bedselected = "";
+	String result="NA";
+	String room_str="";
+	
+	
+
+
+try{
+	String query1 = "SELECT ROOM_NO_I FROM ROOM_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND DESIG_V='" + designation + "' AND ROOM_NO_I IN (SELECT ROOM_NO_I FROM LOBBY_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND LOBBY_V='" + crew_lobby + "') ORDER BY ROOM_NO_I";
+			
+	ResultSet rs2 = db.executeQuery(query1);
+	while(rs2.next())
+	{
+		room_str += "'" + rs2.getString("ROOM_NO_I") + "',";	
+		
+	}
+	
+	room_str +=  "'DUMMY'";
+	System.out.println("desig_str : " +room_str);
+	
+}catch(Exception e)
+{
+	System.out.println("Ex : " + e);
+	
+}
+
+
+
+try{
+	String query1 = "SELECT * FROM BED_ALLOCATION_MST  WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I IN (" + room_str + ") ORDER BY ROOM_NO_I,BED_NO_I";
+	ResultSet rs2 = db.executeQuery(query1);
+	while(rs2.next())
+	{
+		if(rs2.getInt("OCCUPANCY_I") == 0)
+		{
+			roomselected = rs2.getString("ROOM_NO_I");
+			bedselected = rs2.getString("BED_NO_I");
+			break;
+		}
+		
+	}
+	
+	if(!roomselected.equals(""))
+	{
+		result = roomselected + "@" + bedselected;
+	}
+	 out.println(result);
+	 out.flush();
+	
+}catch(Exception e)
+{
+	System.out.println("Ex : " + e);
+	
+}
+
+
+
+	
+	
+	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  getAvailableBed   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	System.out.println("\n\n\n\n\n");
+	
+	 
+    
+    return null;
+
+
+
+}
+
+
+
+
+public ActionForward bookBed(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)throws Exception
+{
+	//checkpost
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  bookBed   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
@@ -1062,6 +1168,8 @@ public ActionForward bookBed(ActionMapping mapping, ActionForm form, HttpServlet
 
 	String location = request.getSession().getAttribute("location").toString();
 	String crewid = rf.getCrew_id();
+	String crew_lobby = crewid.substring(0, crewid.length()-4);
+	String deisnation="";
 	String roomselected = rf.getRoom_selected();
 	String bedselected = rf.getBed_selected();
 	String inward_train_no = request.getSession().getAttribute("inwardtrainno").toString();
@@ -1069,6 +1177,31 @@ public ActionForward bookBed(ActionMapping mapping, ActionForm form, HttpServlet
 	
 	
 	System.out.println("Inward Train NO : " + inward_train_no);
+	
+//	
+//	try{
+//		String query1 = "SELECT ROOM_NO_I,BED_NO_I FROM ROOM_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND DESIG_V='" + deisnation + "' AND ROOM_NO_I IN (SELECT ROOM_NO_I FROM LOBBY_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND LOBBY_V='" + crew_lobby + "') ORDER BY ROOM_NO_I";
+//				
+//		ResultSet rs2 = db.executeQuery(query1);
+//		while(rs2.next())
+//		{
+//			if(rs2.getInt("OCCUPANCY_I") == 0)
+//			{
+//				roomselected = rs2.getString("ROOM_NO_I");
+//				bedselected = rs2.getString("BED_NO_I");
+//				break;
+//			}
+//						
+//		}
+//		
+//		
+//	}catch(Exception e)
+//	{
+//		System.out.println("Ex : " + e);
+//		
+//	}
+//	
+//	
 	
 try{
 
@@ -1079,7 +1212,10 @@ try{
     		System.out.println("Rows Updated : " + rs);
     		
     		if(rs > 0 )
+    		{
+    			rf.setBooked("N");
     			rf.setMessage("Booking Successfull. Enjoy your stay");
+    		}    			
     		else
     			rf.setMessage("Failure : Please report to supervisor");
     		
@@ -1215,7 +1351,6 @@ public ActionForward checkOutByAdmin(ActionMapping mapping, ActionForm form, Htt
 	
 	
 	
-	
 try{    		    			
     		
 			String query = "UPDATE BED_ALLOCATION_MST SET CHECK_OUT_D=STR_TO_DATE('" + checkout + "','%d/%m/%Y %H:%i') WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";
@@ -1223,19 +1358,26 @@ try{
 	
 	
     		query = "INSERT INTO BED_ALLOCATION_HIS (`LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`, `LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`, `SUBSIDY_V`) "
-    	    				+ "SELECT `LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`, `BREAKFAST_QTY_I`,`LUNCH_V`, `LUNCH_CAT_V`,`LUNCH_QTY_I`,  `DINNER_V`,  `DINNER_CAT_V`,`DINNER_QTY_I`,  `SUBSIDY_V` FROM BED_ALLOCATION_MST "
+    	    				               + "SELECT `LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`, `LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`,  `SUBSIDY_V` FROM BED_ALLOCATION_MST "
     	    				+ "WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "'"; 
     		queries.add(query);
     		
     		
-    		
-    		query = "UPDATE BED_ALLOCATION_MST SET USER_ID_V=NULL , CHECK_IN_D=NULL, CHECK_OUT_D=NULL , OCCUPANCY_I=0, BREAKFAST_V='N', BREAKFAST_CAT_V=NULL, BREAKFAST_QTY_I=0, LUNCH_V='N', LUNCH_CAT_V=NULL, LUNCH_QTY_I=0, DINNER_V='N', DINNER_CAT_V=NULL, DINNER_QTY_I=0, WAKE_UP_TIME_D=NULL  WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";    		
+    		query = "UPDATE BED_ALLOCATION_MST SET USER_ID_V=NULL , CHECK_IN_D=NULL, CHECK_OUT_D=NULL , OCCUPANCY_I=0, BREAKFAST_V='N', BREAKFAST_CAT_V=NULL, BREAKFAST_QTY_I=0, LUNCH_V='N', LUNCH_CAT_V=NULL, LUNCH_QTY_I=0, DINNER_V='N', DINNER_CAT_V=NULL, DINNER_QTY_I=0, WAKE_UP_TIME_D=NULL, INWARD_TRAIN_V=NULL, OUTWARD_TRAIN_V=NULL  WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";    		
     		queries.add(query);
+    		
+    		
+    		query = "INSERT INTO MESS_AVAILED_HIS (SELECT * FROM MESS_AVAILED_MST WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "')"; 
+    		queries.add(query);
+    		
+    		query = "DELETE FROM MESS_AVAILED_MST WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "'"; 
+    		queries.add(query);
+    		
     		
     		int queriesexecuted = db.executeMyBatch(queries);
     		System.out.println("Queries Executed : " + queriesexecuted);
     		
-    		if(queriesexecuted == 3)
+    		if(queriesexecuted >= 3)
     			rf.setMessage("Checkout Successfull. Happy Journey");
     		else
     			rf.setMessage("Failure : Please report to supervisor");
@@ -1280,36 +1422,67 @@ public ActionForward checkOut(ActionMapping mapping, ActionForm form, HttpServle
 	
 	ActionForward forward = new ActionForward();
 	RunningRoomForm rf = (RunningRoomForm) form;
-	
+	ArrayList<String> queries = new ArrayList<String>();
 	DBConnection db = new DBConnection();
 	String location = request.getSession().getAttribute("location").toString();
 	
 	String crewid = rf.getCrew_id();
 	
-	
-	
-	
 try{
 
-    		    			
-    		String queryhis = "INSERT INTO BED_ALLOCATION_HIS (`LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`,`LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`,`SUBSIDY_V`) "
-    						+ "SELECT `LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,NOW(),`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`,`LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`, `SUBSIDY_V` FROM BED_ALLOCATION_MST "
-    						+ "WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "'"; 
-    		System.out.println("QUERY   : " + queryhis);
-    		int inert_rs = db.executeUpdate(queryhis);
-    		System.out.println("Rows Updated : " + inert_rs);
-    		
-    		String query = "UPDATE BED_ALLOCATION_MST SET USER_ID_V=NULL , CHECK_IN_D=NULL, CHECK_OUT_D=NULL , OCCUPANCY_I=0, BREAKFAST_V='N', BREAKFAST_CAT_V=NULL, BREAKFAST_QTY_I=0, LUNCH_V='N', LUNCH_CAT_V=NULL, LUNCH_QTY_I=0, DINNER_V='N', DINNER_CAT_V=NULL, DINNER_QTY_I=0, WAKE_UP_TIME_D=NULL  WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";    		
-    		
-    		System.out.println("QUERY   : " + query);
-    		int update_rs = db.executeUpdate(query);
-    		System.out.println("Rows Updated : " + update_rs);
-    		
-    		if(inert_rs>0 && update_rs>0)
-    			rf.setMessage("Checkout Successfull. Happy Journey");
-    		else
-    			rf.setMessage("Failure : Please report to supervisor");
-    		
+	
+	String query = "UPDATE BED_ALLOCATION_MST SET CHECK_OUT_D=CURRENT_TIMESTAMP WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";
+	queries.add(query);
+
+
+	query = "INSERT INTO BED_ALLOCATION_HIS (`LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`, `LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`, `SUBSIDY_V`) "
+    				+ "SELECT `LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`, `BREAKFAST_QTY_I`,`LUNCH_V`, `LUNCH_CAT_V`,`LUNCH_QTY_I`,  `DINNER_V`,  `DINNER_CAT_V`,`DINNER_QTY_I`,  `SUBSIDY_V` FROM BED_ALLOCATION_MST "
+    				+ "WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "'"; 
+	queries.add(query);	
+	
+	
+	query = "UPDATE BED_ALLOCATION_MST SET USER_ID_V=NULL , CHECK_IN_D=NULL, CHECK_OUT_D=NULL , OCCUPANCY_I=0, BREAKFAST_V='N', BREAKFAST_CAT_V=NULL, BREAKFAST_QTY_I=0, LUNCH_V='N', LUNCH_CAT_V=NULL, LUNCH_QTY_I=0, DINNER_V='N', DINNER_CAT_V=NULL, DINNER_QTY_I=0, WAKE_UP_TIME_D=NULL, INWARD_TRAIN_V=NULL, OUTWARD_TRAIN_V=NULL   WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";    		
+	queries.add(query);
+	
+	
+	query = "INSERT INTO MESS_AVAILED_HIS (SELECT * FROM MESS_AVAILED_MST WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "')"; 
+	queries.add(query);
+	
+	query = "DELETE FROM MESS_AVAILED_MST WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "'"; 
+	queries.add(query);
+	
+	
+	int queriesexecuted = db.executeMyBatch(queries);
+	System.out.println("Queries Executed : " + queriesexecuted);
+	
+	if(queriesexecuted >= 3)
+	{
+		rf.setBooked("N");
+		rf.setMessage("Checkout Successfull. Happy Journey");
+	}		
+	else
+		rf.setMessage("Failure : Please report to supervisor");
+	
+	
+//    		    			
+//    		String queryhis = "INSERT INTO BED_ALLOCATION_HIS (`LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,`CHECK_OUT_D`,`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`,`LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`,`SUBSIDY_V`) "
+//    						+ "SELECT `LOCATION_ID_V`, `ROOM_NO_I`,`BED_NO_I`,`USER_ID_V`,`CHECK_IN_D`,NOW(),`OCCUPANCY_I`,`BREAKFAST_V`, `BREAKFAST_CAT_V`,`BREAKFAST_QTY_I`, `LUNCH_V`, `LUNCH_CAT_V`,`LUNCH_QTY_I`, `DINNER_V`, `DINNER_CAT_V`,`DINNER_QTY_I`, `SUBSIDY_V` FROM BED_ALLOCATION_MST "
+//    						+ "WHERE USER_ID_V='" + crewid + "' AND LOCATION_ID_V='" + location + "'"; 
+//    		System.out.println("QUERY   : " + queryhis);
+//    		int inert_rs = db.executeUpdate(queryhis);
+//    		System.out.println("Rows Updated : " + inert_rs);
+//    		
+//    		String query = "UPDATE BED_ALLOCATION_MST SET USER_ID_V=NULL , CHECK_IN_D=NULL, CHECK_OUT_D=NULL , OCCUPANCY_I=0, BREAKFAST_V='N', BREAKFAST_CAT_V=NULL, BREAKFAST_QTY_I=0, LUNCH_V='N', LUNCH_CAT_V=NULL, LUNCH_QTY_I=0, DINNER_V='N', DINNER_CAT_V=NULL, DINNER_QTY_I=0, WAKE_UP_TIME_D=NULL  WHERE USER_ID_V='" + crewid + "'  AND LOCATION_ID_V='" + location + "'";    		
+//    		
+//    		System.out.println("QUERY   : " + query);
+//    		int update_rs = db.executeUpdate(query);
+//    		System.out.println("Rows Updated : " + update_rs);
+//    		
+//    		if(inert_rs>0 && update_rs>0)
+//    			rf.setMessage("Checkout Successfull. Happy Journey");
+//    		else
+//    			rf.setMessage("Failure : Please report to supervisor");
+//    		
     		
 }catch(Exception e)
 {
@@ -1348,6 +1521,8 @@ try{
 public ActionForward getRunningRoomLayout(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)throws Exception
 {
 	
+	//checkpost
+	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getRunningRoomLayout >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
@@ -1380,6 +1555,7 @@ public ActionForward getRunningRoomLayout(ActionMapping mapping, ActionForm form
 	String room_str="";
 	
 	
+	
 	try{
 		String query1 = "SELECT ROOM_NO_I FROM ROOM_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND DESIG_V='" + category + "' AND ROOM_NO_I IN (SELECT ROOM_NO_I FROM LOBBY_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND LOBBY_V='" + crew_lobby + "') ORDER BY ROOM_NO_I";
 				
@@ -1401,7 +1577,7 @@ public ActionForward getRunningRoomLayout(ActionMapping mapping, ActionForm form
 	
 	
 	try{
-		String query1 = "SELECT * FROM BED_ALLOCATION_MST  WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I IN (" + room_str + ") ORDER BY ROOM_NO_I";
+		String query1 = "SELECT * FROM BED_ALLOCATION_MST  WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I IN (" + room_str + ") ORDER BY ROOM_NO_I,BED_NO_I";
 		ResultSet rs2 = db.executeQuery(query1);
 		while(rs2.next())
 		{
@@ -1489,11 +1665,11 @@ try{
     						{
     							lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' onclick=selectBed('" + room + "','" + (z+1) + "')><thead><tr  bgcolor='yellow'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
     						}else
-        						lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' onclick=selectBed('0','0')><thead><tr  bgcolor='pink'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
+        						lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' onclick=selectBed('0','0')><thead><tr  bgcolor='red'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
     	    				
     					}    						
     					else
-    						lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' onclick=selectBed('0','0')><thead><tr  bgcolor='pink'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
+    						lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' onclick=selectBed('0','0')><thead><tr  bgcolor='red'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
     				}
     					
     				
@@ -1652,7 +1828,7 @@ public ActionForward getRunningRoomLayoutForAdmin(ActionMapping mapping, ActionF
     				else if(oc == -1)
     					lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' ><thead onclick=getInfo('" + room + "','" + (z+1) + "')><tr  bgcolor='red'><th class='text-center'>" + (z+1) + "</th></tr></table>";
     				else
-    					lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' ><thead onclick=getInfo('" + room + "','" + (z+1) + "')><tr  bgcolor='pink'><th class='text-center'>" + (z+1) + "</th></tr></table>";
+    					lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' ><thead onclick=getInfo('" + room + "','" + (z+1) + "')><tr  bgcolor='red'><th class='text-center'>" + (z+1) + "</th></tr></table>";
     				
     				
     				
@@ -1714,11 +1890,52 @@ public ActionForward initiateInwardTrainEntry(ActionMapping mapping, ActionForm 
 	
 	
 	ActionForward forward = new ActionForward();
+	DBConnection db = new DBConnection(); 
+	RunningRoomForm rf = (RunningRoomForm) form;
 	
- 		forward = mapping.findForward("InwardTrainEntry");
+	try{
+			String location = request.getSession().getAttribute("location").toString();
+			String crewid = request.getSession().getAttribute("username").toString();
+			rf.setCrew_id(crewid);
+			String query1 = "SELECT INWARD_TRAIN_V FROM BED_ALLOCATION_MST  WHERE USER_ID_V='" + rf.getCrew_id() + "' AND LOCATION_ID_V='" + location + "' ORDER BY ROOM_NO_I";
+			ResultSet rs = db.executeQuery(query1);
+			if(rs.next())
+			{
+				if(rs.getString("INWARD_TRAIN_V") == null)
+					forward = mapping.findForward("InwardTrainEntry");
+				else
+					forward = mapping.findForward("CrewOptions");
+			}
+			else
+			{				
+				forward = mapping.findForward("InwardTrainEntry");
+			}
+			
+			
+			
+			query1 = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "' AND USER_ID_V='" + rf.getCrew_id() + "'";
+			ResultSet rs2 = db.executeQuery(query1);
+			
+			if(rs2.next())
+			{
+				rf.setBooked("Y");	
+				rf.setBookedroom(rs2.getString("ROOM_NO_I"));
+				rf.setBookedbed(rs2.getString("BED_NO_I"));
+			}					
+			else
+				rf.setBooked("N");
+			
+			
+				
+		}catch(Exception e)
+		{
+			System.out.println("Ex : " + e);
+			
+		}
+	
+	
+		
  	
- 		populateCrewIdDropDown(request);
- 		populateRoomDropDown(request);
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  initiateInwardTrainEntry   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	System.out.println("\n\n\n\n\n");
@@ -2025,7 +2242,7 @@ public ActionForward runningRoomReport(ActionMapping mapping, ActionForm form, H
 		else
 		{
 			query1 = "SELECT USER_ID_V,BED_NO_I,ROOM_NO_I,DATE_FORMAT(CHECK_IN_D,'%d-%m-%Y %H:%i') CHECK_IN_D, DATE_FORMAT(CHECK_OUT_D,'%d-%m-%Y %H:%i') CHECK_OUT_D, TIMESTAMPDIFF(HOUR,CHECK_IN_D,CHECK_OUT_D) AS 'DIFF' FROM BED_ALLOCATION_HIS"
-					+ " WHERE LOCATION_ID_V='" + location + "' AND STR_TO_DATE(CHECK_IN_D,'%Y-%m-%d') BETWEEN STR_TO_DATE('" + fromdate + "','%d/%m/%Y') AND STR_TO_DATE('" + todate + "','%d/%m/%Y') " + where_clause;
+					+ " WHERE CHECK_OUT_D IS NOT NULL AND LOCATION_ID_V='" + location + "' AND STR_TO_DATE(CHECK_IN_D,'%Y-%m-%d') BETWEEN STR_TO_DATE('" + fromdate + "','%d/%m/%Y') AND STR_TO_DATE('" + todate + "','%d/%m/%Y') " + where_clause;
 					
 		}
 			
@@ -2343,11 +2560,13 @@ public ActionForward messReport(ActionMapping mapping, ActionForm form, HttpServ
 		
 		if(fromdate.trim() == "" || todate.trim() == "")
 		{
-			query1 = "SELECT * FROM MESS_AVAILED_MST WHERE DATE(DATE_TIME_D) = CURDATE()";
+			query1 = "SELECT USER_ID_V,MEAL_TYPE_V,FOOD_TYPE_V FROM MESS_AVAILED_MST WHERE WHERE LOCATION_ID_V='" + location + "'  AND DATE(DATE_TIME_D) = CURDATE()";
 		}
 		else
 		{
-			query1 = "SELECT * FROM MESS_AVAILED_MST WHERE  WHERE LOCATION_ID_V='" + location + "' AND STR_TO_DATE(CHECK_IN_D,'%Y-%m-%d') BETWEEN STR_TO_DATE('" + fromdate + "','%d/%m/%Y') AND STR_TO_DATE('" + todate + "','%d/%m/%Y') ";
+			query1 = "SELECT USER_ID_V,MEAL_TYPE_V,FOOD_TYPE_V FROM MESS_AVAILED_MST WHERE LOCATION_ID_V='" + location + "' AND STR_TO_DATE(CHECK_IN_D,'%Y-%m-%d') BETWEEN STR_TO_DATE('" + fromdate + "','%d/%m/%Y') AND STR_TO_DATE('" + todate + "','%d/%m/%Y') "
+					+ " UNION "
+					+ "SELECT USER_ID_V,MEAL_TYPE_V,FOOD_TYPE_V FROM MESS_AVAILED_HIS WHERE LOCATION_ID_V='" + location + "' AND STR_TO_DATE(CHECK_IN_D,'%Y-%m-%d') BETWEEN STR_TO_DATE('" + fromdate + "','%d/%m/%Y') AND STR_TO_DATE('" + todate + "','%d/%m/%Y') ";
 				
 		}
 			
@@ -2796,7 +3015,7 @@ try{
 				else if(oc == -1)
 					lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' ><thead onclick=getInfo('" + room + "','" + (z+1) + "')><tr  bgcolor='red'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td><span style='color:green' class='glyphicon glyphicon-off' onclick=\"block('0','BED','" + room + "','" + (z+1) + "')\"></span></td></tr></tbody></table>";
 				else
-					lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' ><thead onclick=getInfo('" + room + "','" + (z+1) + "')><tr  bgcolor='pink'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
+					lt += "<table class='table table-bordered' id='" + room + "" + (z+1) + "' ><thead onclick=getInfo('" + room + "','" + (z+1) + "')><tr  bgcolor='red'><th class='text-center'>" + (z+1) + "</th></tr><tbody><tr><td>&nbsp;</td></tr></tbody></table>";
 				
 				lt += "</td>"; 
 				

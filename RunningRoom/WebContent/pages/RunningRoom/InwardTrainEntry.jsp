@@ -68,8 +68,8 @@
               <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>
               <nav>
                 <ul class="nav masthead-nav">
-                  <li class="active"><a href="#">Home</a></li>
-                 <li><html:link forward="LOGIN" >Logout</html:link></li>
+                  <li class="active"><html:link action="/runningroom.do?method=initiateCrewOptions" >Home</html:link></li>
+                  <li><html:link forward="LOGOUTKIOSK" >Logout</html:link></li>
                   <li><a href="#">Contact</a></li>
                 </ul>
               </nav>

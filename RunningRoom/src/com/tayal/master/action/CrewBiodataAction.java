@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.tayal.master.actionforms.CrewBiodataForm;
+import com.tayal.utility.AESencrp;
 import com.tayal.utility.DBConnection;
 
 // STEP 1 OF ROTATE IMAGE
@@ -112,6 +113,7 @@ public ActionForward getCrewBiodata(ActionMapping mapping, ActionForm form,
 	 			 fb.setEmergency_contact(rs.getString("EMERGENCY_CONTACT_V"));
 	 			 fb.setEmergency_mobile(rs.getString("EMERGENCY_MOBILE_I"));
 	 			 fb.setBiostatus(rs.getString("BIO_ENABLE_V"));
+	 			 fb.setPassword_enable(rs.getString("PASSWORD_ENABLE_V"));
 	 			 
 	 			 String dobdate = rs.getString("DOB_D");
 	 			 
@@ -171,6 +173,7 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	 CrewBiodataForm fb = (CrewBiodataForm) form;
 	 DBConnection db = new DBConnection();
 	 PrintWriter out = response.getWriter();
+	 HttpSession session = request.getSession(true);	
 	 String query="";
 	 try{
 		 	
@@ -196,6 +199,7 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	 			 
 	 			res = res + "#" + rs.getString("PASSWORD_ENABLE_V");	 			 
 	 			res = res + "@" + rs.getString("FIRST_NAME_V") + " " + rs.getString("LAST_NAME_V");
+	 			session.setAttribute("designation", rs.getString("DESIG_V"));
 	 		 }
 	 		 
 	 		 
@@ -204,7 +208,7 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
         	 out.flush();
         	 
         	 
-        	 HttpSession session = request.getSession(true);			
+        	 		
  			 session.setAttribute("biostatus", res);
 	 		
 	 	 }catch(Exception e)
@@ -292,7 +296,8 @@ public ActionForward saveCrewBiodata(ActionMapping mapping, ActionForm form,
 	 		 				+ "MOBILE2_I='" + fb.getMobile2() + "', "
 	 		 				+ "EMERGENCY_CONTACT_V='" + fb.getEmergency_contact() + "', "
 	 		 				+ "EMERGENCY_MOBILE_I='" + fb.getEmergency_mobile() + "', " 
-	 		 				+ "BIO_ENABLE_V='" + fb.getBiostatus() + "' WHERE USER_ID_V='" + fb.getCrew_id() + "'";
+	 		 				+ "BIO_ENABLE_V='" + fb.getBiostatus() + "', "
+	 		 			    + "PASSWORD_ENABLE_V='" + fb.getPassword_enable()+ "'  WHERE USER_ID_V='" + fb.getCrew_id() + "'";
 	 		 
 	 		 
 	 		 
@@ -358,6 +363,56 @@ public ActionForward saveCrewBiodata(ActionMapping mapping, ActionForm form,
     return (forward);
 }
 
+
+
+
+
+public ActionForward resetPin(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+ throws Exception{
+	
+	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> CrewBiodataAction - resetPin >>>>>>>>>>>>>>>>>>>>>>");
+	 ActionForward forward = new ActionForward();
+	
+	 
+	 CrewBiodataForm fb = (CrewBiodataForm) form;
+	 DBConnection db = new DBConnection();
+	 
+	
+	 try{
+	 		 
+		
+	 		 String query = "UPDATE user_mast SET PASSWORD_V='" + AESencrp.encrypt("1234") + "' WHERE USER_ID_V='" + fb.getCrew_id() + "'";
+	 		 
+	 		 
+	 		 int rs  = db.executeUpdate(query);
+	 		 
+	 		System.out.println("RS = " + rs);
+	 		 if(rs > 0)	 		
+	 		 {
+	 			 fb.setMessage("User PIN reset succefully");
+	 		 }	 			
+	 		 else
+	 			fb.setMessage("Failure : Record not saved");
+	 		 
+	 		 	 
+	 		
+	 	 }catch(Exception e)
+	 	 {
+	 		 System.out.println("Error : " + e);
+	 	 }
+	 	 finally
+	 	 {		
+	 		 db.closeCon();
+	 	 }
+	 
+	 
+	 populateDropDown(request);
+	 
+	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< CrewBiodataAction - resetPin <<<<<<<<<<<<<<<<<<<<<<");
+    forward = mapping.findForward("CrewBiodata");
+    return (forward);
+}
 
 
 

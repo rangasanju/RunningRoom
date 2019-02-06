@@ -49,6 +49,7 @@ public class CrewBiodataForm extends ActionForm{
 	private String month;
 	private String year;
 	private String biostatus;
+	private String password_enable;
 	
 	
 	
@@ -182,6 +183,12 @@ public class CrewBiodataForm extends ActionForm{
 	}
 	public void setBiostatus(String biostatus) {
 		this.biostatus = biostatus;
+	}
+	public String getPassword_enable() {
+		return password_enable;
+	}
+	public void setPassword_enable(String password_enable) {
+		this.password_enable = password_enable;
 	}
 	
 	

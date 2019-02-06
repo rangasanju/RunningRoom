@@ -234,17 +234,7 @@
 																</td>				
 														</tr>		
 														
-														<tr >					
-																<td  colspan="2" align="right">
-																	Biometric
-																</td>				
-																<td  colspan="2">
-																	<html:select name="CrewBiodataForm" property="biostatus" styleClass="form-control">
-										   									<html:options name="biostatuslist" /> 
-										  							</html:select>
-																	
-																</td>				
-														</tr>		
+																
 														</tbody>									
 													</table>
 												
@@ -311,6 +301,30 @@
 																<html:text name="CrewBiodataForm" property="emergency_mobile" styleClass="form-control" /> 
 															</td>				
 													</tr>	
+													<tr >					
+																<td  colspan="2" align="right">
+																	Biometric
+																</td>				
+																<td  colspan="2">
+																	<html:select name="CrewBiodataForm" property="biostatus" styleClass="form-control">
+										   									<html:options name="biostatuslist" /> 
+										  							</html:select>
+																	
+																</td>				
+													</tr>
+														
+														
+													<tr >					
+																<td  colspan="2" align="right">
+																	Password Enable
+																</td>				
+																<td  colspan="2">
+																	<html:select name="CrewBiodataForm" property="password_enable" styleClass="form-control">
+										   									<html:options name="biostatuslist" /> 
+										  							</html:select>
+																	
+																</td>				
+														</tr>
 													</tbody>										
 												</table>
 								
@@ -338,17 +352,20 @@
 	    	  
 	    	  <div class="col-sm-12">
 	    	  
-	    	   	  <div class="col-sm-3">	    	  
+	    	   	  <div class="col-sm-2">	    	  
 		    	  	&nbsp;
 		    	  </div>
 		    	  <div class="col-sm-3">	    	  
 		    	  	<html:button property="method" value="Save" styleClass="smallbutton" onclick="saveBiodata()" />	
+		    	  </div>	    	  
+		    	  <div class="col-sm-3">	    	  
+		    	  	<html:button property="method" value="Reset PIN" styleClass="smallbutton" onclick="resetPin()" />	
 		    	  </div>
 		    	  
 		    	  <div class="col-sm-3">	    	  
 		    	  	<html:button property="method" value="Back" styleClass="smallbutton" onclick="back()" />		
 		    	  </div>
-		    	   <div class="col-sm-3">	    	  
+		    	   <div class="col-sm-1">	    	  
 		    	  	&nbsp;
 		    	  </div>
 			  </div>
@@ -413,56 +430,82 @@ function saveBiodata()
 {		
 	var valid = true;
 	
-		
-			if(trim(document.forms[0].mobile1.value).length != 0)
+	if(trim(document.forms[0].firstname.value).length == 0)
+	{
+	   alert("Please enter a valid Crew ID");	
+	}
+	else
+	{
+
+		if(trim(document.forms[0].mobile1.value).length != 0)
+		{
+			if(!isValidMobile(document.forms[0].mobile1.value))
 			{
-				if(!isValidMobile(document.forms[0].mobile1.value))
-				{
-					valid = false;
-					alert("Please enter a valid Mobile number");
-				}
-					
+				valid = false;
+				alert("Please enter a valid Mobile number");
 			}
-			
-			if(trim(document.forms[0].mobile2.value).length != 0)
-			{
-				if(!isValidMobile(document.forms[0].mobile2.value))
-				{
-					valid = false;
-					alert("Please enter a valid Alternate mobile number");
-				}
-					
-			}
-			if(trim(document.forms[0].emergency_mobile.value).length != 0)
-			{
 				
-				if(!isValidMobile(document.forms[0].emergency_mobile.value))
-				{
-					valid = false;
-					alert("Please enter a valid Emergency Contact Mobile number");
-				}					
+		}
+		
+		if(trim(document.forms[0].mobile2.value).length != 0)
+		{
+			if(!isValidMobile(document.forms[0].mobile2.value))
+			{
+				valid = false;
+				alert("Please enter a valid Alternate mobile number");
 			}
-			if(trim(document.forms[0].pincode.value).length != 0)
-			{				
-				if(isNaN(document.forms[0].pincode.value) || (trim(document.forms[0].pincode.value).length > 10))
-				{
-					valid = false;
-					alert("Please enter a valid Pincode");
-				}
+				
+		}
+		if(trim(document.forms[0].emergency_mobile.value).length != 0)
+		{
 			
-			}	
-			
-			if(valid)
-			{				
-				 document.forms[0].action ="CrewBiodata.do?method=saveCrewBiodata";
-				 document.forms[0].submit();	
+			if(!isValidMobile(document.forms[0].emergency_mobile.value))
+			{
+				valid = false;
+				alert("Please enter a valid Emergency Contact Mobile number");
+			}					
+		}
+		if(trim(document.forms[0].pincode.value).length != 0)
+		{				
+			if(isNaN(document.forms[0].pincode.value) || (trim(document.forms[0].pincode.value).length > 10))
+			{
+				valid = false;
+				alert("Please enter a valid Pincode");
 			}
-	
-	
+		
+		}	
+		
+		if(valid)
+		{				
+			 document.forms[0].action ="CrewBiodata.do?method=saveCrewBiodata";
+			 document.forms[0].submit();	
+		}
+
+
+	}
+			
 	
 	
 }
 
+
+
+
+function resetPin()
+{		
+
+	if(trim(document.forms[0].firstname.value).length == 0)
+	{
+	   alert("Please enter a valid Crew ID");	
+	}
+	else
+	{
+						
+		document.forms[0].action ="CrewBiodata.do?method=resetPin";
+		document.forms[0].submit();	
+		
+	}
+}
 
 function back()
 {		

@@ -18,10 +18,6 @@ public class MessReportForm extends ActionForm{
 	
 	
 	
-	
-	
-	
-	
 	public String getFrom_date() {
 		return from_date;
 	}

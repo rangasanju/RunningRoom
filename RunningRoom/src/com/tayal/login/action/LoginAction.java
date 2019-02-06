@@ -75,6 +75,24 @@ public ActionForward initiateMasterForDivision(ActionMapping mapping, ActionForm
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public ActionForward LogoutAdmin(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response)
  throws Exception{

@@ -69,8 +69,8 @@
 <body  onload="onLoad()">
 
 <html:form action="runningroomreport" >
-<html:hidden name="RunningRoomReportForm" property="from_date"/>
-<html:hidden name="RunningRoomReportForm" property="to_date"/>
+<html:hidden name="MessReportForm" property="from_date"/>
+<html:hidden name="MessReportForm" property="to_date"/>
  
  
    
@@ -273,7 +273,7 @@ function showReport()
 			{
 				document.forms[0].from_date.value = fromdate;
 				document.forms[0].to_date.value = todate;
-				document.forms[0].action ="runningroomreport.do?method=runningRoomReport";
+				document.forms[0].action ="messreport.do?method=messReport";
 				document.forms[0].submit();	
 			}
 			
@@ -282,11 +282,6 @@ function showReport()
 }
 
 
-function showRedfdsfport()
-{		
-			 document.forms[0].action ="runningroom.do?method=initiateRunningRoom";
-			 document.forms[0].submit();
-}
 
 
 

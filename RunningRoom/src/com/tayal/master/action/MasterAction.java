@@ -866,7 +866,8 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 	try{
 		 
 		 location = request.getSession().getAttribute("location").toString();
-		 String query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+		 //String query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+		 String query = "SELECT * FROM CREW_CAT_MST";
 		 ResultSet rs  = db.executeQuery(query);				
 		 
 		 
@@ -1008,7 +1009,8 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignRoom >>>>>>
 		try{
 			 
 			 location = request.getSession().getAttribute("location").toString();
-			 query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 //query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 query = "SELECT * FROM CREW_CAT_MST";
 			 ResultSet rs  = db.executeQuery(query);				
 			 
 			 
@@ -1150,7 +1152,8 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignRoom >>>>
 		try{
 			 
 			 location = request.getSession().getAttribute("location").toString();
-			 query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 //query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 query = "SELECT * FROM CREW_CAT_MST";
 			 ResultSet rs  = db.executeQuery(query);				
 			 
 			 
@@ -1291,7 +1294,8 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignLobbyToRoom
 		try{
 			 
 			 location = request.getSession().getAttribute("location").toString();
-			 query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 //query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 query = "SELECT * FROM CREW_CAT_MST";
 			 ResultSet rs  = db.executeQuery(query);				
 			 
 			 
@@ -1429,7 +1433,8 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
 		try{
 			 
 			 location = request.getSession().getAttribute("location").toString();
-			 query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			// query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 query = "SELECT * FROM CREW_CAT_MST";
 			 ResultSet rs  = db.executeQuery(query);				
 			 
 			 
