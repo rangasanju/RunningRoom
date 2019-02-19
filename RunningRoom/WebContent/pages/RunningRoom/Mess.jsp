@@ -184,7 +184,7 @@ max-height: 50px;
           </div>
      	  
     	  
-     	  <div class="col-sm-3">     	  
+     	  <div class="col-sm-4">     	  
      	  			
 	     	  	<div class="col-sm-12">
 	   			  	<button id="btn_breakfast" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('breakfast')">BREAKFAST</button>	   			  
@@ -214,7 +214,7 @@ max-height: 50px;
      	  
      	 
      	  
-      	  <div class="col-sm-3">
+      	  <div class="col-sm-4">
      	  			
 	     	  	<div class="col-sm-12">
 	   			  	<button id="btn_lunch" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('lunch')">LUNCH</button>
@@ -244,7 +244,7 @@ max-height: 50px;
      	  </div>
      	  
      	  
-     	  <div class="col-sm-3">
+     	  <div class="col-sm-4">
      	       	  			
 	     	  	<div class="col-sm-12">
 	   			  	<button id="btn_dinner" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('dinner')">DINNER</button>
@@ -272,27 +272,7 @@ max-height: 50px;
    	
      	  </div>
      
-          <div class="col-sm-3">     	  
-     	  			
-	     	  	<div class="col-sm-12">
-	   			  	<button id="btn_parcel" type="button" class="btn btn-default opt_buttons_meal" onclick="selectMeal('parcel')">PARCEL</button>	   			  
-	   			</div>	   			  			
-	   			  
-	   			<div class="col-sm-12">	    	  
-		    	  &nbsp;
-		    	</div>
-	   			
-		    	<div class="col-sm-12">	    	  
-		    	  &nbsp;
-		    	</div>
-	     	  	<div class="col-sm-10">
-	   			  	<div id="parcel"  ></div>
-	   			</div>
-		    	<div class="col-sm-2">	    	  
-		    	  &nbsp;
-		    	</div>
-   			  		          	 				
-     	  </div>
+         
      	  
      	 
      	  <div class="col-sm-12">	    	  
@@ -363,10 +343,9 @@ function onLoad()
 {
 	
 	
-	document.forms[0].subsidy.value="N";			
-	document.getElementById("btn_subsidy").style.background = "white";  		
-	document.getElementById("btn_nonsubsidy").style.background = "lightgreen";
-	
+	document.forms[0].subsidy.value="Y";			
+	document.getElementById("btn_subsidy").style.background = "lightgreen";  		
+	document.getElementById("btn_nonsubsidy").style.background = "white";
 	
 	
 	
@@ -848,6 +827,7 @@ function printCoupans()
 		var crewid = "<%=session.getAttribute("username") %>";	
 		var location = "<%=session.getAttribute("location") %>";	
 		var meals="";
+		
 		
 		if(document.forms[0].breakfast.value == "Y")
 			meals = meals + "1";
