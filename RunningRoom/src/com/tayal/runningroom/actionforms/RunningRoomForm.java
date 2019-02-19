@@ -49,18 +49,22 @@ public class RunningRoomForm extends ActionForm{
 	
 	private String subsidy;
 	private String breakfast;
+	private String breakfast_availed;  // TO CHECK IF CREW HAS ALRAEDY AVAILED MEAL FOR THE DAY
 	private String breakfast_cat;	
 	private String breakfast_qty;
 	
 	private String lunch;
+	private String lunch_availed;
 	private String lunch_cat;	
 	private String lunch_qty;
 		
 	private String dinner;
+	private String dinner_availed;
 	private String dinner_cat;
 	private String dinner_qty;
 	
 	private String parcel;
+	private String parcel_availed;
 	
 	private String wakeup_time;
 	private String inward_train;
@@ -266,6 +270,35 @@ public class RunningRoomForm extends ActionForm{
 	}
 	public void setOutward_train(String outward_train) {
 		this.outward_train = outward_train;
+	}
+
+
+
+
+
+	public String getBreakfast_availed() {
+		return breakfast_availed;
+	}
+	public void setBreakfast_availed(String breakfast_availed) {
+		this.breakfast_availed = breakfast_availed;
+	}
+	public String getLunch_availed() {
+		return lunch_availed;
+	}
+	public void setLunch_availed(String lunch_availed) {
+		this.lunch_availed = lunch_availed;
+	}
+	public String getDinner_availed() {
+		return dinner_availed;
+	}
+	public void setDinner_availed(String dinner_availed) {
+		this.dinner_availed = dinner_availed;
+	}
+	public String getParcel_availed() {
+		return parcel_availed;
+	}
+	public void setParcel_availed(String parcel_availed) {
+		this.parcel_availed = parcel_availed;
 	}
 
 

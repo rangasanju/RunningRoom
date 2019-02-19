@@ -356,8 +356,16 @@ function receiveLayout(){
 
 function checkOut()
 {
-			 document.forms[0].action ="runningroom.do?method=checkOut";
-			 document.forms[0].submit();
+	var r = confirm("Do you wish to Check Out ?");
+	
+	if(r == true)
+	{
+		 alert("Have a safe journey");
+		 document.forms[0].action ="runningroom.do?method=checkOut";
+		 document.forms[0].submit();
+	}
+	
+			
 		
 }
 

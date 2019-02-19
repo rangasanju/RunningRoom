@@ -49,9 +49,6 @@
 <html:form action="Master" >
  <html:hidden name="RunningRoomForm" property="message" /> 
  <html:hidden name="RunningRoomForm" property="crew_id" /> 
- 
- <html:hidden name="RunningRoomForm" property="bookedroom" /> 
- <html:hidden name="RunningRoomForm" property="bookedbed" />  
 
   
     <div class="site-wrapper">
@@ -86,14 +83,7 @@
            
           <div class="col-sm-12">
               <div class="col-sm-4">		        
-              
-              		<logic:equal name="RunningRoomForm" property="booked" value="Y">
-							<html:button property="method" value="CheckOut" styleClass="buttonActivity" onclick="checkOut()" />						
-					</logic:equal>
-					<logic:notEqual name="RunningRoomForm" property="booked" value="Y">
-							<html:button property="method" value="CheckIn" styleClass="buttonActivity" onclick="checkIn()" />	
-					</logic:notEqual>
-			        
+			        <html:button property="method" value="Booking" styleClass="buttonActivity" onclick="runningRoom()" />	
 	          </div>   
 	          <div class="col-sm-4">		        
 			        <html:button property="method" value="Personal Info" styleClass="buttonActivity" onclick="personalInfo()" />	
@@ -169,7 +159,8 @@ function onLoad()
 
 function runningRoom()
 {		
-			 document.forms[0].action ="runningroom.do?method=initiateCategoryOptions";
+			 //document.forms[0].action ="runningroom.do?method=initiateCategoryOptions";
+			 document.forms[0].action ="runningroom.do?method=initiateRunningRoom&category=";
 			 document.forms[0].submit();
 }
 
@@ -209,96 +200,6 @@ function enterOutwardTrain()
 			 document.forms[0].action ="runningroom.do?method=initiateOutwardTrainEntry";
 			 document.forms[0].submit();		
 }
-
-
-
-
-
-function checkIn(bookedbed,bookedroom)
-{
-	
-	
-		var crewid= document.forms[0].crew_id.value;
-		var url="runningroom.do?method=getAvailableBed&crew_id=" + crewid;
-						if (window.XMLHttpRequest){ // Non-IE browsers
-							reqFeature = new XMLHttpRequest();
-						try{
-							reqFeature.open("GET", url, true);
-							}catch (e){
-							alert(e);
-							}
-							reqFeature.onreadystatechange = receiveAvailableBed;
-							reqFeature.send(null);
-							}
-							else if (window.ActiveXObject){ // IE
-							reqFeature = new ActiveXObject("Microsoft.XMLHTTP");
-							if (reqFeature){
-							//alert('IE');
-							reqFeature.open("GET", url, true);
-							reqFeature.onreadystatechange = receiveAvailableBed;
-							reqFeature.send(null);
-						}
-					}	
-	
-	
-}
-
-function receiveAvailableBed(){
-
-			var status;
-			try{
-				status=reqFeature.status;
-								
-					if (reqFeature.readyState == 4 && reqFeature.status == 200)
-						{ // OK response
-							xmlhtp = reqFeature.responseText;					
-						
-							if(xmlhtp.indexOf("@"))
-							{
-								document.forms[0].bookedroom.value = xmlhtp.substring(0,xmlhtp.indexOf("@"));
-								document.forms[0].bookedbed.value = xmlhtp.substring(xmlhtp.indexOf("@")+1);
-								
-								var r = confirm("Room No : " + document.forms[0].bookedroom.value + " Bed No : " + document.forms[0].bookedbed.value + " .\n Confirm Booking ");
-								if (r == true) {
-								  alert("You pressed OK!");
-								  document.forms[0].action ="runningroom.do?method=bookBed&room_selected=" + document.forms[0].bookedroom.value + "&bed_selected=" + document.forms[0].bookedbed.value;
-								  document.forms[0].submit();
-								} else {
-									alert("cancel");
-								} 
-								
-							}
-							else
-								alert("Bed not available. Please contact supervisor");
-							
-							
-						
-						}
-					
-				}
-				catch(e)
-				{
-					status="Not found";
-				}
-		}
-
-
-
-
-function checkOut()
-{
-	
-	var r = confirm("You are Checing Out. Do you want to proceed ?");
-	
-	if (r == true) {
-		
-			 document.forms[0].action ="runningroom.do?method=checkOut";
-			 document.forms[0].submit();
-	}
-	
-		
-}
-
 
 
 

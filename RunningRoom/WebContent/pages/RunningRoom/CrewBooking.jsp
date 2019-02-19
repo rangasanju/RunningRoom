@@ -252,7 +252,7 @@
 	    	  	<logic:equal name="RunningRoomForm" property="booked" value="lightgreen">
 					<html:button property="method" value="Check In" styleClass="smallbutton" onclick="checkInOut()" />	
 				</logic:equal>
-				<logic:equal name="RunningRoomForm" property="booked" value="pink">
+				<logic:equal name="RunningRoomForm" property="booked" value="red">
 				    <html:button property="method" value="Check Out" styleClass="smallbutton" onclick="checkInOut()" />	
 				</logic:equal>
 					

@@ -19,7 +19,7 @@ public class DBConnection {
 		  String dbName = "runningroom";
 		  String driver = "com.mysql.jdbc.Driver";
 		  String userName = "root";
-		  String password = "";
+		  String password = "111";
 		  
 		  
 		  try {

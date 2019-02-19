@@ -145,6 +145,7 @@ var bed_selected="0";
 
 var previous_selected_id="00";
 var prev_color="lightgreen";
+var prevRows="";
 
 
 
@@ -242,13 +243,20 @@ function getInfo(room,bed)
 	room_selected = room;
 	bed_selected = bed;
 	
-	if(previous_selected_id = "00")
+	if(previous_selected_id == "00")
 		previous_selected_id = id;
 	
 	
 	var myPrevTab = document.getElementById(previous_selected_id);
-	var prevRows = myPrevTab.getElementsByTagName('tr');	
-	prevRows[0].style.backgroundColor =prev_color;	
+	var prevRows = myPrevTab.getElementsByTagName('tr');		
+	prevRows[0].style.backgroundColor =prev_color;
+	
+	var myTab = document.getElementById(id);
+	var rows = myTab.getElementsByTagName('tr');
+	rows[0].style.backgroundColor ="yellow";	
+	
+	
+	
 	previous_selected_id = id;
 
 	
@@ -291,9 +299,9 @@ function receiveGuestInfo(){
 							
 							
 							if(xmlhtp.indexOf("Blocked") >= 0)
-								prev_color = "red";
+								prev_color = "grey";
 							else if(xmlhtp.indexOf("Occupied") >= 0)
-								prev_color = "pink";
+								prev_color = "red";
 							else
 								prev_color = "lightgreen";
 								
@@ -381,7 +389,7 @@ function crewBooking()
 	if(prev_color == "")
 	{
 		alert("Please select a bed");
-	}else if(prev_color == "red")
+	}else if(prev_color == "grey")
 	{
 		alert("Opertaion not allowed on a blocked bed");
 	}
@@ -462,9 +470,7 @@ var id = room + "" + bed;
 	if(previous_selected_id != "00")
 	{
 		var myPrevTab = document.getElementById(previous_selected_id);
-		var prevRows = myPrevTab.getElementsByTagName('tr');
-		
-		
+		var prevRows = myPrevTab.getElementsByTagName('tr');		
 		prevRows[0].style.backgroundColor =prev_color;
 	}
 		

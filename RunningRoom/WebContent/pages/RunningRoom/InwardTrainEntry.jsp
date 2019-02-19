@@ -94,13 +94,13 @@
 		  <div class="col-sm-3">
 		    	  &nbsp;
 		  </div>        
-		  <div class="col-sm-2">
+		  <div class="col-sm-3">
 		    	  <label for="inputCrewId" class="control-label col-sm-5 pull-right" style='white-space: nowrap'>Inward Train No</label>
 		  </div>
 		  <div class="col-sm-3 ">
 		    	  <html:text  styleClass="form-control" name="RunningRoomForm" property="inward_train"  /> 
 		  </div>
-		  <div class="col-sm-4">
+		  <div class="col-sm-3">
 		    	  &nbsp;
 		  </div>  
 		      
@@ -248,7 +248,7 @@
 			           			 <button type="button" class="btn  btn-lg btn-primary btn-block" onclick="fillText('reset')"><span class="glyphicon glyphicon-refresh"></span></button>
 			           	</td>
 			           	<td>
-			           			 <button type="button" class="btn  btn-lg btn-primary btn-block" onclick="fillText('Back')"><span class="glyphicon glyphicon-step-backward"></span></button>
+			           			 <button type="button" class="btn  btn-lg btn-primary btn-block" onclick="fillText('back')"><span class="glyphicon glyphicon-step-backward"></span></button>
 			           	</td>
 			           	
 		           	</tr>           	

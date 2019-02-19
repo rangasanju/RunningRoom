@@ -44,7 +44,7 @@ public ActionForward Execute(ActionMapping mapping, ActionForm form,
 	 LoginForm fb = (LoginForm) form;
 	 fb.setMessage("");
 	 
-	 
+	 setBedNo();
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< LoginAction - Execute <<<<<<<<<<<<<<<<<<<<<<");
 	  
     forward = mapping.findForward("Home");
@@ -885,15 +885,15 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - validateUser >>>>>
 		}
 		
 	
-		 rs  = db.executeQuery("SELECT DESIG_V FROM CREW_BIODATA WHERE USER_ID_V='" + userid + "'");				
+		 rs  = db.executeQuery("SELECT DESIG_V,GENDER_V FROM CREW_BIODATA WHERE USER_ID_V='" + userid + "'");				
 		 
 			if(rs.next())
 			{
 				desig = rs.getString("DESIG_V");
 				
 					HttpSession session = request.getSession(true);					
-					session.setAttribute("designation", desig);
-					System.out.println("desig : " + desig);
+					session.setAttribute("designation", rs.getString("DESIG_V"));
+					session.setAttribute("gender", rs.getString("GENDER_V"));
 						
 				
 			}else
@@ -1239,6 +1239,76 @@ public void populateLobbyDropDown(HttpServletRequest request)
 	 }
 
 }
+
+
+
+
+
+
+
+
+public void setBedNo()throws Exception
+{
+	
+	 System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  setBedNo   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+	
+	
+	 
+	  
+	  DBConnection db = new DBConnection();
+	  ArrayList<String> queries = new ArrayList<String>();
+	
+	 
+	
+
+		try{
+			       
+			
+			String query = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='TVT' ORDER BY ROOM_NO_I,BED_NO_I";
+			System.out.println("Query  : " + query);
+			ResultSet rs = db.executeQuery(query);
+			String q1 = "";
+			
+		int bedno = 1;
+		        
+			while(rs.next())
+			{
+				
+				q1 = "UPDATE BED_ALLOCATION_MST SET BED_NO_I=" + bedno + " WHERE LOCATION_ID_V='TVT' AND ROOM_NO_I=" + rs.getString("ROOM_NO_I") + " "
+						+ "AND BED_NO_I=" + rs.getString("BED_NO_I");
+				queries.add(q1);
+				
+				System.out.println(q1 + ";");
+				
+				bedno++;
+				
+				
+			}	
+			
+		        
+			
+			int res = db.executeMyBatch(queries);
+			
+			
+		}catch(Exception e)
+		{
+			System.out.println("Ex : " + e);
+		}
+		
+		
+	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  setBedNo   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	System.out.println("\n\n\n\n\n");
+
+	
+	db.closeCon();
+	
+	
+
+
+}
+
+
+
 
 
 

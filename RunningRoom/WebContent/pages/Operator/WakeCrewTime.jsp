@@ -202,7 +202,7 @@ max-height: 50px;
      	  </div>
      	  							  							
 										  							
-	      <div class="col-sm-9">     	       	  			
+	      <div class="col-sm-8">     	       	  			
 	           		 	<table class='table table-bordered table-condensed table-responsive'>
 	           		 		<thead>
 	           		 			<tr>	      		 				
@@ -224,7 +224,7 @@ max-height: 50px;
 		          	 	</table>  			
      	  </div>  
      	  
-     	  <div class="col-sm-3">	     
+     	  <div class="col-sm-4">	     
 	    	  		<div  class="col-sm-12"><h3 class="cover-heading">Wake Up Calls</h3>     </div>  
 	    	     
 			         <div  class="col-sm-12" id="wakeups">  </div>  	

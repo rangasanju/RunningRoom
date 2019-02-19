@@ -73,11 +73,7 @@
 
   
     <div class="site-wrapper">
-
       <div class="site-wrapper-inner">
-
-       
-
           <div class="masthead clearfix">
             <div class="inner">
               <img class="masthead-brand masthead-brand-img" src="images/tayallogo.jpg"> 
@@ -103,24 +99,50 @@
           </div>
           
           
-          <div class="row">
-              <div class="col-sm-9">	           
-			         <div class="table-wrapper-scroll-y " id="layout" ></div>			        
+        <div class="row">
+              <div class="col-sm-8">	           
+			      <div class="table-wrapper-scroll-y " id="layout" ></div>			        
 	          </div>
-	    	  <div class="col-sm-3">	     
-	    	  		<div  class="col-sm-12"><h3 class="cover-heading">Wake Up Calls</h3>     </div>  
-	    	     
-			         <div  class="col-sm-12" id="wakeups">  </div>  	
-			        			 
-	          </div>
-          </div>
-          
-      
-        </div>
-
-      </div>
+	    	  <div class="col-sm-4">	     
+		    	  <div  class="col-sm-12">
+		    	  	<h3 class="cover-heading">Wake Up Calls</h3>     
+		    	  </div>  
+		    	     
+				  <div  class="col-sm-12" id="wakeups">  </div>  	
+				         
+		          <div class="inner cover hidden-xs">
+		            &nbsp;            
+		          </div>
+		           <div class="inner cover hidden-xs">
+		            &nbsp;
+		          </div>
+		           <div class="inner cover hidden-xs">
+		            &nbsp;
+		          </div>
+		          <div class="inner cover hidden-xs">
+		            &nbsp;        
+		          </div>
+		          
+		          
+		          <div class="col-sm-3">
+		            &nbsp;        
+		          </div>
+		          <div  class="col-sm-3">  
+			  		<img src='images/play.png'  height='50' width='50' onclick="play()">			  
+			  	  </div>  
+			  	  <div  class="col-sm-3">  
+			  		<img src='images/pause.png' height='50' width='50' onclick="pause()">			  
+			  	  </div>  	
+			  	   <div class="col-sm-3">
+		            &nbsp;        
+		          </div>
+       		  </div>
+      	</div>
 
     
+    </div>
+    </div>
+   
     
  
 
@@ -142,9 +164,9 @@ var bed_selected="0";
 
 var previous_selected_id="00";
 var prev_color="lightgreen";
-
-
-
+var pos = 0;
+var scrollheight = 0;
+var timerId;
 
 
 
@@ -158,8 +180,39 @@ function onLoad()
 	
 	
 	
+	
 }
 
+
+
+function play()
+{
+	timerId = setInterval(scrollx,200);
+}
+
+function pause()
+{
+	
+	 window.clearInterval(timerId);
+}
+
+
+
+
+function scrollx()
+{
+	
+	var el = document.getElementById("layout");
+	if( (el.scrollTop + el.scrollTop) > scrollheight)
+	{
+		el.scrollTop = 0;
+	}
+	else
+		el.scrollTop = el.scrollTop + 2;
+	
+	var f = document.getElementById("time");
+	f.style.backgroundColor  = (f.style.backgroundColor == "pink" ? "white" : "pink");
+}
 
 
 function getLayout()
@@ -223,7 +276,7 @@ function receiveLayout(){
 function getWakeUpInfo()
 {
 
-	
+	scrollheight = document.getElementById("layout").scrollHeight + 100;
 		
 		var url="runningroom.do?method=getWakeupInfo";
 		if (window.XMLHttpRequest){ // Non-IE browsers
@@ -269,14 +322,7 @@ function receiveGuestInfo(){
 				{
 					status="Not found";
 				}
-		}
-
-
-
-
-
-
-
+}
 
 
 

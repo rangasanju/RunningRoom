@@ -104,14 +104,21 @@ max-height: 50px;
 
 <html:hidden name="RunningRoomForm" property="subsidy" />
 <html:hidden name="RunningRoomForm" property="meal_type" />
+
 <html:hidden name="RunningRoomForm" property="breakfast" />
+<html:hidden name="RunningRoomForm" property="breakfast_availed" />
 <html:hidden name="RunningRoomForm" property="breakfast_cat" />
+
 <html:hidden name="RunningRoomForm" property="lunch" />
+<html:hidden name="RunningRoomForm" property="lunch_availed" />
 <html:hidden name="RunningRoomForm" property="lunch_cat" />
+
 <html:hidden name="RunningRoomForm" property="dinner" />
+<html:hidden name="RunningRoomForm" property="dinner_availed" />
 <html:hidden name="RunningRoomForm" property="dinner_cat" />
 
 <html:hidden name="RunningRoomForm" property="parcel" />
+<html:hidden name="RunningRoomForm" property="parcel_availed" />
 
 <html:hidden name="RunningRoomForm" property="breakfast_qty" />
 <html:hidden name="RunningRoomForm" property="lunch_qty" />
@@ -288,12 +295,24 @@ max-height: 50px;
      	  </div>
      	  
      	 
+     	  <div class="col-sm-12">	    	  
+		    	  &nbsp;
+		  </div>
        	  <div class="col-sm-12">
-     	       	  			
-	     	  	<div class="col-sm-12">
+     	       	  	
+     	       	<div class="col-sm-3">	    	  
+		    	  &nbsp;
+		    	</div>		
+	     	  	<div class="col-sm-3">
 	   			  	<html:button property="method" value="Submit" styleClass="smallbutton" onclick="saveMessOptions()" />
 	   			</div>
 	   			
+	   			<div class="col-sm-3">
+	   			  	<html:button property="method" value="Print" styleClass="smallbutton" onclick="printCoupans()" />
+	   			</div>
+	   			<div class="col-sm-3">	    	  
+		    	  &nbsp;
+		    	</div>		
      	  </div>
      
      
@@ -331,7 +350,7 @@ var xmlhtp ;
 var res;
 var resfordisplay;
 var size=0;
-
+var printed = "N";
 
 
 function trim(str)
@@ -343,248 +362,216 @@ function trim(str)
 function onLoad()
 {
 	
+	
 	document.forms[0].subsidy.value="N";			
 	document.getElementById("btn_subsidy").style.background = "white";  		
 	document.getElementById("btn_nonsubsidy").style.background = "lightgreen";
 	
 	
-	document.forms[0].breakfast.value = "N";
-	document.getElementById("btn_breakfast").style.background = "white";  		
-	document.getElementById("btn_breakfast_cat").style.background = "white";
 	
 	
-	document.forms[0].lunch.value = "N";
-	document.getElementById("btn_lunch").style.background = "white";  		
-	document.getElementById("btn_lunch_cat").style.background = "white";
+	if(document.forms[0].breakfast.value == "N")
+	{
+		document.getElementById("btn_breakfast").style.background = "white";  		
+		document.getElementById("btn_breakfast_cat").style.background = "white";
+	}
+	else
+	{		
+		document.getElementById("btn_breakfast").style.background = "lightgreen";  
+		if(document.forms[0].breakfast_cat.value == "VEG")
+			document.getElementById("btn_breakfast_cat").style.background = "lightgreen";  
+		else
+			document.getElementById("btn_breakfast_cat").style.background = "pink"; 
+		
+	}
+	
+	if(document.forms[0].lunch.value == "N")
+	{
+		document.getElementById("btn_lunch").style.background = "white";  		
+		document.getElementById("btn_lunch_cat").style.background = "white";
+	}
+	else
+	{		
+		document.getElementById("btn_lunch").style.background = "lightgreen";  
+		if(document.forms[0].lunch_cat.value == "VEG")
+			document.getElementById("btn_lunch_cat").style.background = "lightgreen";  
+		else
+			document.getElementById("btn_lunch_cat").style.background = "pink"; 
+			
+	}
 	
 	
-	document.forms[0].dinner.value = "N";
-	document.getElementById("btn_dinner").style.background = "white";  		
-	document.getElementById("btn_dinner_cat").style.background = "white";
+	if(document.forms[0].dinner.value == "N")
+	{
+		document.getElementById("btn_dinner").style.background = "white";  		
+		document.getElementById("btn_dinner_cat").style.background = "white";
+	}
+	else
+	{		
+		document.getElementById("btn_dinner").style.background = "lightgreen";  
+		if(document.forms[0].dinner_cat.value == "VEG")
+			document.getElementById("btn_dinner_cat").style.background = "lightgreen";  
+		else
+			document.getElementById("btn_dinner_cat").style.background = "pink"; 
+		
+		
+	}
+	document.getElementById("btn_breakfast_cat").innerHTML=document.forms[0].breakfast_cat.value;
+	document.getElementById("btn_lunch_cat").innerHTML=document.forms[0].lunch_cat.value;
+	document.getElementById("btn_dinner_cat").innerHTML=document.forms[0].dinner_cat.value;
 	
 	
-	document.forms[0].parcel.value = "N";
-	document.getElementById("btn_parcel").style.background = "white";  
+	
+	
 	
 	getMenu();
 }
 
 
-
-function addMeal(type)
-{
-
-	if(type == "breakfast")
-	{
-		document.forms[0].breakfast_qty.value = parseInt(document.forms[0].breakfast_qty.value) + 1;
-		document.getElementById("b_qty").innerHTML="<h3>" + document.forms[0].breakfast_qty.value + "</h3>";
-		
-
-		if(parseInt(document.forms[0].breakfast_qty.value) > 0)
-		{
-			document.getElementById("btn_breakfast").style.background = "lightgreen"; 
-			document.getElementById("btn_breakfast_cat").style.background = "lightgreen";
-			document.getElementById("btn_breakfast_cat").innerHTML="VEG";
-			breakfast_cat.breakfast_cat.value="VEG";
-			document.forms[0].breakfast.value="Y";
-		}
-	}else if(type == "lunch")
-	{
-		document.forms[0].lunch_qty.value = parseInt(document.forms[0].lunch_qty.value) + 1;
-		document.getElementById("l_qty").innerHTML="<h3>" + document.forms[0].lunch_qty.value + "</h3>";
-
-		if(parseInt(document.forms[0].lunch_qty.value) > 0)
-		{
-			document.getElementById("btn_lunch").style.background = "lightgreen"; 
-			document.getElementById("btn_lunch_cat").style.background = "lightgreen";
-			document.getElementById("btn_lunch_cat").innerHTML="VEG";
-			breakfast_cat.lunch_cat.value="VEG";
-			document.forms[0].lunch.value="Y";
-		}
-	}else if(type == "dinner")
-	{
-		document.forms[0].dinner_qty.value = parseInt(document.forms[0].dinner_qty.value) + 1;
-		document.getElementById("d_qty").innerHTML="<h3>" + document.forms[0].dinner_qty.value + "</h3>";
-
-		if(parseInt(document.forms[0].dinner_qty.value) > 0)
-		{
-			document.getElementById("btn_dinner").style.background = "lightgreen"; 
-			document.getElementById("btn_dinner_cat").style.background = "lightgreen";
-			document.getElementById("btn_dinner_cat").innerHTML="VEG";
-			breakfast_cat.dinner_cat.value="VEG";
-			document.forms[0].dinner.value="Y";
-		}
-	}	
-		
-}
-
-
-
-
-function substractMeal(type)
-{
-
-	if(type == "breakfast")
-	{
-		if(parseInt(document.forms[0].breakfast_qty.value) > 0)
-		{
-			document.forms[0].breakfast_qty.value = parseInt(document.forms[0].breakfast_qty.value) - 1;
-			document.getElementById("b_qty").innerHTML="<h3>" + document.forms[0].breakfast_qty.value + "</h3>";
-		}
-		
-		if(parseInt(document.forms[0].breakfast_qty.value) == 0)
-		{
-			document.getElementById("btn_breakfast").style.background = "white";  	
-			document.getElementById("btn_breakfast_cat").style.background = "white";
-			document.getElementById("btn_breakfast_cat").innerHTML="NA";
-			breakfast_cat.breakfast_cat.value="NA";
-			document.forms[0].breakfast.value="N";
-		}
-			
-			
-	}else if(type == "lunch")
-	{
-		if(parseInt(document.forms[0].lunch_qty.value) > 0)
-		{
-			document.forms[0].lunch_qty.value = parseInt(document.forms[0].lunch_qty.value) - 1;
-			document.getElementById("l_qty").innerHTML="<h3>" + document.forms[0].lunch_qty.value + "</h3>";
-		}
-
-		if(parseInt(document.forms[0].lunch_qty.value) == 0)
-		{
-			document.getElementById("btn_lunch").style.background = "white";  		
-			document.getElementById("btn_lunch_cat").style.background = "white";
-			document.getElementById("btn_lunch_cat").innerHTML="NA";
-			breakfast_cat.lunch_cat.value="NA";
-			document.forms[0].lunch.value="N";
-		}
-			
-			
-	}else if(type == "dinner")
-	{
-		if(parseInt(document.forms[0].dinner_qty.value) > 0)
-		{
-			document.forms[0].dinner_qty.value = parseInt(document.forms[0].dinner_qty.value) - 1;
-			document.getElementById("d_qty").innerHTML="<h3>" + document.forms[0].dinner_qty.value + "</h3>";
-		}
-
-		if(parseInt(document.forms[0].dinner_qty.value) == 0)
-		{
-			document.getElementById("btn_dinner").style.background = "white";  	
-			document.getElementById("btn_dinner_cat").style.background = "white";
-			document.getElementById("btn_dinner_cat").innerHTML="NA";
-			breakfast_cat.dinner_cat.value="NA";
-			document.forms[0].dinner.value="N";
-		}
-			
-			
-	}
-		
-}
-
-
-
 function selectMeal(meal)
 {
-	
+
+	var breakfast_availed=document.forms[0].breakfast_availed.value;
+	var lunch_availed=document.forms[0].lunch_availed.value;
+	var dinner_availed=document.forms[0].dinner_availed.value;
+	var parcel_availed=document.forms[0].parcel_availed.value;
+
+
 	
 	if(meal == "breakfast")
 	{
-		
-		if(document.forms[0].breakfast.value == "N")
+		if(breakfast_availed == "Y")
 		{
-			
-			if(parseInt(document.forms[0].breakfast_qty.value) == 0)
-			{
-				document.forms[0].breakfast_qty.value = "1";
-			}
-			document.forms[0].breakfast.value="Y";
-			document.getElementById("btn_breakfast").style.background = "lightgreen";  			
-			document.forms[0].breakfast_cat.value="VEG";
-			document.getElementById("btn_breakfast_cat").innerHTML="VEG";
-			document.getElementById("btn_breakfast_cat").style.background = "lightgreen";  
+			alert("If you wish to cancel this meal, Please contact Supervisor");
 		}
 		else
 		{
 			
-			document.forms[0].breakfast_qty.value = "0";
-			document.forms[0].breakfast.value="N";
-			document.forms[0].breakfast_cat.value="NA";
-			document.getElementById("btn_breakfast_cat").innerHTML="NA";
-			document.getElementById("btn_breakfast").style.background = "white";  			
-			document.getElementById("btn_breakfast_cat").style.background = "white";  
+			if(document.forms[0].breakfast.value == "N")
+			{
+				
+				if(parseInt(document.forms[0].breakfast_qty.value) == 0)
+				{
+					document.forms[0].breakfast_qty.value = "1";
+				}
+				document.forms[0].breakfast.value="Y";
+				document.getElementById("btn_breakfast").style.background = "lightgreen";  			
+				document.forms[0].breakfast_cat.value="VEG";
+				document.getElementById("btn_breakfast_cat").innerHTML="VEG";
+				document.getElementById("btn_breakfast_cat").style.background = "lightgreen";  
+			}
+			else
+			{
+				
+				document.forms[0].breakfast_qty.value = "0";
+				document.forms[0].breakfast.value="N";
+				document.forms[0].breakfast_cat.value="NA";
+				document.getElementById("btn_breakfast_cat").innerHTML="NA";
+				document.getElementById("btn_breakfast").style.background = "white";  			
+				document.getElementById("btn_breakfast_cat").style.background = "white";  
+			}
+			
 		}
+			
+		
 		
 	}
 	
 	if(meal == "lunch")
 	{
-		
-		if(document.forms[0].lunch.value == "N")
+		if(lunch_availed == "Y")
 		{
-			if(parseInt(document.forms[0].lunch_qty.value) == 0)
-			{
-				document.forms[0].lunch_qty.value = "1";
-			}
-			document.forms[0].lunch.value="Y";
-			document.getElementById("btn_lunch").style.background = "lightgreen";  			
-			document.forms[0].lunch_cat.value="VEG";
-			document.getElementById("btn_lunch_cat").innerHTML="VEG";
-			document.getElementById("btn_lunch_cat").style.background = "lightgreen";  
+			
+			alert("If you wish to cancel this meal, Please contact Supervisor");
 		}
 		else
 		{
-			document.forms[0].lunch_qty.value = "0";
-			document.forms[0].lunch.value="N";
-			document.getElementById("btn_lunch").style.background = "white";  			
-			document.forms[0].lunch_cat.value="NA";
-			document.getElementById("btn_lunch_cat").innerHTML="NA";
-			document.getElementById("btn_lunch_cat").style.background = "white";  
+			if(document.forms[0].lunch.value == "N")
+			{
+				if(parseInt(document.forms[0].lunch_qty.value) == 0)
+				{
+					document.forms[0].lunch_qty.value = "1";
+				}
+				document.forms[0].lunch.value="Y";
+				document.getElementById("btn_lunch").style.background = "lightgreen";  			
+				document.forms[0].lunch_cat.value="VEG";
+				document.getElementById("btn_lunch_cat").innerHTML="VEG";
+				document.getElementById("btn_lunch_cat").style.background = "lightgreen";  
+			}
+			else
+			{
+				document.forms[0].lunch_qty.value = "0";
+				document.forms[0].lunch.value="N";
+				document.getElementById("btn_lunch").style.background = "white";  			
+				document.forms[0].lunch_cat.value="NA";
+				document.getElementById("btn_lunch_cat").innerHTML="NA";
+				document.getElementById("btn_lunch_cat").style.background = "white";  
+			}
+			
 		}
+			
 		
 	}
 	
 	if(meal == "dinner")
 	{
-		
-		if(document.forms[0].dinner.value == "N")
+		if(dinner_availed == "Y")
 		{
-			if(parseInt(document.forms[0].dinner_qty.value) == 0)
-			{
-				document.forms[0].dinner_qty.value = "1";
-			}
-			document.forms[0].dinner.value="Y";
-			document.getElementById("btn_dinner").style.background = "lightgreen";  
-			document.getElementById("btn_dinner_cat").innerHTML="VEG";
-			document.forms[0].dinner_cat.value="VEG";
-			document.getElementById("btn_dinner_cat").style.background = "lightgreen";  
+			alert("If you wish to cancel this meal, Please contact Supervisor");
 		}
 		else
 		{
-			document.forms[0].dinner_qty.value = "0";
-			document.forms[0].dinner.value="N";
-			document.getElementById("btn_dinner").style.background = "white";  
-			document.getElementById("btn_dinner_cat").innerHTML="NA";
-			document.forms[0].dinner_cat.value="NA";
-			document.getElementById("btn_dinner_cat").style.background = "white";  
+			if(document.forms[0].dinner.value == "N")
+			{
+				if(parseInt(document.forms[0].dinner_qty.value) == 0)
+				{
+					document.forms[0].dinner_qty.value = "1";
+				}
+				document.forms[0].dinner.value="Y";
+				document.getElementById("btn_dinner").style.background = "lightgreen";  
+				document.getElementById("btn_dinner_cat").innerHTML="VEG";
+				document.forms[0].dinner_cat.value="VEG";
+				document.getElementById("btn_dinner_cat").style.background = "lightgreen";  
+			}
+			else
+			{
+				document.forms[0].dinner_qty.value = "0";
+				document.forms[0].dinner.value="N";
+				document.getElementById("btn_dinner").style.background = "white";  
+				document.getElementById("btn_dinner_cat").innerHTML="NA";
+				document.forms[0].dinner_cat.value="NA";
+				document.getElementById("btn_dinner_cat").style.background = "white";  
+			}
+			
 		}
+			
+	
 		
 	}
 	
 	if(meal == "parcel")
 	{
-		
-		if(document.forms[0].parcel.value == "N")
+		if(parcel_availed == "Y")
 		{
-			
-			document.forms[0].parcel.value="Y";
-			document.getElementById("btn_parcel").style.background = "lightgreen";  
+			alert("If you wish to cancel this meal, Please contact Supervisor");
 		}
 		else
-		{			
-			document.forms[0].parcel.value="N";
-			document.getElementById("btn_parcel").style.background = "white";  
+		{
+			if(document.forms[0].parcel.value == "N")
+			{
+				
+				document.forms[0].parcel.value="Y";
+				document.getElementById("btn_parcel").style.background = "lightgreen";  
+			}
+			else
+			{			
+				document.forms[0].parcel.value="N";
+				document.getElementById("btn_parcel").style.background = "white";  
+			}
+			
+			
 		}
+			
 		
 	}
 	
@@ -848,6 +835,181 @@ function receiveMessAvailed(){
 		}
 
 
+
+
+
+function printCoupans()
+{
+	
+	if(printed == "N")
+	{
+		
+		//printed = "Y";
+		var crewid = "<%=session.getAttribute("username") %>";	
+		var location = "<%=session.getAttribute("location") %>";	
+		var meals="";
+		
+		if(document.forms[0].breakfast.value == "Y")
+			meals = meals + "1";
+		else
+			meals = meals + "0";
+		
+		if(document.forms[0].lunch.value == "Y")
+			meals = meals + "1";
+		else
+			meals = meals + "0";
+		
+		if(document.forms[0].dinner.value == "Y")
+			meals = meals + "1";
+		else
+			meals = meals + "0";
+		
+		if(document.forms[0].parcel.value == "Y")
+			meals = meals + "1";
+		else
+			meals = meals + "0";
+		
+		
+		
+		
+		var url = "http://localhost:8080/RRService/printReceipt/" + crewid + "/" + location + "/" + meals ;
+		
+		
+		window.open(url,"_blank");
+		//alert(url);
+		
+		
+		    
+
+	}
+	else
+	{
+		alert("You have already printed the coupans");
+		
+	}
+		    
+	
+}
+
+
+window.addEventListener("message", function(ev) {
+	 var msg;
+	 msg = ev.data.message;	
+	 ev.source.close();
+	 
+});
+
+
+// function addMeal(type)
+// {
+
+// 	if(type == "breakfast")
+// 	{
+// 		document.forms[0].breakfast_qty.value = parseInt(document.forms[0].breakfast_qty.value) + 1;
+// 		document.getElementById("b_qty").innerHTML="<h3>" + document.forms[0].breakfast_qty.value + "</h3>";
+		
+
+// 		if(parseInt(document.forms[0].breakfast_qty.value) > 0)
+// 		{
+// 			document.getElementById("btn_breakfast").style.background = "lightgreen"; 
+// 			document.getElementById("btn_breakfast_cat").style.background = "lightgreen";
+// 			document.getElementById("btn_breakfast_cat").innerHTML="VEG";
+// 			breakfast_cat.breakfast_cat.value="VEG";
+// 			document.forms[0].breakfast.value="Y";
+// 		}
+// 	}else if(type == "lunch")
+// 	{
+// 		document.forms[0].lunch_qty.value = parseInt(document.forms[0].lunch_qty.value) + 1;
+// 		document.getElementById("l_qty").innerHTML="<h3>" + document.forms[0].lunch_qty.value + "</h3>";
+
+// 		if(parseInt(document.forms[0].lunch_qty.value) > 0)
+// 		{
+// 			document.getElementById("btn_lunch").style.background = "lightgreen"; 
+// 			document.getElementById("btn_lunch_cat").style.background = "lightgreen";
+// 			document.getElementById("btn_lunch_cat").innerHTML="VEG";
+// 			breakfast_cat.lunch_cat.value="VEG";
+// 			document.forms[0].lunch.value="Y";
+// 		}
+// 	}else if(type == "dinner")
+// 	{
+// 		document.forms[0].dinner_qty.value = parseInt(document.forms[0].dinner_qty.value) + 1;
+// 		document.getElementById("d_qty").innerHTML="<h3>" + document.forms[0].dinner_qty.value + "</h3>";
+
+// 		if(parseInt(document.forms[0].dinner_qty.value) > 0)
+// 		{
+// 			document.getElementById("btn_dinner").style.background = "lightgreen"; 
+// 			document.getElementById("btn_dinner_cat").style.background = "lightgreen";
+// 			document.getElementById("btn_dinner_cat").innerHTML="VEG";
+// 			breakfast_cat.dinner_cat.value="VEG";
+// 			document.forms[0].dinner.value="Y";
+// 		}
+// 	}	
+		
+// }
+
+
+
+
+// function substractMeal(type)
+// {
+
+// 	if(type == "breakfast")
+// 	{
+// 		if(parseInt(document.forms[0].breakfast_qty.value) > 0)
+// 		{
+// 			document.forms[0].breakfast_qty.value = parseInt(document.forms[0].breakfast_qty.value) - 1;
+// 			document.getElementById("b_qty").innerHTML="<h3>" + document.forms[0].breakfast_qty.value + "</h3>";
+// 		}
+		
+// 		if(parseInt(document.forms[0].breakfast_qty.value) == 0)
+// 		{
+// 			document.getElementById("btn_breakfast").style.background = "white";  	
+// 			document.getElementById("btn_breakfast_cat").style.background = "white";
+// 			document.getElementById("btn_breakfast_cat").innerHTML="NA";
+// 			breakfast_cat.breakfast_cat.value="NA";
+// 			document.forms[0].breakfast.value="N";
+// 		}
+			
+			
+// 	}else if(type == "lunch")
+// 	{
+// 		if(parseInt(document.forms[0].lunch_qty.value) > 0)
+// 		{
+// 			document.forms[0].lunch_qty.value = parseInt(document.forms[0].lunch_qty.value) - 1;
+// 			document.getElementById("l_qty").innerHTML="<h3>" + document.forms[0].lunch_qty.value + "</h3>";
+// 		}
+
+// 		if(parseInt(document.forms[0].lunch_qty.value) == 0)
+// 		{
+// 			document.getElementById("btn_lunch").style.background = "white";  		
+// 			document.getElementById("btn_lunch_cat").style.background = "white";
+// 			document.getElementById("btn_lunch_cat").innerHTML="NA";
+// 			breakfast_cat.lunch_cat.value="NA";
+// 			document.forms[0].lunch.value="N";
+// 		}
+			
+			
+// 	}else if(type == "dinner")
+// 	{
+// 		if(parseInt(document.forms[0].dinner_qty.value) > 0)
+// 		{
+// 			document.forms[0].dinner_qty.value = parseInt(document.forms[0].dinner_qty.value) - 1;
+// 			document.getElementById("d_qty").innerHTML="<h3>" + document.forms[0].dinner_qty.value + "</h3>";
+// 		}
+
+// 		if(parseInt(document.forms[0].dinner_qty.value) == 0)
+// 		{
+// 			document.getElementById("btn_dinner").style.background = "white";  	
+// 			document.getElementById("btn_dinner_cat").style.background = "white";
+// 			document.getElementById("btn_dinner_cat").innerHTML="NA";
+// 			breakfast_cat.dinner_cat.value="NA";
+// 			document.forms[0].dinner.value="N";
+// 		}
+			
+			
+// 	}
+		
+// }
 
 
 

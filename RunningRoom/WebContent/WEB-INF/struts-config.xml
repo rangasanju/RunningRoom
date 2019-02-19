@@ -207,6 +207,7 @@
 			<forward name="WakeMe" path="/pages/RunningRoom/WakeMe.jsp" />
 			<forward name="WakeCrewTime" path="/pages/Operator/WakeCrewTime.jsp" />
 			<forward name="InitiateCrewWakeUp" path="/runningroom.do?method=initiateWakeCrewTime" />
+			<forward name="LOGOUTKIOSK" path="/Login.do?method=LogoutKiosk"/>
 			
 			
 		</action>
