@@ -174,7 +174,7 @@ DBConnection db = new DBConnection();
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
 	 }
 	
 	 
@@ -233,7 +233,7 @@ String res = "FAIL";
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
 	 }
 	
 	 
@@ -401,7 +401,7 @@ String divisioncode = session.getAttribute("division").toString().trim();
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
 	 }
 	
 	 
@@ -463,7 +463,7 @@ String divisioncode = session.getAttribute("division").toString().trim();
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
 	 }
 	
 	 
@@ -519,7 +519,10 @@ public ActionForward addLobby(ActionMapping mapping, ActionForm form,
 	 {
 		 System.out.println("Error : " + e);
 	 }
-	 
+	 finally
+	 {
+			db.closeCon();
+	 }
 	
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< MasterAction - addLobby <<<<<<<<<<<<<<<<<<<<<<");
@@ -656,7 +659,10 @@ public ActionForward initiateAddRooms(ActionMapping mapping, ActionForm form,
 	{
 		 System.out.println("Error : " + e);
 	}
-	
+	finally
+	{
+		db.closeCon();
+	}
 
 
 	 
@@ -825,7 +831,7 @@ RoomForm fb = (RoomForm) form;
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		db.closeCon();
 	 }
 	
 	 
@@ -857,90 +863,105 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 	ArrayList<String> lobbycategorylist = new ArrayList<String>();
 	ArrayList<String> lobbyassignedlist = new ArrayList<String>();
 	
-	
-	
-	//Populate Category List
-	String location="";
-	RoomForm fb = (RoomForm) form;	 
-	fb.setCategory_list(null);
-	try{
-		 
-		 location = request.getSession().getAttribute("location").toString();
-		 //String query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
-		 String query = "SELECT * FROM CREW_CAT_MST";
-		 ResultSet rs  = db.executeQuery(query);				
-		 
-		 
-		 while(rs.next())
-		 {
-			 categorylist.add(rs.getString("CATEGORY_V"));
-						
-		 }
+	try {
 		
 		
-		 
-	}catch(Exception e)
-	{
-		 System.out.println("Error : " + e);
-	}
-	
+		
+		
 
-	try{
-		 String query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-		 ResultSet rs  = db.executeQuery(query);				
-		 
-		 
-		 while(rs.next())
-		 {
-			 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+		//Populate Category List
+		String location="";
+		RoomForm fb = (RoomForm) form;	 
+		fb.setCategory_list(null);
+		try{
+			 
+			 location = request.getSession().getAttribute("location").toString();
+			 //String query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
+			 String query = "SELECT * FROM CREW_CAT_MST";
+			 ResultSet rs  = db.executeQuery(query);				
+			 
+			 
+			 while(rs.next())
 			 {
-				 assignedlist.add(rs.getString("DESIG_V").trim());
-				 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+				 categorylist.add(rs.getString("CATEGORY_V"));
+							
 			 }
 			
-		 }
-		 request.setAttribute("categorylist", categorylist);
-		 request.setAttribute("assignedlist", assignedlist);
-		 
-		 
-	}catch(Exception e)
+			
+			 
+		}catch(Exception e)
+		{
+			 System.out.println("Error : " + e);
+		}
+		
+
+		try{
+			 String query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
+			 ResultSet rs  = db.executeQuery(query);				
+			 
+			 
+			 while(rs.next())
+			 {
+				 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+				 {
+					 assignedlist.add(rs.getString("DESIG_V").trim());
+					 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+				 }
+				
+			 }
+			 request.setAttribute("categorylist", categorylist);
+			 request.setAttribute("assignedlist", assignedlist);
+			 
+			 
+		}catch(Exception e)
+		{
+			 System.out.println("Error : " + e);
+		}
+		
+		
+		lobbycategorylist = populateLobbyDropDown(request);
+		
+		try{
+			 String query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
+			 ResultSet rs  = db.executeQuery(query);				
+			 
+			 
+			 while(rs.next())
+			 {
+				 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
+				 {
+					 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
+					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
+				 }
+				
+			 }
+			 
+			 if(lobbycategorylist != null)
+				 lobbycategorylist.remove("Select");
+			 
+			 
+			 request.setAttribute("lobbycategorylist", lobbycategorylist);
+			 request.setAttribute("lobbyassignedlist", lobbyassignedlist);
+			 
+			 
+		}catch(Exception e)
+		{
+			 System.out.println("Error : " + e);
+		}
+		
+
+		
+		
+	}
+	catch(Exception e)
 	{
 		 System.out.println("Error : " + e);
 	}
-	
-	
-	lobbycategorylist = populateLobbyDropDown(request);
-	
-	try{
-		 String query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-		 ResultSet rs  = db.executeQuery(query);				
-		 
-		 
-		 while(rs.next())
-		 {
-			 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
-			 {
-				 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
-				 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
-			 }
-			
-		 }
-		 
-		 if(lobbycategorylist != null)
-			 lobbycategorylist.remove("Select");
-		 
-		 
-		 request.setAttribute("lobbycategorylist", lobbycategorylist);
-		 request.setAttribute("lobbyassignedlist", lobbyassignedlist);
-		 
-		 
-	}catch(Exception e)
+	finally
 	{
-		 System.out.println("Error : " + e);
+		db.closeCon();
 	}
-	
-	
-	
+		
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< MasterAction - initiateAssignRoom <<<<<<<<<<<<<<<<<<<<<<");
 	  
     forward = mapping.findForward("AssignRoom");
@@ -968,8 +989,11 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignRoom >>>>>>
  DBConnection db = new DBConnection();
  fb.setMessage("");
 	 
+ 
+ try {
 	 
-	  
+	 
+	 
 	 try{
 		 //System.out.println(">>>> Length " + category_list.length);
 		 
@@ -1084,6 +1108,19 @@ lobbycategorylist = populateLobbyDropDown(request);
 		
 		
 
+	 
+	 
+ }
+catch(Exception e)
+{
+	 System.out.println("Error : " + e);
+}
+finally
+{
+	db.closeCon();
+}
+	 
+
 
 		
 
@@ -1113,6 +1150,13 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignRoom >>>>
  DBConnection db = new DBConnection();
  fb.setMessage("");
 	 
+ 
+ 
+ try {
+	 
+	 
+	 
+
 	  
 	 try{
 		 //System.out.println(">>>> Length " + category_list.length);
@@ -1225,6 +1269,17 @@ lobbycategorylist = populateLobbyDropDown(request);
 			 System.out.println("Error : " + e);
 		}
 		
+
+ }
+ catch(Exception e)
+ {
+ 	 System.out.println("Error : " + e);
+ }
+ finally
+ {
+ 	db.closeCon();
+ }
+ 	 
 		
 
 
@@ -1257,7 +1312,10 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignLobbyToRoom
  fb.setMessage("");
 	 
 	 
-	  
+ 
+try {
+	
+	
 	 try{
 		 //System.out.println(">>>> Length " + category_list.length);
 		 
@@ -1367,6 +1425,19 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignLobbyToRoom
 			 System.out.println("Error : " + e);
 		}
 		
+
+		
+		
+}
+catch(Exception e)
+ {
+ 	 System.out.println("Error : " + e);
+ }
+ finally
+ {
+ 	db.closeCon();
+ }
+	  
 		
 
 
@@ -1395,7 +1466,13 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
  DBConnection db = new DBConnection();
  fb.setMessage("");
 	 
-	  
+ 
+ 
+ try {
+	 
+	 
+	 
+
 	 try{
 		 //System.out.println(">>>> Length " + category_list.length);
 		 
@@ -1505,7 +1582,19 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
 		{
 			 System.out.println("Error : " + e);
 		}
+
 		
+		
+ }
+ catch(Exception e)
+ {
+ 	 System.out.println("Error : " + e);
+ }
+ finally
+ {
+ 	db.closeCon();
+ }
+ 		
 
 
 System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< MasterAction - deAssignRoom <<<<<<<<<<<<<<<<<<<<<<");
@@ -1584,7 +1673,7 @@ String query="";
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
 	 }
 	
 	 
@@ -1619,7 +1708,6 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - addRoom >>>>>>>>>
  String noofbeds = fb.getNoofbeds();
  String roomtype = fb.getRoomtype();
  
- String room_type[] = fb.getRoom_type();
  ArrayList<String> queries = new ArrayList<String>();
  boolean duplicate = false;
 
@@ -1633,104 +1721,117 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - addRoom >>>>>>>>>
   
   DBConnection db = new DBConnection();
 	 
-	 
-  
-try{
+try {
 	
-	 locationid = request.getSession().getAttribute("location").toString();
-	 query = "SELECT * FROM ROOM_MST WHERE LOCATION_ID_V='" + locationid + "' AND ROOM_NO_I=" + roomno ;
-	 ResultSet rs1 = db.executeQuery(query);
-	 
-	 if(rs1.next())
-	 {
-		 fb.setMessage("Room already exists");
-		 duplicate = true;
-		
-	 }
-	 
 	  
-}catch(Exception e)
-{
-	 System.out.println("Error : " + e);
-}
-
-
-
-if(!duplicate)
-{
-
-	 try{
+	try{
+		
 		 locationid = request.getSession().getAttribute("location").toString();
-		 query = "INSERT INTO ROOM_MST VALUES('" + locationid + "'," + roomno + "," + floorno + "," + noofbeds + ",'" + roomtype + "')";
-		 queries.add(query);
+		 query = "SELECT * FROM ROOM_MST WHERE LOCATION_ID_V='" + locationid + "' AND ROOM_NO_I=" + roomno ;
+		 ResultSet rs1 = db.executeQuery(query);
 		 
-		 
-		 //System.out.println("Query  : " + query);
-		 //int rs  = db.executeUpdate(query);				
-		
-		 fb.setRoomno("");
-		 //fb.setFloorno("0");
-		 fb.setRoomtype("SELECT");
-		 
-		
-		 
-	 }catch(Exception e)
-	 {
-		 System.out.println("Error : " + e);
-	 }
-	 
-	 
-
-	 
-	 try{
-		 query="";
-		 
-		 for(int i=1;i<=beds;i++)
+		 if(rs1.next())
 		 {
-			 
-			 query = "INSERT INTO BED_ALLOCATION_MST (LOCATION_ID_V,ROOM_NO_I,BED_NO_I,OCCUPANCY_I) VALUES('" + locationid + "'," + roomno + "," + i + ",0)";
+			 fb.setMessage("Room already exists");
+			 duplicate = true;
+			
+		 }
+		 
+		  
+	}catch(Exception e)
+	{
+		 System.out.println("Error : " + e);
+	}
+
+
+
+	if(!duplicate)
+	{
+
+		 try{
+			 locationid = request.getSession().getAttribute("location").toString();
+			 query = "INSERT INTO ROOM_MST VALUES('" + locationid + "'," + roomno + "," + floorno + "," + noofbeds + ",'" + roomtype + "')";
 			 queries.add(query);
-			 		 
+			 
+			 
+			 //System.out.println("Query  : " + query);
+			 //int rs  = db.executeUpdate(query);				
+			
+			 fb.setRoomno("");
+			 //fb.setFloorno("0");
+			 fb.setRoomtype("SELECT");
+			 
+			
+			 
+		 }catch(Exception e)
+		 {
+			 System.out.println("Error : " + e);
 		 }
 		 
 		 
-	  int rs = db.executeMyBatch(queries);
-		 
-	 }catch(Exception e)
-	 {
-		 System.out.println("Error : " + e);
-	 }
-	 finally
-	 {		
-		 db.closeCon();
-	 }
-	 
 
-}
-  	 
-	 
-		
-		try{
+		 
+		 try{
+			 query="";
 			 
-			
-			 query = "SELECT * FROM ROOM_TYPE";
-			 System.out.println("Query  : " + query);
-			 ResultSet rs  = db.executeQuery(query);				
-			 ArrayList roomtypelist = new ArrayList();
-			 //roomtypelist.add("SELECT");
-			 while(rs.next())
+			 for(int i=1;i<=beds;i++)
 			 {
-				 roomtypelist.add(rs.getString("CATEGORY_V"));
-							
+				 
+				 query = "INSERT INTO BED_ALLOCATION_MST (LOCATION_ID_V,ROOM_NO_I,BED_NO_I,OCCUPANCY_I) VALUES('" + locationid + "'," + roomno + "," + i + ",0)";
+				 queries.add(query);
+				 		 
 			 }
-			 request.setAttribute("roomtypelist", roomtypelist);
-			
 			 
-		}catch(Exception e)
-		{
+			 
+		  int rs = db.executeMyBatch(queries);
+			 
+		 }catch(Exception e)
+		 {
 			 System.out.println("Error : " + e);
-		}
-		
+		 }
+		 finally
+		 {		
+			 db.closeCon();
+		 }
+		 
+
+	}
+	  	 
+		 
+			
+			try{
+				 
+				
+				 query = "SELECT * FROM ROOM_TYPE";
+				 System.out.println("Query  : " + query);
+				 ResultSet rs  = db.executeQuery(query);				
+				 ArrayList roomtypelist = new ArrayList();
+				 //roomtypelist.add("SELECT");
+				 while(rs.next())
+				 {
+					 roomtypelist.add(rs.getString("CATEGORY_V"));
+								
+				 }
+				 request.setAttribute("roomtypelist", roomtypelist);
+				
+				 
+			}catch(Exception e)
+			{
+				 System.out.println("Error : " + e);
+			}
+			
+
+
+	
+}
+catch(Exception e)
+{
+	 System.out.println("Error : " + e);
+}
+finally
+{
+	db.closeCon();
+}
 
 
 	
@@ -1813,13 +1914,15 @@ public ActionForward initiateMess(ActionMapping mapping, ActionForm form, HttpSe
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  initiateMess   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	ActionForward forward = new ActionForward();
-	
+	RunningRoomForm rf = new RunningRoomForm();
 	ArrayList<String> foodtypelist = new ArrayList<String> (); 	
  	foodtypelist.add("Select");
  	foodtypelist.add("VEG");
  	foodtypelist.add("NONVEG"); 	
  	request.setAttribute("foodtypelist", foodtypelist);	
  	
+ 	String name = request.getSession().getAttribute("crewname").toString();
+ 	rf.setCrewname(name);
  	
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  initiateMess   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -2100,7 +2203,7 @@ String res = "FAIL";
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
 	 }
 	
 	 
@@ -2457,6 +2560,93 @@ public ActionForward getDashboardForKiosk(ActionMapping mapping, ActionForm form
 
 }
 
+
+
+
+
+
+public ActionForward getDashboardForOperator(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)throws Exception
+{
+	
+	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getDashboardForOperator   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+	
+	
+	
+	DBConnection db = new DBConnection(); 
+	
+	PrintWriter out = response.getWriter();
+	
+	int total = 0;
+	int occupancy = 0;
+	int availability = 0;
+	int blocked = 0;
+	
+	String lt = "";
+	String location = request.getSession().getAttribute("location").toString();
+
+	
+	try{
+		String query1 = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "'";
+		ResultSet rs = db.executeQuery(query1);
+		while(rs.next())
+		{
+			total++; 
+			
+			if(rs.getInt("OCCUPANCY_I") == 1)
+				occupancy++;
+			if(rs.getInt("OCCUPANCY_I") == 0)
+				availability++;
+			if(rs.getInt("OCCUPANCY_I") == -1)
+				blocked++;
+		
+		}
+		
+		
+		
+		lt +="<div >";
+		lt +="<table class='table table-bordered table-condensed'  >";
+		lt +="<thead>"
+				
+				+ "<tr>"
+				+ "<th class='text-center' style='white-space: nowrap' bgcolor='lightblue'> Total (" + total + ") </th>"
+				+ "<th class='text-center' style='white-space: nowrap' bgcolor='pink'> Booked (" + occupancy + ")  </th>"
+				+ "<th class='text-center' style='white-space: nowrap' bgcolor='lightgreen'> Available (" + availability + ")  </th>"
+				+ "<th class='text-center' style='white-space: nowrap' bgcolor='lightgrey'> Maint. (" + blocked + ")  </th>"
+				+ "</tr>"
+		   + "</thead>"
+		  
+		   + "</table>"
+		   + "</div>";
+
+		
+		
+	}catch(Exception e)
+	{
+		System.out.println("Ex : " + e);
+		
+	}finally
+	{
+		 db.closeCon();
+		 
+	}
+	System.out.println("" + lt);
+		
+	
+	 out.println(lt);
+	 out.flush();
+			
+
+	
+	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  getDashboardForOperator   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	System.out.println("\n\n\n\n\n");
+	
+	 
+    
+    return null;
+
+
+
+}
 
 
 

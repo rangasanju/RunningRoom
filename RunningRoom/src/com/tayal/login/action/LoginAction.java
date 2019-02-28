@@ -166,25 +166,25 @@ public ActionForward saveRequestAccess(ActionMapping mapping, ActionForm form,
 	 
 	 try{
 		 
-		 String query = "INSERT INTO REQUEST_ACCESS (DIVISION_CODE_V, LOBBY_CODE_V, MOBILE_V,MAC_ADDRESS_V) VALUES('" + division + "','" + lobby + "','" + mobile + "','" + macaddress + "')";
-		 System.out.println("Query  : " + query);
-		 int rs  = db.executeUpdate(query);				
-		
-				 
-		 if(rs == 1)
-			 fb.setMessage("Request submitted successfully");
-		 else
-			 fb.setMessage("Request failed");
+			 String query = "INSERT INTO REQUEST_ACCESS (DIVISION_CODE_V, LOBBY_CODE_V, MOBILE_V,MAC_ADDRESS_V) VALUES('" + division + "','" + lobby + "','" + mobile + "','" + macaddress + "')";
+			 System.out.println("Query  : " + query);
+			 int rs  = db.executeUpdate(query);				
+			
+					 
+			 if(rs == 1)
+				 fb.setMessage("Request submitted successfully");
+			 else
+				 fb.setMessage("Request failed");
 		
 		 
-	 }catch(Exception e)
-	 {
-		 System.out.println("Error : " + e);
-	 }
-	 finally
-	 {		
-		 db.closeCon();
-	 }
+		 }catch(Exception e)
+		 {
+			 System.out.println("Error : " + e);
+		 }
+		 finally
+		 {		
+			 db.closeCon();
+		 }
 	
 	 
 	
@@ -260,6 +260,8 @@ public ActionForward changePassword(ActionMapping mapping, ActionForm form, Http
 		        
 			if(rs.next())
 			{
+				
+			
 				String decryppass = AESencrp.decrypt(rs.getString("password_v"));
 				
 				System.out.println("decryppass : " + decryppass);
@@ -306,6 +308,10 @@ public ActionForward changePassword(ActionMapping mapping, ActionForm form, Http
 		{
 			System.out.println("Ex : " + e);
 		}
+		finally
+		{
+			db.closeCon();
+		}
 		
 		lf.setPassword("");
 		 lf.setRe_password("");
@@ -315,7 +321,6 @@ public ActionForward changePassword(ActionMapping mapping, ActionForm form, Http
 	System.out.println("\n\n\n\n\n");
 
 	
-	db.closeCon();
 	
 	lf.setPassword(null);
 	lf.setOldpassword(null);

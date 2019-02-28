@@ -74,7 +74,7 @@
   
     <div class="site-wrapper">
       <div class="site-wrapper-inner">
-          <div class="masthead clearfix">
+          <div class="clearfix">
             <div class="inner">
               <img class="masthead-brand masthead-brand-img" src="images/tayallogo.jpg"> 
              <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>
@@ -100,10 +100,14 @@
           
           
         <div class="row">
-              <div class="col-sm-8">	           
+        
+              <div class="col-sm-7">	
+	              <div >		  
+				      <div class="table-wrapper-scroll-y " id="dashboard" ></div>			        
+		          </div>	  
 			      <div class="table-wrapper-scroll-y " id="layout" ></div>			        
 	          </div>
-	    	  <div class="col-sm-4">	     
+	    	  <div class="col-sm-5">	     
 		    	  <div  class="col-sm-12">
 		    	  	<h3 class="cover-heading">Wake Up Calls</h3>     
 		    	  </div>  
@@ -173,8 +177,12 @@ var timerId;
 function onLoad()
 {
 	//alert("cHECK 1");
-	getLayout();
+	
+	getDashboard();
+	//getLayout();
 	prev_color="";
+	
+	setTimeout(getLayout,1000);
 	
 	setTimeout(getWakeUpInfo,2000);
 	
@@ -340,6 +348,65 @@ function trim(str)
 {
    return str.replace(/^\s*|\s*$/g,"");
 }
+
+
+
+
+function getDashboard()
+{
+	
+	
+	
+		var url="Master.do?method=getDashboardForOperator";
+						if (window.XMLHttpRequest){ // Non-IE browsers
+							reqFeature = new XMLHttpRequest();
+						try{
+							reqFeature.open("GET", url, true);
+							}catch (e){
+							alert(e);
+							}
+							reqFeature.onreadystatechange = receiveDashboard;
+							reqFeature.send(null);
+							}
+							else if (window.ActiveXObject){ // IE
+							reqFeature = new ActiveXObject("Microsoft.XMLHTTP");
+							if (reqFeature){
+							//alert('IE');
+							reqFeature.open("GET", url, true);
+							reqFeature.onreadystatechange = receiveDashboard;
+							reqFeature.send(null);
+						}
+					}	
+	
+	
+}
+
+
+
+
+
+function receiveDashboard(){
+
+			var status;
+			try{
+				status=reqFeature.status;
+								
+					if (reqFeature.readyState == 4 && reqFeature.status == 200)
+						{ // OK response
+							xmlhtp = reqFeature.responseText;						
+							document.getElementById("dashboard").innerHTML=xmlhtp;
+							//document.getElementById("output").scrollTop = document.getElementById("output").scrollHeight; 
+						
+						}
+					
+				}
+				catch(e)
+				{
+					status="Not found";
+				}
+		}
+
+
 
 
 

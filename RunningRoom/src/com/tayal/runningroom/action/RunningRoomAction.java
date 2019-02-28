@@ -79,6 +79,10 @@ public ActionForward initiateRunningRoom(ActionMapping mapping, ActionForm form,
 			System.out.println("Ex : " + e);
 			
 		}
+		finally
+		{
+			db.closeCon();
+		}
 	}
 
 	
@@ -140,6 +144,9 @@ public ActionForward initiateCategoryOptions(ActionMapping mapping, ActionForm f
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		db.closeCon();
 	}
 	
 	
@@ -195,7 +202,10 @@ public ActionForward initiateMess(ActionMapping mapping, ActionForm form, HttpSe
  	String food_type_availed="";
  	
  	String location = request.getSession().getAttribute("location").toString();
-	
+ 	String crewname = request.getSession().getAttribute("crewname").toString();
+ 	rf.setCrewname(crewname);
+ 	
+ 	
 		rf.setBreakfast("N");	
 		rf.setLunch("N");
 		rf.setDinner("N");
@@ -219,6 +229,8 @@ public ActionForward initiateMess(ActionMapping mapping, ActionForm form, HttpSe
 			{
 				meal_type_availed = rs.getString("MEAL_TYPE_V");
 				food_type_availed= rs.getString("FOOD_TYPE_V");
+				
+				rf.setSubsidy(rs.getString("SUBSIDY_V"));
 				
 				if(meal_type_availed.equals("BREAKFAST"))
 				{
@@ -255,7 +267,7 @@ public ActionForward initiateMess(ActionMapping mapping, ActionForm form, HttpSe
 				
 			}
 			
-			System.out.println(">>>>>>>>>>>>> Breakfast :" + rf.getBreakfast());
+			
 			
 			forward = mapping.findForward("mess");
 		}
@@ -274,7 +286,10 @@ public ActionForward initiateMess(ActionMapping mapping, ActionForm form, HttpSe
 		System.out.println("Ex : " + e);
 		
 	}
-	
+ 	finally
+	{
+		db.closeCon();
+	}
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  initiateMess   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	System.out.println("\n\n\n\n\n");
@@ -320,6 +335,11 @@ public ActionForward saveMessOptions(ActionMapping mapping, ActionForm form, Htt
 	String parcel_availed=rf.getParcel_availed();			// TO CHECK IF THE CREW HAS ALREADY AVAILED THIS MEAL FOR THE DAY
 	String check_in_date="";
 
+	
+	
+	
+try {
+	
 	
 	
 	//STR_TO_DATE('" + wakeuptime + "','%d/%m/%Y %H:%i')
@@ -403,12 +423,22 @@ try{
 {
 	System.out.println("Ex : " + e);
 	
+}
+
+
+
+
+}
+catch(Exception e)
+{
+	System.out.println("Ex : " + e);
+	
 }finally
 {
 	 db.closeCon();
 	 
 }
-
+	
 
 	
 	forward = mapping.findForward("CrewOptions");
@@ -437,8 +467,6 @@ public ActionForward initiateCrewBookingByAdmin(ActionMapping mapping, ActionFor
 	
 	
 	ActionForward forward = new ActionForward();
-	DBConnection db = new DBConnection(); 
-	RunningRoomForm rf = (RunningRoomForm) form;
 	
 	
  	forward = mapping.findForward("crewbookingpage");
@@ -462,11 +490,8 @@ public ActionForward getMenu(ActionMapping mapping, ActionForm form, HttpServlet
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getMenu   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
-	RunningRoomForm rf = (RunningRoomForm) form;
 	
-	String food_type = rf.getFood_type();
 	PrintWriter out = response.getWriter();
 	String location = request.getSession().getAttribute("location").toString();
 
@@ -609,8 +634,6 @@ public ActionForward getMenu_OLD(ActionMapping mapping, ActionForm form, HttpSer
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getMenuForUser   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
-	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	RunningRoomForm rf = (RunningRoomForm) form;
 	
@@ -681,7 +704,6 @@ public ActionForward getMessAvailed(ActionMapping mapping, ActionForm form, Http
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getMessAvailed   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	RunningRoomForm rf = (RunningRoomForm) form;
 	
@@ -708,15 +730,13 @@ public ActionForward getMessAvailed(ActionMapping mapping, ActionForm form, Http
 			 		+ "</tr>"
 			 		+ "</thead>"
 			 		+ "<tbody>";
-			 
-		int counter = 1;
+		
 		while(rs2.next())
 		{
 			 res+= "<tr>";
 			 res+= "<td align='center' > " + rs2.getString("MEAL_TYPE_V") + "</td>";
 			 res+= "<td align='center' > " + rs2.getString("FOOD_TYPE_V") + "</td>";
 			 res+= "</tr>";
-			counter++;
 		}
 		
 		 res+= "</tbody>";
@@ -840,6 +860,9 @@ public ActionForward initiateWakeMe(ActionMapping mapping, ActionForm form, Http
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		db.closeCon();
 	}
 		
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  initiateWakeMe   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -864,7 +887,6 @@ public ActionForward initiateWakeCrewTime(ActionMapping mapping, ActionForm form
 	
 	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
-	RunningRoomForm rf = (RunningRoomForm) form;
 	String location = request.getSession().getAttribute("location").toString();
 	
 	 ArrayList<String> crewlist = new ArrayList<String>();
@@ -887,6 +909,9 @@ public ActionForward initiateWakeCrewTime(ActionMapping mapping, ActionForm form
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		db.closeCon();
 	}
 		
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  initiateWakeCrewTime   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -1104,7 +1129,7 @@ public ActionForward initiateCrewOptions(ActionMapping mapping, ActionForm form,
 	 }
 	 finally
 	 {		
-		 //db.closeCon();
+		 db.closeCon();
 	 }
 	
 	
@@ -1149,7 +1174,10 @@ public ActionForward getAvailableBed(ActionMapping mapping, ActionForm form, Htt
 	String room_str="";
 	
 	
-
+try {
+	
+	
+	
 
 try{
 	String query1 = "SELECT ROOM_NO_I FROM ROOM_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND DESIG_V='" + designation + "' AND ROOM_NO_I IN (SELECT ROOM_NO_I FROM LOBBY_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND LOBBY_V='" + crew_lobby + "') ORDER BY ROOM_NO_I";
@@ -1201,6 +1229,20 @@ try{
 
 
 
+
+
+}catch(Exception e)
+{
+	System.out.println("Ex : " + e);
+	
+}
+finally
+{
+	db.closeCon();
+}
+
+
+
 	
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  getAvailableBed   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -1230,8 +1272,6 @@ public ActionForward bookBed(ActionMapping mapping, ActionForm form, HttpServlet
 
 	String location = request.getSession().getAttribute("location").toString();
 	String crewid = rf.getCrew_id();
-	String crew_lobby = crewid.substring(0, crewid.length()-4);
-	String deisnation="";
 	String roomselected = rf.getRoom_selected();
 	String bedselected = rf.getBed_selected();
 	String inward_train_no = request.getSession().getAttribute("inwardtrainno").toString();
@@ -1240,30 +1280,7 @@ public ActionForward bookBed(ActionMapping mapping, ActionForm form, HttpServlet
 	
 	System.out.println("Inward Train NO : " + inward_train_no);
 	
-//	
-//	try{
-//		String query1 = "SELECT ROOM_NO_I,BED_NO_I FROM ROOM_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND DESIG_V='" + deisnation + "' AND ROOM_NO_I IN (SELECT ROOM_NO_I FROM LOBBY_CAT_MST  WHERE LOCATION_ID_V='" + location + "' AND LOBBY_V='" + crew_lobby + "') ORDER BY ROOM_NO_I";
-//				
-//		ResultSet rs2 = db.executeQuery(query1);
-//		while(rs2.next())
-//		{
-//			if(rs2.getInt("OCCUPANCY_I") == 0)
-//			{
-//				roomselected = rs2.getString("ROOM_NO_I");
-//				bedselected = rs2.getString("BED_NO_I");
-//				break;
-//			}
-//						
-//		}
-//		
-//		
-//	}catch(Exception e)
-//	{
-//		System.out.println("Ex : " + e);
-//		
-//	}
-//	
-//	
+
 	
 try{
 
@@ -1592,15 +1609,17 @@ public ActionForward getRunningRoomLayout(ActionMapping mapping, ActionForm form
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getRunningRoomLayout >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	RunningRoomForm rf = (RunningRoomForm) form;
 	PrintWriter out = response.getWriter();
-	int rowcounter = 0;		
-	boolean changerow = false;
 	int bookedroom=0;
 	int bookedbed=0;
 	int floor = 0;
+	
+	
+	try
+	{
+	
 	
 	String location = request.getSession().getAttribute("location").toString();
 	String booked = rf.getBooked().trim();
@@ -1623,6 +1642,8 @@ public ActionForward getRunningRoomLayout(ActionMapping mapping, ActionForm form
 	String room_str="";
 	String query1 = "";
 	
+	
+
 	
 	try{
 		
@@ -1777,14 +1798,26 @@ try{
 	System.out.println("Ex : " + e);
 	e.printStackTrace();
 	
-}finally
-{
-	 db.closeCon();
-	 
 }
 
 	
+
 	
+	
+	
+	}
+	catch(Exception e)
+	{
+		System.out.println("Ex : " + e);
+		
+	}
+	finally
+	{
+		 db.closeCon();
+		 
+	}
+	
+		
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  getRunningRoomLayout   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	System.out.println("\n\n\n\n\n");
 	
@@ -1804,17 +1837,10 @@ public ActionForward getRunningRoomLayoutForAdmin(ActionMapping mapping, ActionF
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getRunningRoomLayout   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
-	RunningRoomForm rf = (RunningRoomForm) form;
 	PrintWriter out = response.getWriter();
-	int rowcounter = 0;		
-	boolean changerow = false;
-	int bookedroom=0;
-	int bookedbed=0;
 	int floor = 0;
 	
-	HashMap<String,Integer> hmap = new HashMap<String,Integer>();
 	String location = request.getSession().getAttribute("location").toString();
 	
 	
@@ -1987,7 +2013,12 @@ public ActionForward initiateInwardTrainEntry(ActionMapping mapping, ActionForm 
 			System.out.println("Ex : " + e);
 			
 		}
-	
+	finally
+	{
+		 db.closeCon();
+		 
+	}
+
 	
 		
  	
@@ -2029,7 +2060,12 @@ public ActionForward initiateOutwardTrainEntry(ActionMapping mapping, ActionForm
  			System.out.println("Ex : " + e);
  			
  		}
-	
+ 		finally
+ 		{
+ 			 db.closeCon();
+ 			 
+ 		}
+
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  initiateOutwardTrainEntry   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	System.out.println("\n\n\n\n\n");
 	
@@ -2221,9 +2257,13 @@ public ActionForward runningRoomReport_old(ActionMapping mapping, ActionForm for
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		 db.closeCon();
+		 
 	}
+
 	
-	String role = request.getSession().getAttribute("role").toString();
  
  		forward = mapping.findForward("RunningRoomReport");
  	
@@ -2356,9 +2396,13 @@ public ActionForward runningRoomReport(ActionMapping mapping, ActionForm form, H
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		 db.closeCon();
+		 
 	}
+
 	
-	String role = request.getSession().getAttribute("role").toString();
  
  		forward = mapping.findForward("RunningRoomReport");
  	
@@ -2473,9 +2517,12 @@ public ActionForward occupancyCountReport(ActionMapping mapping, ActionForm form
 		e.printStackTrace();
 		
 	}
-	
-	String role = request.getSession().getAttribute("role").toString();
- 
+	finally
+	{
+		 db.closeCon();
+		 
+	}
+
  		forward = mapping.findForward("OccupancyCountReport");
  	
  
@@ -2523,7 +2570,6 @@ public ActionForward getWakeUpCalls(ActionMapping mapping, ActionForm form, Http
 	try{
 		
 		String query="";
-		String where_clause="";
 		
 		query = "SELECT USER_ID_V,BED_NO_I,ROOM_NO_I,DATE_FORMAT(WAKE_UP_TIME_D,'%d-%m-%Y %H:%i') WAKE_UP_TIME_D FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "' AND WAKE_UP_TIME_D IS NOT NULL";
 		
@@ -2559,9 +2605,12 @@ public ActionForward getWakeUpCalls(ActionMapping mapping, ActionForm form, Http
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		 db.closeCon();
+		 
 	}
-	
-	String role = request.getSession().getAttribute("role").toString();
+
  
  		forward = mapping.findForward("WakeUpReport");
  	
@@ -2590,11 +2639,7 @@ public ActionForward messReport(ActionMapping mapping, ActionForm form, HttpServ
 	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	MessReportForm fb = (MessReportForm) form;
-	String checkin_date;
-	String checkout_date;
 	
-	//String fromdate = fb.getFrom_date();
-	//String todate = fb.getTo_date();
 		
 	String fromdate = fb.getFrom_date();
 	String todate = fb.getTo_date();
@@ -2609,8 +2654,6 @@ public ActionForward messReport(ActionMapping mapping, ActionForm form, HttpServ
 	try{
 		
 		String query1="";
-		String where_clause="";
-		
 		
 		
 		if(fromdate.trim() == "" || todate.trim() == "")
@@ -2659,9 +2702,12 @@ public ActionForward messReport(ActionMapping mapping, ActionForm form, HttpServ
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		 db.closeCon();
+		 
 	}
-	
-	String role = request.getSession().getAttribute("role").toString();
+
  
  		forward = mapping.findForward("MessReport");
  	
@@ -2694,11 +2740,6 @@ public ActionForward getCurrentOccupantReport(ActionMapping mapping, ActionForm 
 	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	RunningRoomReportForm fb = (RunningRoomReportForm) form;
-	String checkin_date;
-	String checkout_date;
-	
-	String fromdate = fb.getFrom_date();
-	String todate = fb.getTo_date();
 	
 		
 	
@@ -2706,11 +2747,6 @@ public ActionForward getCurrentOccupantReport(ActionMapping mapping, ActionForm 
 	ArrayList<String> crewid = new ArrayList<String>();
 	ArrayList<String> bedno = new ArrayList<String>();
 	ArrayList<String> roomno = new ArrayList<String>();
-	ArrayList<String> checkin = new ArrayList<String>();
-	ArrayList<String> checkin_time = new ArrayList<String>();
-	ArrayList<String> checkout = new ArrayList<String>();
-	ArrayList<String> checkout_time = new ArrayList<String>();
-	
 	
 	try{
 		
@@ -2748,8 +2784,12 @@ public ActionForward getCurrentOccupantReport(ActionMapping mapping, ActionForm 
 		System.out.println("Ex : " + e);
 		
 	}
-	
-	String role = request.getSession().getAttribute("role").toString();
+	finally
+	{
+		 db.closeCon();
+		 
+	}
+
  
  		forward = mapping.findForward("CurrentOccupancyReport");
  	
@@ -2780,7 +2820,6 @@ public ActionForward getGuestInfo(ActionMapping mapping, ActionForm form, HttpSe
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  RunningRoomAction - getGuestInfo   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	RunningRoomForm rf = (RunningRoomForm) form;
 	String room = rf.getBookedroom();
@@ -2796,6 +2835,13 @@ public ActionForward getGuestInfo(ActionMapping mapping, ActionForm form, HttpSe
 	String occupancy="";
 	String location = request.getSession().getAttribute("location").toString();
 	
+	
+	
+try {
+	
+	
+	
+
 	
 	try{
 		String query1 = "SELECT USER_ID_V,CHECK_IN_D,OCCUPANCY_I FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "' AND BED_NO_I=" + bed + " AND ROOM_NO_I=" +room;
@@ -2864,10 +2910,20 @@ public ActionForward getGuestInfo(ActionMapping mapping, ActionForm form, HttpSe
 				+ "Mobile : " + mobile;
 	}
 	
-	
-	
 	 out.println(result);
 	 out.flush();
+	
+}catch(Exception e)
+{
+	System.out.println("Ex : " + e);
+	
+}finally
+{
+	 db.closeCon();
+	 
+}
+	
+	
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  RunningRoomAction - getGuestInfo   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	System.out.println("\n\n\n\n\n");
@@ -2990,7 +3046,12 @@ public ActionForward getWakeupInfo(ActionMapping mapping, ActionForm form, HttpS
 	{
 		System.out.println("Ex : " + e);
 		
+	}finally
+	{
+		 db.closeCon();
+		 
 	}
+		
 	
 	
 	 out.println(result);
@@ -3017,7 +3078,6 @@ public ActionForward block(ActionMapping mapping, ActionForm form, HttpServletRe
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  RunningRoomAction - block Bed / Room    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	RunningRoomForm rf = (RunningRoomForm) form;
 	
 	DBConnection db = new DBConnection(); 
@@ -3028,6 +3088,12 @@ public ActionForward block(ActionMapping mapping, ActionForm form, HttpServletRe
 	String blockType = rf.getBlock_type();
 	int operation = rf.getOperation_type();
 	String location = request.getSession().getAttribute("location").toString();
+	
+
+try {
+	
+	
+	
 	
 	
 try{
@@ -3053,10 +3119,6 @@ try{
 {
 	System.out.println("Ex : " + e);
 	
-}finally
-{
-	 db.closeCon();
-	 
 }
 
 
@@ -3154,6 +3216,17 @@ try{
 	
 }
 	 
+
+}catch(Exception e)
+{
+	System.out.println("Ex : " + e);
+	
+}finally
+{
+	 db.closeCon();
+	 
+}
+	
     	 
 
 	
@@ -3232,7 +3305,7 @@ public void populateRoomDropDown(HttpServletRequest request)
 		 
 		
 		 ResultSet rs1  = db.executeQuery(crewid_query);	
-		 ArrayList roomlist = new ArrayList();
+		 ArrayList<String> roomlist = new ArrayList<String>();
 		
 		 // CREW LIST DROPDOWN
 		 
@@ -3270,11 +3343,8 @@ public ActionForward isCrewBooked(ActionMapping mapping, ActionForm form, HttpSe
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  isCrewBooked   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
 	DBConnection db = new DBConnection(); 
 	RunningRoomForm rf = (RunningRoomForm) form;
-	String room = rf.getBookedroom();
-	String bed = rf.getBookedbed();
 	
 	PrintWriter out = response.getWriter();
 	
@@ -3297,6 +3367,11 @@ public ActionForward isCrewBooked(ActionMapping mapping, ActionForm form, HttpSe
 		System.out.println("Ex : " + e);
 		
 	}
+	 finally
+	 {		
+		 db.closeCon();
+	 }
+
 	
 	 out.println(result);
 	 out.flush();

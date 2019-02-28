@@ -19,7 +19,7 @@ public class DBConnection {
 		  String dbName = "runningroom";
 		  String driver = "com.mysql.jdbc.Driver";
 		  String userName = "root";
-		  String password = "";
+		  String password = "111";
 		  
 		  
 		  try {
@@ -39,10 +39,7 @@ public class DBConnection {
 
 	public ResultSet executeQuery(String query) 
 	{
-		 Connection conn = null;
-		 
-		 
-		  
+		 Connection conn = null; 
 		  try {
 			  System.out.println("QUERY : " + query);
 			  conn = getConnection();
@@ -128,11 +125,12 @@ public class DBConnection {
 
 	public void closeCon()
 	{
-		 
 		  
 		  try {
 			  
-			 conn.close();
+			  if(conn != null)
+				  conn.close();
+			  
 
 		  
 		  } catch (Exception e) {

@@ -87,7 +87,7 @@
 
        
 
-          <div class="masthead clearfix">
+          <div class="clearfix">
             <div class="inner no-print">
               <img class="masthead-brand masthead-brand-img" src="images/tayallogo.jpg" > 
               <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>

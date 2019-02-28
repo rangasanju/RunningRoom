@@ -30,6 +30,7 @@ public class RunningRoomForm extends ActionForm{
 	
 	private String message;
 	private String crew_id;
+	private String crewname;
 	private String category;
 	private String booked;
 	private String bookedroom;
@@ -182,6 +183,12 @@ public class RunningRoomForm extends ActionForm{
 
 
 
+	public String getCrewname() {
+		return crewname;
+	}
+	public void setCrewname(String crewname) {
+		this.crewname = crewname;
+	}
 	public String getSubsidy() {
 		return subsidy;
 	}

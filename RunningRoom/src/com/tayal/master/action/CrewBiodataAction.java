@@ -49,8 +49,6 @@ public ActionForward initiateCrewBiodata(ActionMapping mapping, ActionForm form,
 	
 	 
 	 CrewBiodataForm fb = (CrewBiodataForm) form;
-	 DBConnection db = new DBConnection();
-	 	 
 	 clearFormBean(fb);
 	 populateDropDown(request);
 	 
@@ -199,6 +197,8 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	 			 
 	 			res = res + "#" + rs.getString("PASSWORD_ENABLE_V");	 			 
 	 			res = res + "@" + rs.getString("FIRST_NAME_V") + " " + rs.getString("LAST_NAME_V");
+	 			String name = rs.getString("FIRST_NAME_V") + " " + rs.getString("LAST_NAME_V");
+	 			session.setAttribute("crewname", name);
 	 			session.setAttribute("designation", rs.getString("DESIG_V"));
 	 		 }
 	 		 

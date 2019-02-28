@@ -99,8 +99,7 @@ max-height: 50px;
 
 <html:form action="breathanalysis" >
 <html:hidden name="RunningRoomForm" property="crew_id" />
-<html:hidden property="camstatus" />
-<html:hidden property="crewname" />
+<html:hidden name="RunningRoomForm" property="crewname" />
 
 <html:hidden name="RunningRoomForm" property="subsidy" />
 <html:hidden name="RunningRoomForm" property="meal_type" />
@@ -288,7 +287,7 @@ max-height: 50px;
 	   			</div>
 	   			
 	   			<div class="col-sm-3">
-	   			  	<html:button property="method" value="Print" styleClass="smallbutton" onclick="printCoupans()" />
+	   			  	<html:button property="method" value="Print Coupans" styleClass="smallbutton" onclick="printCoupans()" />
 	   			</div>
 	   			<div class="col-sm-3">	    	  
 		    	  &nbsp;
@@ -342,10 +341,19 @@ function trim(str)
 function onLoad()
 {
 	
+	if(document.forms[0].subsidy.value == "N")
+	{
+				
+		document.getElementById("btn_subsidy").style.background = "white";  		
+		document.getElementById("btn_nonsubsidy").style.background = "lightgreen";
+	}
+	else
+	{
+		document.getElementById("btn_subsidy").style.background = "lightgreen";  		
+		document.getElementById("btn_nonsubsidy").style.background = "white";
+	}
+		
 	
-	document.forms[0].subsidy.value="Y";			
-	document.getElementById("btn_subsidy").style.background = "lightgreen";  		
-	document.getElementById("btn_nonsubsidy").style.background = "white";
 	
 	
 	
@@ -827,7 +835,8 @@ function printCoupans()
 		var crewid = "<%=session.getAttribute("username") %>";	
 		var location = "<%=session.getAttribute("location") %>";	
 		var meals="";
-		
+		var name = document.forms[0].crewname.value;
+		var subsidy = document.forms[0].subsidy.value;
 		
 		if(document.forms[0].breakfast.value == "Y")
 			meals = meals + "1";
@@ -852,7 +861,7 @@ function printCoupans()
 		
 		
 		
-		var url = "http://localhost:8080/RRService/printReceipt/" + crewid + "/" + location + "/" + meals ;
+		var url = "http://localhost:8080/RRService/printReceipt/" + crewid + "/" + location + "/"+ name + "/" + subsidy + "/"+ meals ;
 		
 		
 		window.open(url,"_blank");

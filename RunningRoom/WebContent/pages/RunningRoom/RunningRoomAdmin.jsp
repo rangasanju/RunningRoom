@@ -78,7 +78,7 @@
 
        
 
-          <div class="masthead clearfix">
+          <div class="clearfix">
             <div class="inner">
               <img class="masthead-brand masthead-brand-img" src="images/tayallogo.jpg"> 
              <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>
@@ -291,23 +291,23 @@ function receiveGuestInfo(){
 			var status;
 			try{
 				status=reqFeature.status;
-				if (reqFeature.readyState == 3){ // Complete					
-						if (reqFeature.status == 200)
-						{ // OK response
-							xmlhtp = reqFeature.responseText;	
-							document.getElementById("status").value = xmlhtp;
-							
-							
-							if(xmlhtp.indexOf("Blocked") >= 0)
-								prev_color = "grey";
-							else if(xmlhtp.indexOf("Occupied") >= 0)
-								prev_color = "red";
-							else
-								prev_color = "lightgreen";
-								
-														
-						}
-					}
+				
+				if (reqFeature.readyState == 4 && reqFeature.status == 200)
+				{ // OK response
+					xmlhtp = reqFeature.responseText;	
+					document.getElementById("status").value = xmlhtp;
+					
+					
+					if(xmlhtp.indexOf("Blocked") >= 0)
+						prev_color = "grey";
+					else if(xmlhtp.indexOf("Occupied") >= 0)
+						prev_color = "red";
+					else
+						prev_color = "lightgreen";
+		
+				}
+				
+				
 				}
 				catch(e)
 				{

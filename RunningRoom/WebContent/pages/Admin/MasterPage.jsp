@@ -63,7 +63,7 @@ svg > g > g:last-child { pointer-events: none }
     <div class="site-wrapper">
       <div class="site-wrapper-inner">
 
-          <div class="masthead clearfix">
+          <div class="clearfix">
             <div class="inner">
               <img class="masthead-brand masthead-brand-img" src="images/tayallogo.jpg"> 
               <h3 class="masthead-brand">&nbsp;&nbsp;&nbsp;&nbsp;<i18n:message key="label.PAGETITLE.appname"/>&nbsp;(<%= session.getAttribute("location") %>)&nbsp;-&nbsp;&nbsp;(<%= session.getAttribute("username") %>)</h3>
