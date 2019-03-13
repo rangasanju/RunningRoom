@@ -349,6 +349,7 @@ function onLoad()
 	}
 	else
 	{
+		document.forms[0].subsidy.value='Y';
 		document.getElementById("btn_subsidy").style.background = "lightgreen";  		
 		document.getElementById("btn_nonsubsidy").style.background = "white";
 	}

@@ -3,6 +3,7 @@ package com.tayal.master.action;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,8 @@ public class CrewBiodataAction extends DispatchAction{
 
 
 
-
+DBConnection db;	
+ResultSet rs,rs1,rs2;
 
 public ActionForward initiateCrewBiodata(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response)
@@ -72,7 +74,7 @@ public ActionForward getCrewBiodata(ActionMapping mapping, ActionForm form,
 	
 	 
 	 CrewBiodataForm fb = (CrewBiodataForm) form;
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	
 	 clearFormBean(fb);
 	
@@ -90,7 +92,7 @@ public ActionForward getCrewBiodata(ActionMapping mapping, ActionForm form,
 	 		 
 	 		 String query = "SELECT * FROM Crew_Biodata WHERE USER_ID_V ='" + fb.getCrew_id() + "'";
 	 		 System.out.println("Query  : " + query);
-	 		 ResultSet rs  = db.executeQuery(query);	
+	 		 rs  = db.executeQuery(query);	
 	 		
 	 		 if(rs.next())
 	 		 {
@@ -139,6 +141,7 @@ public ActionForward getCrewBiodata(ActionMapping mapping, ActionForm form,
 	 	 finally
 	 	 {		
 	 		 db.closeCon();
+	 		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 	 }
 	 
 	 	String role = request.getSession().getAttribute("role").toString();
@@ -169,14 +172,14 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> CrewBiodataAction - getBioStatus >>>>>>>>>>>>>>>>>>>>>>");
 	
 	 CrewBiodataForm fb = (CrewBiodataForm) form;
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	 PrintWriter out = response.getWriter();
 	 HttpSession session = request.getSession(true);	
 	 String query="";
 	 try{
 		 	
 	 		 query = "SELECT * FROM Crew_Biodata WHERE USER_ID_V ='" + fb.getCrew_id() + "'";
-	 		 ResultSet rs  = db.executeQuery(query);
+	 		 rs  = db.executeQuery(query);
 	 		 String res = "NA";
 	 		
 	 		 if(rs.next())		// BIOMETRIC ENABLED FOR THIS CREW OR NOT
@@ -200,6 +203,7 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	 			String name = rs.getString("FIRST_NAME_V") + " " + rs.getString("LAST_NAME_V");
 	 			session.setAttribute("crewname", name);
 	 			session.setAttribute("designation", rs.getString("DESIG_V"));
+	 			session.setAttribute("gender", rs.getString("GENDER_V"));
 	 		 }
 	 		 
 	 		 
@@ -218,6 +222,7 @@ public ActionForward getBioStatus(ActionMapping mapping, ActionForm form,
 	 	 finally
 	 	 {		
 	 		 db.closeCon();
+	 		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 	 }
 	 
 	 
@@ -272,7 +277,7 @@ public ActionForward saveCrewBiodata(ActionMapping mapping, ActionForm form,
 	
 	 
 	 CrewBiodataForm fb = (CrewBiodataForm) form;
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	 
 	 String dobdate = fb.getDay() + "/" + fb.getMonth() + "/" + fb.getYear();
 	 
@@ -305,23 +310,23 @@ public ActionForward saveCrewBiodata(ActionMapping mapping, ActionForm form,
 	 		 
 	 		 
 	 		 System.out.println("Query  : " + query);
-	 		 int rs  = db.executeUpdate(query);
+	 		 int res  = db.executeUpdate(query);
 	 		 
-	 		 if(rs == 1)	 		
+	 		 if(res == 1)	 		
 	 		 {
 	 			 if(fb.getBiostatus().equals("N"))
 	 			 {
 	 				 query = "SELECT * FROM USER_MAST WHERE USER_ID_V='" + fb.getCrew_id() + "'";
-	 				 ResultSet res  = db.executeQuery(query);
+	 				 rs  = db.executeQuery(query);
 	 		 		
-	 		 		 if(res.next())
+	 		 		 if(rs.next())
 	 		 		 {	 			
 	 		 			 // DO NOTHING	
 	 		 		 }
 	 		 		 else
 	 		 		 {
 	 		 			query = "INSERT INTO USER_MAST VALUES('" + fb.getCrew_id() + "','" + fb.getCrew_id() + "','XLX4QLYon9p5Q3PeaH9dwQ==','USER')";
-	 		 			rs  = db.executeUpdate(query);
+	 		 			res  = db.executeUpdate(query);
 	 		 			
 	 		 		 }
 	 		 		 
@@ -333,13 +338,6 @@ public ActionForward saveCrewBiodata(ActionMapping mapping, ActionForm form,
 	 			fb.setMessage("Failure : Record not saved");
 	 		 
 	 		 
-	 		 
-	 	
-		 
-	 		 
-	 		 
-	 		 
-	 		 
 	 		
 	 	 }catch(Exception e)
 	 	 {
@@ -348,6 +346,7 @@ public ActionForward saveCrewBiodata(ActionMapping mapping, ActionForm form,
 	 	 finally
 	 	 {		
 	 		 db.closeCon();
+	 		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 	 }
 	 
 	 
@@ -376,7 +375,7 @@ public ActionForward resetPin(ActionMapping mapping, ActionForm form,
 	
 	 
 	 CrewBiodataForm fb = (CrewBiodataForm) form;
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	 
 	
 	 try{
@@ -425,26 +424,21 @@ public void populateDropDown(HttpServletRequest request)
 	 
 	 try{
 		 
-		 String crewid_query = "SELECT DISTINCT USER_ID_V FROM Crew_Biodata ORDER BY USER_ID_V";
-		 String desig_query = "SELECT DESIG_V FROM DESIG_MST";
-		 System.out.println("Query  : " + crewid_query);
-		 //ResultSet rs1  = db.executeQuery(crewid_query);	
-		 ArrayList crewlist = new ArrayList();
-		 ArrayList daylist = new ArrayList();
-		 ArrayList monthlist = new ArrayList();
-		 ArrayList yearlist = new ArrayList();
-		 ArrayList genderlist = new ArrayList();
-		 ArrayList desiglist = new ArrayList();
-		 ArrayList biostatuslist = new ArrayList();
+		 
+		 
+		 
+		 
+		 ArrayList<String> crewlist = new ArrayList<String>();
+		 ArrayList<String> daylist = new ArrayList<String>();
+		 ArrayList<String> monthlist = new ArrayList<String>();
+		 ArrayList<String> yearlist = new ArrayList<String>();
+		 ArrayList<String> genderlist = new ArrayList<String>();
+		 ArrayList<String> desiglist = new ArrayList<String>();
+		 ArrayList<String> biostatuslist = new ArrayList<String>();
 		 
 		 // CREW LIST DROPDOWN
 		 
 		 crewlist.add("Select");
-//		 while(rs1.next())
-//		 {
-//			crewlist.add(rs1.getString("USER_ID_V"));
-//		 }
-//		 
 		 
 		 // DAY LIST DROPDOWN
 		 for(int i=1;i<32;i++)
@@ -452,7 +446,7 @@ public void populateDropDown(HttpServletRequest request)
 			 if(i<10)
 				daylist.add("0" + i);
 			 else
-				daylist.add(i);
+				daylist.add(i + "");
 				 
 		 }
 			
@@ -462,12 +456,12 @@ public void populateDropDown(HttpServletRequest request)
 			if(i<10)
 				monthlist.add("0" + i);
 			 else
-				monthlist.add(i);
+				monthlist.add(i + "");
 		 }
 	 		
 		 // YEAR LIST DROPDOWN
 		 for(int i=1955;i<2017;i++)
-	 		yearlist.add(i);
+	 		yearlist.add(i + "");
 		 
 		 // GENDER LIST DROPDOWN
 		 
@@ -476,11 +470,13 @@ public void populateDropDown(HttpServletRequest request)
 		 genderlist.add("Female");
 		 genderlist.add("Others");
 		 
-		 ResultSet rs2  = db.executeQuery(desig_query);	
+		 
+		 String desig_query = "SELECT DESIG_V FROM DESIG_MST";
+		 rs  = db.executeQuery(desig_query);	
 		 desiglist.add("Select");
-		 while(rs2.next())
+		 while(rs.next())
 		 {
-			 desiglist.add(rs2.getString("DESIG_V"));
+			 desiglist.add(rs.getString("DESIG_V"));
 		 }
 		
 		 biostatuslist.add("Y");
@@ -502,6 +498,7 @@ public void populateDropDown(HttpServletRequest request)
 	 finally
 	 {		
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 }
 
 	 

@@ -3,8 +3,8 @@ package com.tayal.master.action;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,12 +28,10 @@ import com.tayal.utility.DBConnection;
 
 public class MasterAction extends DispatchAction{
 	
-	//private final BufferedImageOp filter = new JHFlipFilter(JHFlipFilter.FLIP_90CW);
 	
 	
-	
-	
-
+DBConnection db;	
+ResultSet rs,rs1,rs2,rs3;
 
 public ActionForward home(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response)
@@ -128,11 +126,8 @@ public ActionForward getDivisionList(ActionMapping mapping, ActionForm form,
  throws Exception{
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - getDivisionList >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
 	
-	
-	
-DBConnection db = new DBConnection();
+	db = new DBConnection();
 
 
 	 try{
@@ -150,7 +145,7 @@ DBConnection db = new DBConnection();
 		 
 		 String query = "SELECT * FROM DIVISION_LIST";
 		 System.out.println("Query  : " + query);
-		 ResultSet rs  = db.executeQuery(query);				
+		 rs  = db.executeQuery(query);				
 		 
 		 while(rs.next())
 		 {
@@ -175,6 +170,7 @@ DBConnection db = new DBConnection();
 	 finally
 	 {		
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 }
 	
 	 
@@ -195,12 +191,10 @@ public ActionForward deleteDivision(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response)
  throws Exception{
 	
-	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deleteDivision >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
-	
+System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deleteDivision >>>>>>>>>>>>>>>>>>>>>>");
 	
 MasterForm fb = (MasterForm) form;	
-DBConnection db = new DBConnection();
+ db = new DBConnection();
 String divisiondode = fb.getDivision_code();
 String res = "FAIL";
 
@@ -237,10 +231,6 @@ String res = "FAIL";
 	 }
 	
 	 
-
-
-	 
-	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< MasterAction - deleteDivision <<<<<<<<<<<<<<<<<<<<<<");
 	  
     
@@ -265,7 +255,7 @@ public ActionForward addDivision(ActionMapping mapping, ActionForm form,
 	 String divisioncode = fb.getDivision_code();
 	 String divisionname = fb.getDivision_name();
 	 
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	 
 	 
 	 try{
@@ -349,9 +339,8 @@ public ActionForward getLobbyList(ActionMapping mapping, ActionForm form,
 	
 	
 	
-DBConnection db = new DBConnection();
+  db = new DBConnection();
 
-MasterForm fb = (MasterForm) form;
 HttpSession session = request.getSession(true);
 
 String divisioncode = session.getAttribute("division").toString().trim();
@@ -373,7 +362,7 @@ String divisioncode = session.getAttribute("division").toString().trim();
 		 
 		 String query = "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V='" + divisioncode + "' ORDER BY LOBBY_ID_V";
 		 System.out.println("Query  : " + query);
-		 ResultSet rs  = db.executeQuery(query);				
+		 rs  = db.executeQuery(query);				
 		 
 		 
 			
@@ -402,6 +391,7 @@ String divisioncode = session.getAttribute("division").toString().trim();
 	 finally
 	 {		
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 }
 	
 	 
@@ -424,11 +414,9 @@ public ActionForward deleteLobby(ActionMapping mapping, ActionForm form,
  throws Exception{
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deleteLobby >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
-	
 	
 MasterForm fb = (MasterForm) form;	
-DBConnection db = new DBConnection();
+  db = new DBConnection();
 String lobbycode = fb.getLobby_code();
 String res = "FAIL";
 HttpSession session = request.getSession(true);
@@ -467,10 +455,6 @@ String divisioncode = session.getAttribute("division").toString().trim();
 	 }
 	
 	 
-
-
-	 
-	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< MasterAction - deleteLobby <<<<<<<<<<<<<<<<<<<<<<");
 	  
     
@@ -496,7 +480,7 @@ public ActionForward addLobby(ActionMapping mapping, ActionForm form,
 	 String lobbyname = fb.getLobby_name();
 	 HttpSession session = request.getSession(true);
 	 String divisioncode = session.getAttribute("division").toString().trim();
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	 
 	 	
 	 try{
@@ -582,7 +566,7 @@ public ActionForward addLocation(ActionMapping mapping, ActionForm form,
 	 int pin = (fb.getLocation_pin() == null) ? 0: Integer.parseInt(fb.getLocation_pin());
 	 
 	
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 	 
 	 
 	 try{
@@ -636,15 +620,16 @@ public ActionForward initiateAddRooms(ActionMapping mapping, ActionForm form,
 	
 	
 	
-	 DBConnection db = new DBConnection();
+	 db = new DBConnection();
 
 	
 	try{
 		 
-		 //String location = request.getSession().getAttribute("location").toString();
+		 
 		 String query = "SELECT * FROM ROOM_TYPE ";
 		 System.out.println("Query  : " + query);
-		 ResultSet rs  = db.executeQuery(query);				
+		 
+		 rs  = db.executeQuery(query);				
 		 ArrayList<String> roomtypelist = new ArrayList<String>();
 		 roomtypelist.add("SELECT");
 		 while(rs.next())
@@ -662,6 +647,7 @@ public ActionForward initiateAddRooms(ActionMapping mapping, ActionForm form,
 	finally
 	{
 		db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	}
 
 
@@ -754,7 +740,7 @@ public ActionForward getRooms(ActionMapping mapping, ActionForm form,
 	
 	
 	
-DBConnection db = new DBConnection();
+db = new DBConnection();
 RoomForm fb = (RoomForm) form;	 
 	 try{
 		 
@@ -780,7 +766,7 @@ RoomForm fb = (RoomForm) form;
 
 		 String query = "SELECT * FROM ROOM_MST WHERE LOCATION_ID_V='" + location + "' AND FLOOR_I='" + fb.getFloorno().trim() + "' ORDER BY ROOM_NO_I";
 		 System.out.println("Query  : " + query);
-		 ResultSet rs  = db.executeQuery(query);				
+		 rs  = db.executeQuery(query);				
 		 
 		 while(rs.next())
 		 {
@@ -788,12 +774,12 @@ RoomForm fb = (RoomForm) form;
 			 // GET ROOM ASSIGNMENT FOR THIS ROOM
 			 try{
 				 query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + rs.getString("ROOM_NO_I");
-				 ResultSet rs_cat  = db.executeQuery(query);				
+				 rs2  = db.executeQuery(query);				
 				 
 				 res_room_cat = "<table class='table table-striped table-bordered table-condensed table-responsive'><tbody>";
-				 while(rs_cat.next())
+				 while(rs2.next())
 				 {
-					 res_room_cat+= "<tr><td align='center' style='white-space: nowrap' > " + rs_cat.getString("DESIG_V") + "</td></tr>";					
+					 res_room_cat+= "<tr><td align='center' style='white-space: nowrap' > " + rs2.getString("DESIG_V") + "</td></tr>";					
 				 }
 				 
 				 res_room_cat += "</tbody></table>";
@@ -832,6 +818,8 @@ RoomForm fb = (RoomForm) form;
 	 finally
 	 {		
 		db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+		 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
 	 }
 	
 	 
@@ -855,7 +843,7 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - initiateAssignRoom >>>>>>>>>>>>>>>>>>>>>>");
 	ActionForward forward = new ActionForward();
 	
-	DBConnection db = new DBConnection();
+	db = new DBConnection();
 	
 	ArrayList<String> categorylist = new ArrayList<String>();
 	ArrayList<String> assignedlist = new ArrayList<String>();
@@ -878,7 +866,7 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 			 location = request.getSession().getAttribute("location").toString();
 			 //String query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
 			 String query = "SELECT * FROM CREW_CAT_MST";
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs  = db.executeQuery(query);				
 			 
 			 
 			 while(rs.next())
@@ -897,15 +885,15 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 
 		try{
 			 String query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs2  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs2.next())
 			 {
-				 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+				 if(categorylist.contains(rs2.getString("DESIG_V").trim()))
 				 {
-					 assignedlist.add(rs.getString("DESIG_V").trim());
-					 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+					 assignedlist.add(rs2.getString("DESIG_V").trim());
+					 categorylist.remove(categorylist.indexOf(rs2.getString("DESIG_V").trim()));
 				 }
 				
 			 }
@@ -923,15 +911,15 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 		
 		try{
 			 String query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs3  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs3.next())
 			 {
-				 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
+				 if(lobbycategorylist.contains(rs3.getString("LOBBY_V").trim()))
 				 {
-					 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
-					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
+					 lobbyassignedlist.add(rs3.getString("LOBBY_V").trim());
+					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs3.getString("LOBBY_V").trim()));
 				 }
 				
 			 }
@@ -960,6 +948,10 @@ public ActionForward initiateAssignRoom(ActionMapping mapping, ActionForm form,
 	finally
 	{
 		db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+		 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
+		 try { rs3.close();} catch (SQLException e) {  /* donothing  */ }  
+		 
 	}
 		
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< MasterAction - initiateAssignRoom <<<<<<<<<<<<<<<<<<<<<<");
@@ -986,7 +978,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignRoom >>>>>>
  String category_list[] = fb.getCategory_list();
  ArrayList<String> queries = new ArrayList<String>();
  String locationid ="";
- DBConnection db = new DBConnection();
+ db = new DBConnection();
  fb.setMessage("");
 	 
  
@@ -995,16 +987,14 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignRoom >>>>>>
 	 
 	 
 	 try{
-		 //System.out.println(">>>> Length " + category_list.length);
-		 
+		
 		 locationid = request.getSession().getAttribute("location").toString();
 		 for(int i=0; i < category_list.length; i++)
 		 {
 			 query = "INSERT INTO ROOM_CAT_MST VALUES('" + locationid + "'," + roomno + ",'" + category_list[i] + "')";
 			 queries.add(query);
-			 //System.out.println(">>>> Room Cat " + category_list[i]);
 		 }
-		 //System.out.println("Query  : " + query);
+		
 		 int rs  = db.executeMyBatch(queries);
 		 
 		 if(rs <= 0)
@@ -1035,7 +1025,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignRoom >>>>>>
 			 location = request.getSession().getAttribute("location").toString();
 			 //query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
 			 query = "SELECT * FROM CREW_CAT_MST";
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs  = db.executeQuery(query);				
 			 
 			 
 			 while(rs.next())
@@ -1054,15 +1044,15 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignRoom >>>>>>
 
 		try{
 			 query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs2  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs2.next())
 			 {
-				 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+				 if(categorylist.contains(rs2.getString("DESIG_V").trim()))
 				 {
-					 assignedlist.add(rs.getString("DESIG_V").trim());
-					 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+					 assignedlist.add(rs2.getString("DESIG_V").trim());
+					 categorylist.remove(categorylist.indexOf(rs2.getString("DESIG_V").trim()));
 				 }
 				
 			 }
@@ -1080,15 +1070,15 @@ lobbycategorylist = populateLobbyDropDown(request);
 		
 		try{
 			 query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs3  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs3.next())
 			 {
-				 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
+				 if(lobbycategorylist.contains(rs3.getString("LOBBY_V").trim()))
 				 {
-					 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
-					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
+					 lobbyassignedlist.add(rs3.getString("LOBBY_V").trim());
+					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs3.getString("LOBBY_V").trim()));
 				 }
 				
 			 }
@@ -1118,6 +1108,9 @@ catch(Exception e)
 finally
 {
 	db.closeCon();
+	 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs3.close();} catch (SQLException e) {  /* donothing  */ }  
 }
 	 
 
@@ -1147,7 +1140,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignRoom >>>>
  String assigned_list[] = fb.getAssigned_list();
  ArrayList<String> queries = new ArrayList<String>();
  String locationid ="";
- DBConnection db = new DBConnection();
+ db = new DBConnection();
  fb.setMessage("");
 	 
  
@@ -1198,7 +1191,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignRoom >>>>
 			 location = request.getSession().getAttribute("location").toString();
 			 //query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
 			 query = "SELECT * FROM CREW_CAT_MST";
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs  = db.executeQuery(query);				
 			 
 			 
 			 while(rs.next())
@@ -1218,15 +1211,15 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignRoom >>>>
 
 		try{
 			 query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs2  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs2.next())
 			 {
-				 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+				 if(categorylist.contains(rs2.getString("DESIG_V").trim()))
 				 {
-					 assignedlist.add(rs.getString("DESIG_V").trim());
-					 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+					 assignedlist.add(rs2.getString("DESIG_V").trim());
+					 categorylist.remove(categorylist.indexOf(rs2.getString("DESIG_V").trim()));
 				 }
 				
 			 }
@@ -1243,15 +1236,15 @@ lobbycategorylist = populateLobbyDropDown(request);
 		
 		try{
 			 query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs3  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs3.next())
 			 {
-				 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
+				 if(lobbycategorylist.contains(rs3.getString("LOBBY_V").trim()))
 				 {
-					 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
-					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
+					 lobbyassignedlist.add(rs3.getString("LOBBY_V").trim());
+					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs3.getString("LOBBY_V").trim()));
 				 }
 				
 			 }
@@ -1278,6 +1271,9 @@ lobbycategorylist = populateLobbyDropDown(request);
  finally
  {
  	db.closeCon();
+ 	 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs3.close();} catch (SQLException e) {  /* donothing  */ }  
  }
  	 
 		
@@ -1308,7 +1304,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - assignLobbyToRoom
  String lobby_category_list[] = fb.getLobby_category_list();
  ArrayList<String> queries = new ArrayList<String>();
  String locationid ="";
- DBConnection db = new DBConnection();
+ db = new DBConnection();
  fb.setMessage("");
 	 
 	 
@@ -1354,7 +1350,7 @@ try {
 			 location = request.getSession().getAttribute("location").toString();
 			 //query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
 			 query = "SELECT * FROM CREW_CAT_MST";
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs  = db.executeQuery(query);				
 			 
 			 
 			 while(rs.next())
@@ -1373,15 +1369,15 @@ try {
 
 		try{
 			 query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs1  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs1.next())
 			 {
-				 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+				 if(categorylist.contains(rs1.getString("DESIG_V").trim()))
 				 {
-					 assignedlist.add(rs.getString("DESIG_V").trim());
-					 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+					 assignedlist.add(rs1.getString("DESIG_V").trim());
+					 categorylist.remove(categorylist.indexOf(rs1.getString("DESIG_V").trim()));
 				 }
 				
 			 }
@@ -1399,15 +1395,15 @@ try {
 		
 		try{
 			 query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs2  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs2.next())
 			 {
-				 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
+				 if(lobbycategorylist.contains(rs2.getString("LOBBY_V").trim()))
 				 {
-					 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
-					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
+					 lobbyassignedlist.add(rs2.getString("LOBBY_V").trim());
+					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs2.getString("LOBBY_V").trim()));
 				 }
 				
 			 }
@@ -1436,6 +1432,9 @@ catch(Exception e)
  finally
  {
  	db.closeCon();
+ 	 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs1.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
  }
 	  
 		
@@ -1463,7 +1462,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
  String lobby_assigned_list[] = fb.getLobby_assigned_list();
  ArrayList<String> queries = new ArrayList<String>();
  String locationid ="";
- DBConnection db = new DBConnection();
+   db = new DBConnection();
  fb.setMessage("");
 	 
  
@@ -1512,7 +1511,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
 			 location = request.getSession().getAttribute("location").toString();
 			// query = "SELECT * FROM CREW_CAT_MST WHERE LOCATION_ID_V='" + location + "'";
 			 query = "SELECT * FROM CREW_CAT_MST";
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs  = db.executeQuery(query);				
 			 
 			 
 			 while(rs.next())
@@ -1531,15 +1530,15 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
 
 		try{
 			 query = "SELECT DESIG_V FROM ROOM_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs2  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs2.next())
 			 {
-				 if(categorylist.contains(rs.getString("DESIG_V").trim()))
+				 if(categorylist.contains(rs2.getString("DESIG_V").trim()))
 				 {
-					 assignedlist.add(rs.getString("DESIG_V").trim());
-					 categorylist.remove(categorylist.indexOf(rs.getString("DESIG_V").trim()));
+					 assignedlist.add(rs2.getString("DESIG_V").trim());
+					 categorylist.remove(categorylist.indexOf(rs2.getString("DESIG_V").trim()));
 				 }
 				
 			 }
@@ -1557,15 +1556,15 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
 		
 		try{
 			 query = "SELECT LOBBY_V FROM LOBBY_CAT_MST WHERE LOCATION_ID_V='" + location + "' AND ROOM_NO_I=" + fb.getRoomno();
-			 ResultSet rs  = db.executeQuery(query);				
+			 rs3  = db.executeQuery(query);				
 			 
 			 
-			 while(rs.next())
+			 while(rs3.next())
 			 {
-				 if(lobbycategorylist.contains(rs.getString("LOBBY_V").trim()))
+				 if(lobbycategorylist.contains(rs3.getString("LOBBY_V").trim()))
 				 {
-					 lobbyassignedlist.add(rs.getString("LOBBY_V").trim());
-					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs.getString("LOBBY_V").trim()));
+					 lobbyassignedlist.add(rs3.getString("LOBBY_V").trim());
+					 lobbycategorylist.remove(lobbycategorylist.indexOf(rs3.getString("LOBBY_V").trim()));
 				 }
 				
 			 }
@@ -1593,6 +1592,9 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deAssignLobbyToRo
  finally
  {
  	db.closeCon();
+ 	 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
+	 try { rs3.close();} catch (SQLException e) {  /* donothing  */ }  
  }
  		
 
@@ -1619,7 +1621,7 @@ public ActionForward deleteRoom(ActionMapping mapping, ActionForm form,
 	
 	
 RoomForm fb = (RoomForm) form;	
-DBConnection db = new DBConnection();
+  db = new DBConnection();
 String roomno = fb.getRoomno();
 String res = "FAIL";
 String query="";
@@ -1707,6 +1709,8 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - addRoom >>>>>>>>>
  String floorno = fb.getFloorno();
  String noofbeds = fb.getNoofbeds();
  String roomtype = fb.getRoomtype();
+ int bed_count=0;
+ int bed_count_scheme=0;
  
  ArrayList<String> queries = new ArrayList<String>();
  boolean duplicate = false;
@@ -1719,7 +1723,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - addRoom >>>>>>>>>
  
  
   
-  DBConnection db = new DBConnection();
+    db = new DBConnection();
 	 
 try {
 	
@@ -1728,9 +1732,9 @@ try {
 		
 		 locationid = request.getSession().getAttribute("location").toString();
 		 query = "SELECT * FROM ROOM_MST WHERE LOCATION_ID_V='" + locationid + "' AND ROOM_NO_I=" + roomno ;
-		 ResultSet rs1 = db.executeQuery(query);
+		 rs = db.executeQuery(query);
 		 
-		 if(rs1.next())
+		 if(rs.next())
 		 {
 			 fb.setMessage("Room already exists");
 			 duplicate = true;
@@ -1748,17 +1752,61 @@ try {
 	if(!duplicate)
 	{
 
+
+		
+		
+		// GET THE BED NO SCHEME TYPE
+		try{
+					 
+			 query = "SELECT SCHEME_TYPE_I FROM BED_NO_SCHEME WHERE location_id_v='" + locationid + "'";
+			 
+			 rs = db.executeQuery(query);
+					 
+			 if(rs.next())
+			 {
+				 bed_count_scheme=rs.getInt("SCHEME_TYPE_I");
+						
+			 }
+					 
+					 
+		 }catch(Exception e)
+		 {
+			 System.out.println("Error : " + e);
+		 }
+		
+		
+		if(bed_count_scheme == 1)
+		{
+			// GET THE MAXIMUM BED NO 
+			try{
+						 
+				 query = "SELECT MAX(BED_NO_I) BED_NO_I FROM BED_ALLOCATION_MST WHERE location_id_v='" + locationid + "'";
+				 
+				 rs = db.executeQuery(query);
+						 
+				 if(rs.next())
+				 {
+					 bed_count=rs.getInt("BED_NO_I") + 1;
+							
+				 }
+						 
+						 
+			 }catch(Exception e)
+			 {
+				 System.out.println("Error : " + e);
+			 }
+					 
+		}
+		
+				
+				
 		 try{
 			 locationid = request.getSession().getAttribute("location").toString();
 			 query = "INSERT INTO ROOM_MST VALUES('" + locationid + "'," + roomno + "," + floorno + "," + noofbeds + ",'" + roomtype + "')";
 			 queries.add(query);
 			 
 			 
-			 //System.out.println("Query  : " + query);
-			 //int rs  = db.executeUpdate(query);				
-			
 			 fb.setRoomno("");
-			 //fb.setFloorno("0");
 			 fb.setRoomtype("SELECT");
 			 
 			
@@ -1774,12 +1822,13 @@ try {
 		 try{
 			 query="";
 			 
-			 for(int i=1;i<=beds;i++)
-			 {
-				 
+			 int last_bed = bed_count + beds;
+			 
+			 for(int i=bed_count;i<last_bed;i++)
+			 {				 
 				 query = "INSERT INTO BED_ALLOCATION_MST (LOCATION_ID_V,ROOM_NO_I,BED_NO_I,OCCUPANCY_I) VALUES('" + locationid + "'," + roomno + "," + i + ",0)";
 				 queries.add(query);
-				 		 
+						 
 			 }
 			 
 			 
@@ -1804,12 +1853,12 @@ try {
 				
 				 query = "SELECT * FROM ROOM_TYPE";
 				 System.out.println("Query  : " + query);
-				 ResultSet rs  = db.executeQuery(query);				
+				 rs2  = db.executeQuery(query);				
 				 ArrayList roomtypelist = new ArrayList();
 				 //roomtypelist.add("SELECT");
-				 while(rs.next())
+				 while(rs2.next())
 				 {
-					 roomtypelist.add(rs.getString("CATEGORY_V"));
+					 roomtypelist.add(rs2.getString("CATEGORY_V"));
 								
 				 }
 				 request.setAttribute("roomtypelist", roomtypelist);
@@ -1861,12 +1910,12 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - initiateLogin >>>
  System.out.println("Crew Id : " + userid);
  
   
-  DBConnection db = new DBConnection();
+  db = new DBConnection();
 	 
 		 
 	 try{
 		 
-		 ResultSet rs  = db.executeQuery("SELECT * FROM USER_MAST WHERE USER_ID_V='" + userid + "'");				
+		 rs  = db.executeQuery("SELECT * FROM USER_MAST WHERE USER_ID_V='" + userid + "'");				
 		 
 		if(rs.next())
 		{
@@ -1893,6 +1942,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - initiateLogin >>>
 	 finally
 	 {		
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ } 
 	 }
 	
 	 
@@ -2037,7 +2087,7 @@ public ActionForward saveMenu(ActionMapping mapping, ActionForm form,
 	 String type = fb.getFood_type();
 	 String meal_type = fb.getMeal_type();
 	 
-	 DBConnection db = new DBConnection();
+	   db = new DBConnection();
 	 
 	 
 	 try{
@@ -2081,14 +2131,12 @@ public ActionForward getMenuForAdmin(ActionMapping mapping, ActionForm form, Htt
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  getMenuForAdmin   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 	
 	
-	ActionForward forward = new ActionForward();
-	DBConnection db = new DBConnection(); 
+	  db = new DBConnection(); 
 	FoodMenu rf = (FoodMenu) form;
 	
 	
 	String weekday = rf.getWeekday();
 	String meal_type = rf.getMeal_type();
-	String food_type = rf.getFood_type();
 	PrintWriter out = response.getWriter();
 	String location = request.getSession().getAttribute("location").toString();
 
@@ -2100,7 +2148,7 @@ public ActionForward getMenuForAdmin(ActionMapping mapping, ActionForm form, Htt
 	try{
 		String query1 = "SELECT * FROM FOOD_MENU_MST WHERE LOCATION_ID_V='" + location + "' AND WEEKDAY_V='" + weekday + "' AND MEAL_TYPE_V='" + meal_type + "' ORDER BY TYPE_V DESC";
 		System.out.println(" QUERY : " + query1 );
-		ResultSet rs2 = db.executeQuery(query1);
+		rs2 = db.executeQuery(query1);
 		
 		  res = "<table class='table table-striped table-bordered table-condensed table-responsive'>"
 			 		+ "<thead><tr>"
@@ -2141,6 +2189,8 @@ public ActionForward getMenuForAdmin(ActionMapping mapping, ActionForm form, Htt
 	}finally
 	{
 		 db.closeCon();
+		 try { rs2.close();} catch (SQLException e) {  /* donothing  */ }  
+		 
 		 
 	}
 	out.write(res);
@@ -2166,11 +2216,9 @@ public ActionForward deleteMenuItem(ActionMapping mapping, ActionForm form,
  throws Exception{
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> MasterAction - deleteMenuItem >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
-	
 	
 FoodMenu fb = (FoodMenu) form;	
-DBConnection db = new DBConnection();
+db = new DBConnection();
 String item = fb.getItem_name();
 String res = "FAIL";
 
@@ -2230,7 +2278,7 @@ public ActionForward getDashboard_old_tableformat(ActionMapping mapping, ActionF
 	
 	
 	
-	DBConnection db = new DBConnection(); 
+	  db = new DBConnection(); 
 	
 	PrintWriter out = response.getWriter();
 	
@@ -2342,6 +2390,7 @@ public ActionForward getDashboard_old_tableformat(ActionMapping mapping, ActionF
 	}finally
 	{
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 		 
 	}
 	System.out.println("" + lt);
@@ -2373,7 +2422,7 @@ public ActionForward getDashboard(ActionMapping mapping, ActionForm form, HttpSe
 	
 	
 	
-	DBConnection db = new DBConnection(); 
+	db = new DBConnection(); 
 	
 	PrintWriter out = response.getWriter();
 	
@@ -2394,7 +2443,7 @@ public ActionForward getDashboard(ActionMapping mapping, ActionForm form, HttpSe
 		String location = request.getSession().getAttribute("location").toString();
 		
 		String query1 = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "'" ;
-		ResultSet rs = db.executeQuery(query1);
+		rs = db.executeQuery(query1);
 		while(rs.next())
 		{
 			total++; 
@@ -2451,6 +2500,8 @@ public ActionForward getDashboard(ActionMapping mapping, ActionForm form, HttpSe
 	}finally
 	{
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+		
 		 
 	}
 	System.out.println("" + lt);
@@ -2484,7 +2535,7 @@ public ActionForward getDashboardForKiosk(ActionMapping mapping, ActionForm form
 	
 	
 	
-	DBConnection db = new DBConnection(); 
+	db = new DBConnection(); 
 	
 	PrintWriter out = response.getWriter();
 	
@@ -2499,7 +2550,7 @@ public ActionForward getDashboardForKiosk(ActionMapping mapping, ActionForm form
 	
 	try{
 		String query1 = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "'";
-		ResultSet rs = db.executeQuery(query1);
+		rs = db.executeQuery(query1);
 		while(rs.next())
 		{
 			total++; 
@@ -2539,6 +2590,7 @@ public ActionForward getDashboardForKiosk(ActionMapping mapping, ActionForm form
 	}finally
 	{
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 		 
 	}
 	System.out.println("" + lt);
@@ -2572,7 +2624,7 @@ public ActionForward getDashboardForOperator(ActionMapping mapping, ActionForm f
 	
 	
 	
-	DBConnection db = new DBConnection(); 
+	db = new DBConnection(); 
 	
 	PrintWriter out = response.getWriter();
 	
@@ -2587,7 +2639,7 @@ public ActionForward getDashboardForOperator(ActionMapping mapping, ActionForm f
 	
 	try{
 		String query1 = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='" + location + "'";
-		ResultSet rs = db.executeQuery(query1);
+		rs = db.executeQuery(query1);
 		while(rs.next())
 		{
 			total++; 
@@ -2627,6 +2679,7 @@ public ActionForward getDashboardForOperator(ActionMapping mapping, ActionForm f
 	}finally
 	{
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 		 
 	}
 	System.out.println("" + lt);
@@ -2664,7 +2717,7 @@ public ActionForward getCurrentOccupantReport(ActionMapping mapping, ActionForm 
 	
 	
 	
-	DBConnection db = new DBConnection(); 
+	db = new DBConnection(); 
 	
 	PrintWriter out = response.getWriter();
 	
@@ -2677,7 +2730,7 @@ public ActionForward getCurrentOccupantReport(ActionMapping mapping, ActionForm 
 	
 	try{
 		String query1 = "SELECT * FROM BED_ALLOCATION_MST";
-		ResultSet rs = db.executeQuery(query1);
+		rs = db.executeQuery(query1);
 		while(rs.next())
 		{
 			total++; 
@@ -2749,6 +2802,7 @@ public ActionForward getCurrentOccupantReport(ActionMapping mapping, ActionForm 
 	}finally
 	{
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 		 
 	}
 	System.out.println("" + lt);
@@ -2780,13 +2834,13 @@ public ArrayList<String> populateLobbyDropDown(HttpServletRequest request)
 
 	
 	 // POPULATE DROPDOWNS
-	DBConnection db = new DBConnection();
+	db = new DBConnection();
 	String division = request.getSession().getAttribute("division").toString();
 	ArrayList<String> lobbylist = new ArrayList<String>();
 	 try{
 		 
 		     String query = "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V='" + division + "' ORDER BY LOBBY_ID_V";
-	 		 ResultSet rs  = db.executeQuery(query);	
+	 		 rs  = db.executeQuery(query);	
 	 		 
 	 		lobbylist.add("Select");
 	 		 while(rs.next())
@@ -2803,6 +2857,7 @@ public ArrayList<String> populateLobbyDropDown(HttpServletRequest request)
 	 finally
 	 {		
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ } 
 	 }
 	 
 	 return lobbylist;

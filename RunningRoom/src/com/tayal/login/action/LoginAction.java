@@ -4,7 +4,9 @@ package com.tayal.login.action;
 
 
 import java.io.PrintWriter;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +19,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.tayal.login.actionforms.LoginForm;
-import com.tayal.master.actionforms.RoomForm;
 import com.tayal.utility.AESencrp;
 import com.tayal.utility.DBConnection;
 
@@ -30,8 +31,8 @@ public class LoginAction extends DispatchAction{
 	//private final BufferedImageOp filter = new JHFlipFilter(JHFlipFilter.FLIP_90CW);
 	
 	
-	
-	
+DBConnection db;	
+ResultSet rs,rs1,rs2,rs3;
 
 
 public ActionForward Execute(ActionMapping mapping, ActionForm form,
@@ -72,21 +73,6 @@ public ActionForward initiateMasterForDivision(ActionMapping mapping, ActionForm
     forward = mapping.findForward("Master");
     return (forward);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -154,23 +140,29 @@ public ActionForward saveRequestAccess(ActionMapping mapping, ActionForm form,
 	 ActionForward forward = new ActionForward();
 	
 	 LoginForm fb = (LoginForm) form;
-	 
+	 PreparedStatement stmt=null;
+	 	
 	 
 	 String division = fb.getDivision_code();
 	 String lobby = fb.getLobby_code();
 	 String mobile = fb.getMobile();
 	 String macaddress = fb.getMac_address();
 	 
-	 DBConnection db = new DBConnection();
+	
 	 
-	 
+	 db = new DBConnection();
 	 try{
 		 
-			 String query = "INSERT INTO REQUEST_ACCESS (DIVISION_CODE_V, LOBBY_CODE_V, MOBILE_V,MAC_ADDRESS_V) VALUES('" + division + "','" + lobby + "','" + mobile + "','" + macaddress + "')";
-			 System.out.println("Query  : " + query);
-			 int rs  = db.executeUpdate(query);				
-			
+			 String query = "INSERT INTO REQUEST_ACCESS (DIVISION_CODE_V, LOBBY_CODE_V, MOBILE_V,"
+			 		+ "MAC_ADDRESS_V) VALUES(?,?,?,?)";
+			 
+			 stmt = db.getPreparedStatement(query); 
+			 stmt.setString(1, division);
+			 stmt.setString(2, lobby);
+			 stmt.setString(3, mobile);
+			 stmt.setString(4, macaddress);
 					 
+			 int rs = stmt.executeUpdate();
 			 if(rs == 1)
 				 fb.setMessage("Request submitted successfully");
 			 else
@@ -184,6 +176,9 @@ public ActionForward saveRequestAccess(ActionMapping mapping, ActionForm form,
 		 finally
 		 {		
 			 db.closeCon();
+			 if(stmt != null)
+				  stmt.close();  			  
+			
 		 }
 	
 	 
@@ -238,14 +233,13 @@ public ActionForward changePassword(ActionMapping mapping, ActionForm form, Http
 	 PrintWriter out = response.getWriter();
 	 LoginForm lf = (LoginForm) form;
 	 
-	  ActionForward forward = new ActionForward();
-	  
-	  
-	  DBConnection db = new DBConnection();
-	  
+	 PreparedStatement stmt=null;
+	 ResultSet rs=null;
+	 	
+	 db = new DBConnection();
+	 
 	 String password = lf.getPassword(); 
 	 String oldpassword = lf.getOldpassword();
-	 String re_password = lf.getRe_password();
 	 
 	 String userid = (String) request.getSession().getAttribute("userid");
 	 
@@ -254,9 +248,12 @@ public ActionForward changePassword(ActionMapping mapping, ActionForm form, Http
 		try{
 			       
 			
-			String query = "SELECT * FROM USER_MAST WHERE USER_ID_V='" + userid + "'";
-			System.out.println("Query  : " + query);
-			ResultSet rs = db.executeQuery(query);
+			String query = "SELECT * FROM USER_MAST WHERE USER_ID_V=?";
+			
+			stmt=db.getPreparedStatement(query); 
+			stmt.setString(1, userid);
+			rs = stmt.executeQuery();
+			 
 		        
 			if(rs.next())
 			{
@@ -310,7 +307,11 @@ public ActionForward changePassword(ActionMapping mapping, ActionForm form, Http
 		}
 		finally
 		{
-			db.closeCon();
+			 db.closeCon();
+			 if(stmt != null)
+				  stmt.close();  			  
+			 if(rs != null)
+			  	  rs.close();  
 		}
 		
 		lf.setPassword("");
@@ -336,21 +337,27 @@ public ActionForward getLocation(ActionMapping mapping, ActionForm form,
  throws Exception{
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - getLocation >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
 	 PrintWriter out = response.getWriter();
 	 
 	 LoginForm fb = (LoginForm) form;
-	 
+	 PreparedStatement stmt=null;
+	 ResultSet rs=null;
+	 	
 	 String location="";
 	 String division="";
 	 //fb.setMac_address("E4-B3-18-BD-21-D6");
 	 
-	  DBConnection db = new DBConnection();
+	  db = new DBConnection();
 	  HttpSession session = request.getSession(true);
 	
 		 try{
 			 
-			ResultSet rs  = db.executeQuery("SELECT * FROM mac_location_mapping WHERE MAC_ADDRESS_V='" + fb.getMac_address() + "'");
+			String query =  "SELECT * FROM mac_location_mapping WHERE MAC_ADDRESS_V=?";
+			stmt = db.getPreparedStatement(query); 
+			stmt.setString(1, fb.getMac_address());
+			
+			rs = stmt.executeQuery();
+			 
 			 
 			if(rs.next())
 			{
@@ -371,11 +378,15 @@ public ActionForward getLocation(ActionMapping mapping, ActionForm form,
 			 
 		 }catch(Exception e)
 		 {
-			 System.out.println("Error : " + e);
+			 e.printStackTrace();
 		 }
 		 finally
 		 {		
 			 db.closeCon();
+			 if(stmt != null)
+				  stmt.close();  			  
+			 if(rs != null)
+			  	  rs.close();  
 		 }
 		
 
@@ -399,6 +410,9 @@ public ActionForward initiateAdmin(ActionMapping mapping, ActionForm form,
 	 
 	 
 	 LoginForm fb = (LoginForm) form;
+	 PreparedStatement stmt=null;
+	 ResultSet rs=null;
+	 	
 	 fb.setUser_id("");
 	 fb.setPassword("");
 	 fb.setCrewid("");
@@ -407,13 +421,18 @@ public ActionForward initiateAdmin(ActionMapping mapping, ActionForm form,
 	 String division="";
 	 //fb.setMac_address("E4-B3-18-BD-21-D6");
 	 
-	  DBConnection db = new DBConnection();
+	  db = new DBConnection();
 	  HttpSession session = request.getSession(true);
 	
 		 try{
 			 
-			ResultSet rs  = db.executeQuery("SELECT * FROM mac_location_mapping WHERE MAC_ADDRESS_V='" + fb.getMac_address() + "'");
+			
+			String query =  "SELECT * FROM mac_location_mapping WHERE MAC_ADDRESS_V=?";
+			stmt = db.getPreparedStatement(query); 
+			stmt.setString(1, fb.getMac_address());			
+			rs = stmt.executeQuery();
 			 
+			
 			if(rs.next())
 			{
 				division = rs.getString("DIVISION_ID_V");
@@ -440,6 +459,10 @@ public ActionForward initiateAdmin(ActionMapping mapping, ActionForm form,
 		 finally
 		 {		
 			 db.closeCon();
+			 if(stmt != null)
+				  stmt.close();  			  
+			 if(rs != null)
+			  	  rs.close();  
 		 }
 		
 
@@ -461,6 +484,10 @@ public ActionForward initiateKiosk(ActionMapping mapping, ActionForm form,
 	DBConnection db = new DBConnection();
 	
 	LoginForm fb = (LoginForm) form;
+	PreparedStatement stmt1=null,stmt2=null;
+	ResultSet rs1=null,rs2=null;
+	 
+	 
 	String divisioncode = fb.getDivision_code();
 	
 	String location="";
@@ -481,13 +508,15 @@ public ActionForward initiateKiosk(ActionMapping mapping, ActionForm form,
 	
 	
 		 try{
+				String query =  "SELECT * FROM mac_location_mapping WHERE MAC_ADDRESS_V=?";
+				stmt1 = db.getPreparedStatement(query); 
+				stmt1.setString(1, mac_address);			
+				rs1 = stmt1.executeQuery();			
 			 
-			 ResultSet rs  = db.executeQuery("SELECT * FROM mac_location_mapping WHERE MAC_ADDRESS_V='" + mac_address + "'");				
-			 
-			if(rs.next())
+			if(rs1.next())
 			{
-				divisioncode = rs.getString("DIVISION_ID_V");
-				location = rs.getString("LOCATION_ID_V");
+				divisioncode = rs1.getString("DIVISION_ID_V");
+				location = rs1.getString("LOCATION_ID_V");
 				fb.setLocation(location);
 				session.setAttribute("division", divisioncode);	
 				session.setAttribute("location", location);	
@@ -502,15 +531,18 @@ public ActionForward initiateKiosk(ActionMapping mapping, ActionForm form,
 		 		divisionlist.add(divisioncode.trim());	 		
 		 		request.setAttribute("divisionlist", divisionlist);
 
-			     String query = "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V='" + divisioncode + "' ORDER BY LOBBY_ID_V";
-		 		 System.out.println("Query  : " + query);
-		 		 rs  = db.executeQuery(query);	
-		 		 ArrayList<String> lobbylist = new ArrayList<String>();
+		 		
+		 		query = "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V=? ORDER BY LOBBY_ID_V";
+		 		stmt2 = db.getPreparedStatement(query); 
+				stmt2.setString(1, divisioncode);			
+				rs2 = stmt2.executeQuery();	
+		 		
+		 		ArrayList<String> lobbylist = new ArrayList<String>();
 		 		 
-		 		 while(rs.next())
-		 		 {
-		 			lobbylist.add(rs.getString("LOBBY_ID_V").trim());
-		 		 }
+		 		while(rs2.next())
+		 		{
+		 			lobbylist.add(rs2.getString("LOBBY_ID_V").trim());
+		 		}
 		 		
 		 		 request.setAttribute("lobbylist", lobbylist);
 		 		 forward = mapping.findForward("Kiosk");
@@ -532,6 +564,14 @@ public ActionForward initiateKiosk(ActionMapping mapping, ActionForm form,
 		 finally
 		 {		
 			 db.closeCon();
+			 if(stmt1 != null)
+				  stmt1.close();  
+			 if(stmt2 != null)
+				  stmt2.close(); 
+			 if(rs1 != null)
+			  	  rs1.close();  
+			 if(rs2 != null)
+			  	  rs2.close(); 
 		 }
 	
 	
@@ -568,14 +608,12 @@ public ActionForward getLobbyListDropdown(ActionMapping mapping, ActionForm form
  throws Exception{
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - getLobbyListDropdown >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
 	
-	
-	
-DBConnection db = new DBConnection();
+db = new DBConnection();
 
 LoginForm fb = (LoginForm) form;
-
+PreparedStatement stmt1=null;
+ResultSet rs1=null;
 String divisioncode = fb.getDivision_code();
 
 	 try{
@@ -583,18 +621,18 @@ String divisioncode = fb.getDivision_code();
 		 PrintWriter out = response.getWriter();
 		 String res = "<td style=' width:48%;' align='right' ><html:select name='TayalLoginForm' property='lobby_code' >";
 		 
-		 
+		 String query =  "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V=? ORDER BY LOBBY_ID_V";
+		 stmt1 = db.getPreparedStatement(query); 
+		 stmt1.setString(1, divisioncode);			
+		 rs1 = stmt1.executeQuery();			
 			 
+					
 		 
-		 String query = "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V='" + divisioncode + "' ORDER BY LOBBY_ID_V";
-		 System.out.println("Query  : " + query);
-		 ResultSet rs  = db.executeQuery(query);				
-		 
-		 while(rs.next())
+		 while(rs1.next())
 		 {
 			 
 			 res+= "<option>";
-			 res+= rs.getString("LOBBY_ID_V").trim();
+			 res+= rs1.getString("LOBBY_ID_V").trim();
 			 res+= "</option>";
 			 
 		 }
@@ -611,7 +649,11 @@ String divisioncode = fb.getDivision_code();
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
+		 if(stmt1 != null)
+			  stmt1.close();
+		 if(rs1 != null)
+		  	  rs1.close(); 
 	 }
 	
 	 
@@ -635,36 +677,35 @@ public ActionForward initiateLogin(ActionMapping mapping, ActionForm form,
 	HttpServletRequest request, HttpServletResponse response)
 throws Exception{
 
-System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateLogin >>>>>>>>>>>>>>>>>>>>>>");
+System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateLogin Test>>>>>>>>>>>>>>>>>>>>>>");
  ActionForward forward = new ActionForward();
 
  LoginForm lf = (LoginForm) form;
+ PreparedStatement stmt1=null;
+ ResultSet rs1=null;
+ 
+ 
  String userid = lf.getUser_id();
  String pwd = lf.getPassword();
  String location = lf.getLocation();
  
  
- System.out.println("location : " + location);
- 
-  
-  DBConnection db = new DBConnection();
- 
+  System.out.println("location : " + location);  
+  DBConnection db = new DBConnection(); 
   String role="MONITOR";
   
   lf.setMessage("");
   
-		 
- // lf.setMessage("");
-  
 	 try{
-		 
-		 //ResultSet rs  = db.executeQuery("SELECT * FROM user_mast WHERE USER_ID_V='" + userid + "' AND LOCATION_ID_V='" + location + "'");
-		 ResultSet rs  = db.executeQuery("SELECT * FROM user_mast WHERE USER_ID_V='" + userid + "'");
-		 
-		if(rs.next())
+		 String query =  "SELECT * FROM user_mast WHERE USER_ID_V=?";
+		 stmt1 = db.getPreparedStatement(query); 
+		 stmt1.setString(1, userid);			
+		 rs1 = stmt1.executeQuery();			
+		
+		if(rs1.next())
 		{
-			role = rs.getString("ROLE_V");
-			String decryppass = AESencrp.decrypt(rs.getString("PASSWORD_V"));
+			role = rs1.getString("ROLE_V");
+			String decryppass = AESencrp.decrypt(rs1.getString("PASSWORD_V"));
 			
 			
 			if(decryppass.equals(pwd))
@@ -672,7 +713,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateLogin >>>>
 							
 				HttpSession session = request.getSession(true);
 				
-				session.setAttribute("username", rs.getString("USER_NAME_V"));				
+				session.setAttribute("username", rs1.getString("USER_NAME_V"));				
 				session.setAttribute("role", role);
 				session.setAttribute("userid", userid);
 				
@@ -682,13 +723,13 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateLogin >>>>
 				{
 					
 					populateLobbyDropDown(request);
-					session.setAttribute("division", rs.getString("LOCATION_ID_V"));	// LOCATION_ID_V GIVES THE DIVISION IN THIS CASE
+					session.setAttribute("division", rs1.getString("LOCATION_ID_V"));	// LOCATION_ID_V GIVES THE DIVISION IN THIS CASE
 					forward = mapping.findForward("DivisionMaster");		
 					
 				}
 				else
 				{
-					if(location.trim().equals(rs.getString("LOCATION_ID_V").trim()))
+					if(location.trim().equals(rs1.getString("LOCATION_ID_V").trim()))
 					{
 						session.setAttribute("location", location);							// LOCATION_ID_V GIVES THE LOBBY IN THIS CASE
 						if(role.equals("OPERATOR"))	
@@ -725,7 +766,12 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateLogin >>>>
 	 }
 	 finally
 	 {		
+		 System.out.println("Exceuting Close");
 		 db.closeCon();
+		 if(stmt1 != null)
+			  stmt1.close();
+		 if(rs1 != null)
+		  	  rs1.close(); 
 	 }
 	
 
@@ -747,6 +793,9 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateSuperLogin
  ActionForward forward = new ActionForward();
 
  LoginForm lf = (LoginForm) form;
+ PreparedStatement stmt1=null;
+ ResultSet rs1=null;
+
  String userid = lf.getUser_id();
  String pwd = lf.getPassword();
  
@@ -762,13 +811,15 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateSuperLogin
   
   
 	 try{
+		 String query =  "SELECT * FROM user_mast WHERE USER_ID_V=? AND ROLE_V='SUPERSR'";
+		 stmt1 = db.getPreparedStatement(query); 
+		 stmt1.setString(1, userid);			
+		 rs1 = stmt1.executeQuery();
 		 
-		 ResultSet rs  = db.executeQuery("SELECT * FROM user_mast WHERE USER_ID_V='" + userid + "' AND ROLE_V='SUPERSR'");				
-		 
-		if(rs.next())
+		if(rs1.next())
 		{
 			
-			String decryppass = AESencrp.decrypt(rs.getString("PASSWORD_V"));
+			String decryppass = AESencrp.decrypt(rs1.getString("PASSWORD_V"));
 			
 			
 			if(decryppass.equals(pwd))
@@ -800,6 +851,10 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - initiateSuperLogin
 	 finally
 	 {		
 		 db.closeCon();
+		 if(stmt1 != null)
+			  stmt1.close();
+		 if(rs1 != null)
+		  	  rs1.close(); 
 	 }
 	
 
@@ -819,6 +874,11 @@ throws Exception{
 System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - validateUser >>>>>>>>>>>>>>>>>>>>>>");
 
  LoginForm lf = (LoginForm) form;
+ 
+PreparedStatement stmt1=null,stmt2=null;
+ResultSet rs1=null,rs2=null;
+
+		 
  String userid = lf.getUser_id();
  String pwd = lf.getPassword();
  String password_enable_status = lf.getPassword_enable_status();
@@ -829,76 +889,82 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - validateUser >>>>>
   String desig="";
  
 	
-  System.out.println("userid : " + userid);
 	 try{
 		 PrintWriter out = response.getWriter();
-		 ResultSet rs  = db.executeQuery("SELECT * FROM user_mast WHERE USER_ID_V='" + userid + "'");				
 		 
-		if(rs.next())
-		{
-			role = rs.getString("ROLE_V");
-			//location = rs.getString("LOCATION_ID_V");
-			String decryppass = AESencrp.decrypt(rs.getString("PASSWORD_V"));
-			
-			
-			if(password_enable_status.equals("Y"))
+		 String query =  "SELECT * FROM user_mast WHERE USER_ID_V=?";
+		 stmt1 = db.getPreparedStatement(query); 
+		 stmt1.setString(1, userid);			
+		 rs1 = stmt1.executeQuery();
+		 
+		
+			if(rs1.next())
 			{
-				if(decryppass.equals(pwd))
-				{
-									
-					HttpSession session = request.getSession(true);
-					
+				role = rs1.getString("ROLE_V");
+				//location = rs.getString("LOCATION_ID_V");
+				String decryppass = AESencrp.decrypt(rs1.getString("PASSWORD_V"));
 				
-					session.setAttribute("userid", userid);
-					session.setAttribute("username", userid);
-					session.setAttribute("role", role);
-					System.out.println("location : " + session.getAttribute("location"));
-					 
-					out.println("VALID");
-					out.flush();
+				
+				if(password_enable_status.equals("Y"))
+				{
+					if(decryppass.equals(pwd))
+					{
+										
+						HttpSession session = request.getSession(true);
+						
 					
-					
+						session.setAttribute("userid", userid);
+						session.setAttribute("username", userid);
+						session.setAttribute("role", role);
+						System.out.println("location : " + session.getAttribute("location"));
+						 
+						out.println("VALID");
+						out.flush();
+						
+						
+					}
+					else
+					{
+						out.println("Invalid user ID / Pin");
+						out.flush();
+						return null;
+					}
 				}
 				else
 				{
-					out.println("Invalid user ID / Pin");
-					out.flush();
-					return null;
-				}
-			}
-			else
-			{
-				
-									
-					HttpSession session = request.getSession(true);
 					
-					session.setAttribute("userid", userid);
-					session.setAttribute("username", userid);
-					session.setAttribute("role", role);
-					System.out.println("location : " + session.getAttribute("location"));
-					 
-					out.println("VALID");
-					out.flush();
+										
+						HttpSession session = request.getSession(true);
+						
+						session.setAttribute("userid", userid);
+						session.setAttribute("username", userid);
+						session.setAttribute("role", role);
+						System.out.println("location : " + session.getAttribute("location"));
+						 
+						out.println("VALID");
+						out.flush();
+				}
+				
+				
+			}else
+			{			
+				out.println("Invalid user ID / Pin");
+				out.flush();
+				return null;
 			}
-			
-			
-		}else
-		{			
-			out.println("Invalid user ID / Pin");
-			out.flush();
-			return null;
-		}
 		
-	
-		 rs  = db.executeQuery("SELECT DESIG_V,GENDER_V FROM CREW_BIODATA WHERE USER_ID_V='" + userid + "'");				
+			query =  "SELECT DESIG_V,GENDER_V FROM CREW_BIODATA WHERE USER_ID_V=?";
+			stmt2 = db.getPreparedStatement(query); 
+			stmt2.setString(1, userid);			
+			rs2 = stmt1.executeQuery();
 		 
-			if(rs.next())
+			if(rs2.next())
 			{
-				desig = rs.getString("DESIG_V");
+				desig = rs2.getString("DESIG_V");
 				
 					HttpSession session = request.getSession(true);					
-					session.setAttribute("designation", rs.getString("DESIG_V"));
-					session.setAttribute("gender", rs.getString("GENDER_V"));
+					session.setAttribute("designation", rs2.getString("DESIG_V"));
+					session.setAttribute("gender", rs2.getString("GENDER_V"));
 						
 				
 			}else
@@ -916,6 +982,14 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - validateUser >>>>>
 	 finally
 	 {		
 		 db.closeCon();
+ 		 if(stmt1 != null)
+ 			  stmt1.close();  			  
+ 		 if(rs1 != null)
+ 		  	  rs1.close();  
+ 		 if(stmt2 != null)
+			  stmt2.close();  			  
+		 if(rs2 != null)
+		  	  rs2.close();  
 	 }
 	
 	 
@@ -935,9 +1009,6 @@ throws Exception{
 System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - logout >>>>>>>>>>>>>>>>>>>>>>");
  ActionForward forward = new ActionForward();
 
-
- 
-  DBConnection db = new DBConnection();
   forward = mapping.findForward("Admin");
   
 	 try{
@@ -950,10 +1021,7 @@ System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - logout >>>>>>>>>>>
 	 {
 		 System.out.println("Error : " + e);
 	 }
-	 finally
-	 {		
-		 db.closeCon();
-	 }
+	 
 	
 
 System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< LoginAction - logout <<<<<<<<<<<<<<<<<<<<<<");
@@ -970,12 +1038,11 @@ public ActionForward getAccessRequests(ActionMapping mapping, ActionForm form,
  throws Exception{
 	
 	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - getAccessRequests >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
 	
-	
-	
-	 DBConnection db = new DBConnection();
-
+	 db = new DBConnection();
+	 PreparedStatement stmt1=null;
+	 ResultSet rs1=null;
+	 
 	 try{
 		 
 		 
@@ -995,18 +1062,19 @@ public ActionForward getAccessRequests(ActionMapping mapping, ActionForm form,
 		 		+ "<tbody>";
 		 
 
-		 String query = "SELECT * FROM REQUEST_ACCESS";
-		 System.out.println("Query  : " + query);
-		 ResultSet rs  = db.executeQuery(query);				
+		 String query =  "SELECT * FROM REQUEST_ACCESS";
+		 stmt1 = db.getPreparedStatement(query); 		 		
+		 rs1 = stmt1.executeQuery();
+		  	
 		 
-		 while(rs.next())
+		 while(rs1.next())
 		 {
 			 
 			 res+= "<tr>";
-			 res+= "<td align='center' > " + rs.getString("DIVISION_CODE_V") + "</td>";
-			 res+= "<td align='center' > " + rs.getString("LOBBY_CODE_V") + "</td>";
-			 res+= "<td align='center' > " + rs.getString("MOBILE_V") + "</td>";
-			 res+= "<td align='center' ><img src='images/righttick.jpg' height='20' width='20' onclick=\"allowAccess('" + rs.getString("MAC_ADDRESS_V") + "','" + rs.getString("LOBBY_CODE_V") + "','" + rs.getString("DIVISION_CODE_V") + "')\"></td>";
+			 res+= "<td align='center' > " + rs1.getString("DIVISION_CODE_V") + "</td>";
+			 res+= "<td align='center' > " + rs1.getString("LOBBY_CODE_V") + "</td>";
+			 res+= "<td align='center' > " + rs1.getString("MOBILE_V") + "</td>";
+			 res+= "<td align='center' ><img src='images/righttick.jpg' height='20' width='20' onclick=\"allowAccess('" + rs1.getString("MAC_ADDRESS_V") + "','" + rs1.getString("LOBBY_CODE_V") + "','" + rs1.getString("DIVISION_CODE_V") + "')\"></td>";
 			 res+= "</tr>";
 			
 		 }
@@ -1025,7 +1093,11 @@ public ActionForward getAccessRequests(ActionMapping mapping, ActionForm form,
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
+		 if(stmt1 != null)
+			  stmt1.close();  			  
+		 if(rs1 != null)
+		  	  rs1.close();  
 	 }
 	
 	 
@@ -1046,12 +1118,13 @@ public ActionForward allowAccess(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response)
  throws Exception{
 	
-	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - allowAccess >>>>>>>>>>>>>>>>>>>>>>");
-	 ActionForward forward = new ActionForward();
-	
-	
+System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> LoginAction - allowAccess >>>>>>>>>>>>>>>>>>>>>>");
 LoginForm fb = (LoginForm) form;	
-DBConnection db = new DBConnection();
+
+PreparedStatement stmt1=null,stmt2=null;
+
+
+db = new DBConnection();
 String division = fb.getDivision_code();
 String lobby = fb.getLobby_code();
 String macaddress = fb.getMac_address();
@@ -1062,11 +1135,12 @@ String res = "FAIL";
 		 
 		 PrintWriter out = response.getWriter();
 		
-			
-		 String query = "INSERT INTO MAC_LOCATION_MAPPING VALUES('" + macaddress + "','" + lobby + "','" + division + "')";
-		 	
-		 System.out.println("Query  : " + query);
-		 int rs  = db.executeUpdate(query);		
+		 String query =  "INSERT INTO MAC_LOCATION_MAPPING VALUES(?,?,?)";
+		 stmt1 = db.getPreparedStatement(query); 
+		 stmt1.setString(1, macaddress);		
+		 stmt1.setString(2, lobby);	
+		 stmt1.setString(3, division);	
+		 int rs = stmt1.executeUpdate();	
 		 
 		
 		 System.out.println("Res  : " + rs);
@@ -1074,8 +1148,11 @@ String res = "FAIL";
 		 if(rs > 0)
 		 {
 			 res = "SUCCESS";
-			 query = "DELETE FROM REQUEST_ACCESS WHERE MAC_ADDRESS_V='" + macaddress + "'";
-			 int drs  = db.executeUpdate(query);		
+			 
+			 query =  "DELETE FROM REQUEST_ACCESS WHERE MAC_ADDRESS_V=?";
+			 stmt2 = db.getPreparedStatement(query); 
+			 stmt2.setString(1, macaddress);
+			 int rs2 = stmt2.executeUpdate();	
 		 }			 
 		 else
 			 res = "FAIL";
@@ -1093,13 +1170,15 @@ String res = "FAIL";
 	 }
 	 finally
 	 {		
-		// db.closeCon();
+		 db.closeCon();
+		 if(stmt1 != null)
+			  stmt1.close();  			  
+		 if(stmt2 != null)
+			  stmt2.close();  	
 	 }
 	
 	 
 
-
-	 
 	
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< LoginAction - allowAccess <<<<<<<<<<<<<<<<<<<<<<");
 	  
@@ -1138,7 +1217,7 @@ public ActionForward addUser(ActionMapping mapping, ActionForm form,
 	 LoginForm lf = (LoginForm) form;
 	 ArrayList<String> queries = new ArrayList<String>(); 
 	  
-	  DBConnection db = new DBConnection();
+	 DBConnection db = new DBConnection();
 	  
 	 String userid = lf.getUser_id(); 
 
@@ -1147,14 +1226,14 @@ public ActionForward addUser(ActionMapping mapping, ActionForm form,
 			
 			String query = "SELECT * FROM USER_MAST WHERE USER_ID_V='" + userid + "'";
 			System.out.println("Query  : " + query);
-			ResultSet rs = db.executeQuery(query);
+			rs = db.executeQuery(query);
 		        
 			if(rs.next())
 			{
 				
 				
 				query = "SELECT * FROM CREW_BIODATA WHERE USER_ID_V='" + userid + "'";
-				ResultSet rs2 = db.executeQuery(query);
+				rs2 = db.executeQuery(query);
 				if(rs2.next())
 				{
 					lf.setMessage("User already exists");
@@ -1200,7 +1279,13 @@ public ActionForward addUser(ActionMapping mapping, ActionForm form,
 		{
 			System.out.println("Ex : " + e);
 		}
-
+		 finally
+		 {		
+			 db.closeCon();
+			 rs.close();
+			 rs2.close();
+			 
+		 }
 	 
 	 
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<< LoginAction - initiateCreateCrew <<<<<<<<<<<<<<<<<<<<<<");
@@ -1224,7 +1309,7 @@ public void populateLobbyDropDown(HttpServletRequest request)
 	 try{
 		 
 		     String query = "SELECT * FROM LOBBY_LIST WHERE DIVISION_ID_V='" + division + "' ORDER BY LOBBY_ID_V";
-	 		 ResultSet rs  = db.executeQuery(query);	
+	 		 rs  = db.executeQuery(query);	
 	 		 
 	 		lobbylist.add("Select");
 	 		 while(rs.next())
@@ -1241,6 +1326,7 @@ public void populateLobbyDropDown(HttpServletRequest request)
 	 finally
 	 {		
 		 db.closeCon();
+		 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
 	 }
 
 }
@@ -1271,7 +1357,7 @@ public void setBedNo()throws Exception
 			
 			String query = "SELECT * FROM BED_ALLOCATION_MST WHERE LOCATION_ID_V='TVT' ORDER BY ROOM_NO_I,BED_NO_I";
 			System.out.println("Query  : " + query);
-			ResultSet rs = db.executeQuery(query);
+			rs = db.executeQuery(query);
 			String q1 = "";
 			
 		int bedno = 1;
@@ -1290,8 +1376,6 @@ public void setBedNo()throws Exception
 				
 			}	
 			
-		        
-			
 			int res = db.executeMyBatch(queries);
 			
 			
@@ -1299,7 +1383,11 @@ public void setBedNo()throws Exception
 		{
 			System.out.println("Ex : " + e);
 		}
-		
+		finally
+		 {		
+			 db.closeCon();
+			 try { rs.close();} catch (SQLException e) {  /* donothing  */ }  
+		 }
 		
 	System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  setBedNo   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	System.out.println("\n\n\n\n\n");

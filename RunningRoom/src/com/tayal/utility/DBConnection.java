@@ -2,7 +2,9 @@ package com.tayal.utility;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,6 +13,7 @@ public class DBConnection {
 	
 	private Connection conn=null;
 	private ResultSet res = null;
+	private PreparedStatement stmt = null;
 	
 	public Connection getConnection()
 	{		 
@@ -19,7 +22,7 @@ public class DBConnection {
 		  String dbName = "runningroom";
 		  String driver = "com.mysql.jdbc.Driver";
 		  String userName = "root";
-		  String password = "111";
+		  String password = "";
 		  
 		  
 		  try {
@@ -34,6 +37,18 @@ public class DBConnection {
 		
 		  return conn;
 		
+	}
+	
+	public PreparedStatement getPreparedStatement(String query)
+	{	
+		try {
+			 getConnection();
+			 stmt =  conn.prepareStatement(query);
+			 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return stmt;
 	}
 	
 
@@ -83,7 +98,7 @@ public class DBConnection {
 	}
 	
 	
-	public int executeMyBatch(ArrayList list)
+	public int executeMyBatch(ArrayList<String> list)
 	{
 		
 		int count = 0;
@@ -127,9 +142,14 @@ public class DBConnection {
 	{
 		  
 		  try {
-			  
+			  System.out.println("Closing");
 			  if(conn != null)
-				  conn.close();
+			  	  conn.close();
+			  if(stmt != null)
+				  stmt.close();  			  
+			  if(res != null)
+			  	  res.close();  
+				  
 			  
 
 		  

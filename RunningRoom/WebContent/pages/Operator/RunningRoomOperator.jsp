@@ -44,6 +44,20 @@
 
 <style>
 
+
+.blinking{
+    animation:blinkingText 0.8s infinite;
+}
+@keyframes blinkingText{
+    0%{     color: #000;    }
+    49%{    color: red; }
+    50%{    color: red; }
+    99%{    color:red;  }
+    100%{   color: #000;    }
+}
+
+
+
 .table-wrapper-scroll-y {
   display: block;
   max-height: 500px;
@@ -88,17 +102,6 @@
             </div>
           </div>
 
-          <div class="inner cover hidden-xs">
-            <h1 class="cover-heading"><i18n:message key="label.PAGETITLE.roomlayout"/> ( Operator )</h1>
-            
-          </div>
-          
-           <div class="inner cover hidden-xs">
-            &nbsp;
-            
-          </div>
-          
-          
         <div class="row">
         
               <div class="col-sm-7">	
@@ -185,9 +188,7 @@ function onLoad()
 	setTimeout(getLayout,1000);
 	
 	setTimeout(getWakeUpInfo,2000);
-	
-	
-	
+	setInterval(getWakeUpInfo,60000);
 	
 }
 
